@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { PostsModule } from './posts/posts.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommonModule } from './common/common.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -31,6 +32,7 @@ import * as Joi from 'joi';
       synchronize: true,
     }),
     PostsModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],
