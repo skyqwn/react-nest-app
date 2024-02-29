@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { Input } from "../components/Input";
 import Button from "../components/Button";
+import { instance } from "../api/apiconfig";
 
 const Auth = () => {
   // const errorHandler = userErrorHandler();
@@ -30,19 +31,41 @@ const Auth = () => {
 
   const onValid: SubmitHandler<FieldValues> = (data) => {
     if (isLogin) {
-      axios
-        .post("/api/user/signin", data)
-        .then((res) => {
-          const { data } = res;
-          toast.success("로그인 성공!!");
-          navigate(from);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      console.log(data);
+      // axios
+      //   .post("/api/user/signin", data)
+      //   .then((res) => {
+      //     const { data } = res;
+      //     toast.success("로그인 성공!!");
+      //     navigate(from);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
     } else {
-      axios.post("/api/user/signup", data);
-      toast.success("회원가입 성공");
+      console.log(data);
+      try {
+        instance
+          .post("/auth/register/email", data)
+          .then((res) => {
+            console.log(res);
+            const { data } = res;
+            if (data.ok) {
+              toast.success("로그인 성공!!");
+              setIsLogin(true);
+            }
+            if (!data.ok) {
+              toast.error(data.error);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+      // axios.post("/api/user/signup", data);
+      // toast.success("회원가입 성공");
     }
   };
 
@@ -70,7 +93,7 @@ const Auth = () => {
         onAction={handleSubmit(onValid)}
         canClick={true}
         loading={false}
-        actionText="로그인"
+        actionText={!isLogin ? "회원가입" : "로그인"}
       />
       <Button
         onAction={() => {

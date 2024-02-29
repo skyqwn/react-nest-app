@@ -14,6 +14,16 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+  // app.enableCors({
+  //   origin: true,
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  //   credentials: true,
+  // });
+  app.enableCors({
+    origin: ['http://localhost:3000'],
+    credentials: true,
+    exposedHeaders: ['Authorization'], // * 사용할 헤더 추가.
+  });
   await app.listen(4000);
 }
 bootstrap();
