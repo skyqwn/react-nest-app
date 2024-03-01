@@ -9,6 +9,14 @@ interface UserState {
   onSignin: () => void;
 }
 
+interface AuthState {
+  isLogged: boolean;
+}
+
+export const authStore = create<AuthState>((set) => ({
+  isLogged: false,
+}));
+
 const userStroe = create<UserState>()((set) => ({
   user: { email: "", nickname: "" },
   onSignin: () => {},
