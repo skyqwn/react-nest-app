@@ -67,10 +67,7 @@ export class AuthService {
         };
       }
 
-      return {
-        ok: true,
-        existUser,
-      };
+      return existUser;
     } catch (error) {
       console.log(error);
       return {
@@ -79,6 +76,45 @@ export class AuthService {
       };
     }
   }
+  //
+
+  async extractTokenFromHeader(header: string, isBearer: boolean) {
+    try {
+      const splitToken = header.split(' ');
+
+      const prefix = isBearer ? 'Bearer' : 'Basic';
+
+      if (splitToken.length !== 2 || splitToken[0] !== prefix) {
+        throw new UnauthorizedException('잘못된 토큰입니다.');
+      }
+
+      const token = splitToken[1];
+
+      return token;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  decodeBasicToken(base64String: string) {
+    const decoded = Buffer.from(base64String, 'base64').toString('utf8');
+
+    const split = decoded.split(':');
+
+    if (split.length !== 2) {
+      throw new UnauthorizedException('잘못된 유형의 토큰입니다.');
+    }
+
+    const email = split[0];
+    const password = split[1];
+
+    return {
+      email,
+      password,
+    };
+  }
+
+  async logout() {}
 
   async loginWithEmail(user: Pick<UsersModel, 'email' | 'password'>) {
     try {
@@ -116,11 +152,6 @@ export class AuthService {
         accessToken,
         refreshToken,
       };
-
-      // res.cookie('refreshToken', refreshToken, {
-      //   httpOnly: true,
-      //   maxAge: 1000 * 60 * 60 * 24 * 7,
-      // });
 
       return {
         ok: true,
@@ -215,5 +246,34 @@ export class AuthService {
         error: '계정생성을 실패하였습니다.',
       };
     }
+  }
+
+  verifyToken(token: string) {
+    try {
+      return this.jwtService.verify(token, {
+        secret: this.configService.get<string>('JWT_SECRET'),
+      });
+    } catch (error) {
+      throw new UnauthorizedException('토큰이 만료되었거나 잘못된 토큰입니다.');
+    }
+  }
+
+  rotateToken(token: string, isRefreshToken: boolean) {
+    const decoded = this.jwtService.verify(token, {
+      secret: this.configService.get<string>('JWT_SECRET'),
+    });
+
+    if (decoded.type !== 'refresh') {
+      throw new UnauthorizedException(
+        ' Refresh Token으로만 토큰 재발급이 가능합니다.',
+      );
+    }
+
+    return this.signToken(
+      {
+        ...decoded,
+      },
+      isRefreshToken,
+    );
   }
 }
