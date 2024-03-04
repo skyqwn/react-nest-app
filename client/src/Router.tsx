@@ -7,6 +7,8 @@ import Register from "./routes/Register";
 import ProtectRouter from "./components/ProtectRouter";
 import Profile from "./routes/Profile";
 import Community from "./routes/Community";
+import PostBlock from "./components/block/PostBlock";
+import CommunityDetail from "./routes/CommunityDetail";
 
 const Router = () => {
   return (
@@ -29,6 +31,7 @@ const Router = () => {
           </ProtectRouter>
         }
       />
+      <Route path="/post/:id" element={<CommunityDetail />} />
 
       <Route path="/login" element={<Login />} />
       <Route path="*" element={<NotFound />} />

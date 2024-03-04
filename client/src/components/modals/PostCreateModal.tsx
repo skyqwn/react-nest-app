@@ -9,7 +9,6 @@ import TextArea from "../Inputs/TextArea";
 import { instance } from "../../api/apiconfig";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { queryClient } from "../..";
-import { getCookie } from "../../libs/cookie";
 
 const defaultValues = {
   title: "",
@@ -39,6 +38,7 @@ const PostCreateModal = () => {
     onSuccess: () => {
       toast.success("생성성공");
       queryClient.invalidateQueries({ queryKey: ["posts"] });
+      onClose();
     },
   });
 

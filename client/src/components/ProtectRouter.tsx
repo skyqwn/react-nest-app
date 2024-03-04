@@ -11,7 +11,7 @@ const ProtectRouter = ({ children }: React.PropsWithChildren) => {
   const refreshToken = getCookie("refreshToken");
 
   if (!auth || !refreshToken) {
-    return <Navigate to={"/login"} />;
+    return <Navigate to={"/login"} state={{ from }} />;
   }
   return <div>{children}</div>;
 };

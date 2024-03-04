@@ -10,7 +10,17 @@ import { HelmetProvider } from "react-helmet-async";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { UserContextProvider } from "./context/UserContext";
 
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    // react-query 전역 설정
+    queries: {
+      refetchOnWindowFocus: false,
+      retryOnMount: true,
+      refetchOnReconnect: false,
+      retry: false,
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -22,7 +32,9 @@ root.render(
         <CookiesProvider>
           <BrowserRouter>
             <App />
-            <ReactQueryDevtools initialIsOpen={false} />
+            <ReactQueryDevtools
+              initialIsOpen={process.env.REACT_APP_PUBLIC_MODE === "local"}
+            />
           </BrowserRouter>
         </CookiesProvider>
       </UserContextProvider>
