@@ -6,10 +6,7 @@ import { IsNumber } from 'class-validator';
 export class CreatePostInput extends PickType(PostsModel, [
   'title',
   'content',
-]) {
-  @IsNumber()
-  authorId: number;
-}
+]) {}
 
 export class CreatePostOutput extends CoreOutput {
   post?: PostsModel;

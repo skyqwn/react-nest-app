@@ -20,21 +20,19 @@ export class BasickTokenGuard implements CanActivate {
         throw new UnauthorizedException('토큰이 없습니다.');
       }
 
-      const token = await this.authService.extractTokenFromHeader(
+      const token = await this.authService.checkedTokenFromHeader(
         rawToken,
         false,
       );
 
       const { email, password } = this.authService.decodeBasicToken(token);
 
-      const user = await this.authService.authenticateWithEmailAndPassword({
+      const user = await this.authService.checkedEmailAndPassword({
         email,
         password,
       });
 
       req.user = user;
-
-      console.log(req.user);
 
       return true;
     } catch (error) {

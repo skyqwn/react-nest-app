@@ -41,9 +41,7 @@ export class AuthService {
     };
   }
 
-  async authenticateWithEmailAndPassword(
-    user: Pick<UsersModel, 'email' | 'password'>,
-  ) {
+  async checkedEmailAndPassword(user: Pick<UsersModel, 'email' | 'password'>) {
     try {
       const existUser = await this.userService.getUserByEmail(user.email);
 
@@ -78,7 +76,7 @@ export class AuthService {
   }
   //
 
-  async extractTokenFromHeader(header: string, isBearer: boolean) {
+  async checkedTokenFromHeader(header: string, isBearer: boolean) {
     try {
       const splitToken = header.split(' ');
 

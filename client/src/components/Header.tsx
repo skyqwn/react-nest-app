@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import Container from "./Container";
 import { Link } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 const Header = () => {
+  const { onSignout, auth } = useContext(UserContext) as any;
   return (
     <div className="bg-[#a29bfe] h-14">
       <Container>
@@ -11,7 +13,7 @@ const Header = () => {
             <div>Home</div>
           </Link>
           <Link to={"/login"}>
-            <div>로그인</div>
+            <div>{auth ? "로그아웃" : "로그인"}</div>
           </Link>
           <div className=" flex gap-5 items-center">
             <Link to={"/community"}>

@@ -5,8 +5,9 @@ import React, {
   useState,
 } from "react";
 
-import { removeCookie, setCookie } from "../libs/cookie";
+import { getCookie, removeCookie, setCookie } from "../libs/cookie";
 import { instance } from "../api/apiconfig";
+import toast from "react-hot-toast";
 
 export const UserContext = createContext({});
 
@@ -19,13 +20,15 @@ export const UserContextProvider = ({ children }: PropsWithChildren) => {
       .post("/auth/token/access")
       .then((res) => {
         const {
-          data: { accessToken },
+          data: { accessToken, error },
         } = res;
+        console.log(error);
         setCookie("accessToken", accessToken, { maxAge: 30 });
         setAuth(true);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response);
+        // toast.error("토큰이 만료되었습니다 다시 로그인을 하시기 바랍니다.");
         setAuth(false);
       })
       .finally(() => {

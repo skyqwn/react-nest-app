@@ -48,7 +48,7 @@ export class PostsService {
     }
   }
 
-  async createPost({ content, title, authorId }: CreatePostInput) {
+  async createPost({ content, title }: CreatePostInput, authorId: number) {
     try {
       const post = this.postsRepository.create({
         author: {

@@ -8,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Home = () => {
-  const { onSignout } = useContext(UserContext) as any;
+  const { onSignout, auth } = useContext(UserContext) as any;
+  console.log(auth);
   const navigate = useNavigate();
   return (
     <Container>

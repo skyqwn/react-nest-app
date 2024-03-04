@@ -1,5 +1,6 @@
 import axios from "axios";
-import { getCookie, setCookie } from "../libs/cookie";
+import { getCookie, removeCookie, setCookie } from "../libs/cookie";
+import toast from "react-hot-toast";
 
 export const instance = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
@@ -38,83 +39,21 @@ instance.interceptors.response.use(
       config,
       response: { status, data },
     } = error;
+    console.log(config);
 
-    if (status === 401 && data.message === "InvalidTokenException") {
-      // 토큰이 없거나 잘못되었을 경우
-      console.log(error);
+    if (status === 401 && data.message === "토큰이 없습니다.") {
+      // 모든 토큰이 없을경우
+      toast.error("다시로그인해주세요");
+      console.log(data);
     }
-    if (status === 401 && data.message === "TokenExpired") {
-      try {
-        const tokenRefreshResult = await instance.post("/refresh-token");
-        if (tokenRefreshResult.status === 200) {
-          const { accessToken, refreshToken } = tokenRefreshResult.data;
-          // 새로 발급받은 토큰을 스토리지에 저장
-          localStorage.setItem("accessToken", accessToken);
-          localStorage.setItem("refreshToken", refreshToken);
-          // 토큰 갱신 성공. API 재요청
-          return instance(config);
-        } else {
-          console.log(error);
-        }
-      } catch (e) {
-        console.log(error);
-      }
+
+    if (status === 401 && data.message === "Refresh Token이 아닙니다.") {
+      // Refresh토큰은 만료되고 AccessToken만 존재할경우
+      toast.error("토큰이 유효하지않습니다 다시로그인해주세요");
+      removeCookie("accessToken");
+      return Promise.reject(error);
     }
 
     return Promise.reject(error);
   }
 );
-
-// instance.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   async (error) => {
-//     const {
-//       config,
-//       response: { status, data },
-//     } = error;
-//     console.log(status);
-
-//     if (config.sent) {
-//       return Promise.reject(error);
-//     }
-
-//     // if (
-//     //   data.message === CONSTANT.ERROR_MESSAGE.REFRESH_TOKEN
-//     //   // data.message === CONSTANT.ERROR_MESSAGE.NO_EXISTS_USER
-//     // ) {
-//     //   // error.isRefresh = true;
-//     //   return Promise.reject(error);
-//     // }
-
-//     if (status === 401 || status === 403) {
-//       console.log(1);
-//       config.sent = true;
-
-//       const originalRequest = config;
-
-//       try {
-//         const res = await instance.post("/auth/token/access");
-
-//         instance.defaults.headers.common[
-//           "Authorization"
-//         ] = `Bearer ${res.data.accessToken}`;
-
-//         originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
-
-//         setCookie("accessToken", res.data.accessToken, {
-//           maxAge: 30,
-//         });
-
-//         return instance.request(originalRequest);
-//       } catch (error: any) {
-//         return Promise.reject(error);
-//       }
-//     }
-
-//     return Promise.reject(error);
-//   }
-// );
-
-// export default instance;

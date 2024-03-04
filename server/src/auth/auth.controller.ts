@@ -11,24 +11,15 @@ import { AuthService } from './auth.service';
 import { RegisterUserInput } from './dtos/register-user.dto';
 import { LoginUserInput } from './dtos/login-user.dto';
 import { CookieOptions, Response } from 'express';
+import { BasickTokenGuard } from './guard/basic-token.guard';
+import { RefreshTokenGuard } from './guard/bearer-token.guard';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('token/access')
-  async postTokenAccess(@Headers('authorization') rawToken: string) {
-    const token = await this.authService.extractTokenFromHeader(rawToken, true);
-
-    const newToken = this.authService.rotateToken(token, false);
-
-    return {
-      accessToken: newToken,
-    };
-  }
-
   @Post('token/refresh')
   async postTokenRefresh(@Headers('authorization') rawToken: string) {
-    const token = await this.authService.extractTokenFromHeader(rawToken, true);
+    const token = await this.authService.checkedTokenFromHeader(rawToken, true);
 
     const newToken = this.authService.rotateToken(token, true);
 
@@ -38,8 +29,9 @@ export class AuthController {
   }
 
   @Post('token/access')
+  @UseGuards(RefreshTokenGuard)
   async createTokenAccess(@Headers('authorization') rawToken: string) {
-    const token = await this.authService.extractTokenFromHeader(rawToken, true);
+    const token = await this.authService.checkedTokenFromHeader(rawToken, true);
 
     const newToken = this.authService.rotateToken(token, false);
 
@@ -49,8 +41,9 @@ export class AuthController {
   }
 
   @Post('login/email')
+  @UseGuards(BasickTokenGuard)
   async loginEmail(@Headers('authorization') rawToken: string) {
-    const token = await this.authService.extractTokenFromHeader(
+    const token = await this.authService.checkedTokenFromHeader(
       rawToken,
       false,
     );
