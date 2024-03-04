@@ -14,6 +14,13 @@ export const UserContext = createContext({});
 export const UserContextProvider = ({ children }: PropsWithChildren) => {
   const [auth, setAuth] = useState(false);
   const [loading, setLoading] = useState(true);
+  const refreshToken = getCookie("refreshToken");
+
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${refreshToken}`,
+    },
+  };
 
   useEffect(() => {
     instance
@@ -22,9 +29,8 @@ export const UserContextProvider = ({ children }: PropsWithChildren) => {
         const {
           data: { accessToken, error },
         } = res;
-        console.log(error);
-        setCookie("accessToken", accessToken, { maxAge: 30 });
         setAuth(true);
+        setCookie("accessToken", accessToken, { maxAge: 300 });
       })
       .catch((err) => {
         console.log(err.response);
@@ -45,7 +51,7 @@ export const UserContextProvider = ({ children }: PropsWithChildren) => {
   }) => {
     if (accessToken) {
       setCookie("accessToken", accessToken, {
-        maxAge: 30,
+        maxAge: 300,
       });
       setCookie("refreshToken", refreshToken, {
         maxAge: 3000,

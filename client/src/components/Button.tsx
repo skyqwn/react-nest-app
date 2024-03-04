@@ -1,10 +1,10 @@
 import React from "react";
 
 interface IButtonProps {
-  canClick: boolean;
-  loading: boolean;
-  actionText: string;
+  canClick?: boolean;
   onAction?: () => void;
+  actionText: string;
+  loading?: boolean;
 }
 
 const Button: React.FC<IButtonProps> = ({

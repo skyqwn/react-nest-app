@@ -16,7 +16,7 @@ const Header = () => {
             <div>{auth ? "로그아웃" : "로그인"}</div>
           </Link>
           <div className=" flex gap-5 items-center">
-            <Link to={"/community"}>
+            <Link to={"/post"}>
               <div>커뮤니티</div>
             </Link>
             <Link to={"/gallery"}>

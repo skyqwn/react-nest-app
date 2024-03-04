@@ -22,7 +22,7 @@ const Router = () => {
       />
       <Route path="/register" element={<Register />} />
       <Route
-        path="/community"
+        path="/post"
         element={
           <ProtectRouter>
             <Community />
