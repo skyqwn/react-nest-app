@@ -7,7 +7,7 @@ import {
 import { AuthService } from '../auth.service';
 import { UsersService } from 'src/users/users.service';
 import { Reflector } from '@nestjs/core';
-// import { IS_PUBLIC_KEY } from 'src/common/decorator/is-public.decorator';
+import { IS_PUBLIC_KEY } from 'src/common/decorator/is-public.decorator';
 
 @Injectable()
 export class BearerToeknGuard implements CanActivate {
@@ -17,17 +17,18 @@ export class BearerToeknGuard implements CanActivate {
     private readonly reflector: Reflector,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // const isPublic = this.reflector.getAllAndOverride(IS_PUBLIC_KEY, [
-    //   context.getHandler(),
-    //   context.getClass(),
-    // ]);
-    //
+    const isPublic = this.reflector.getAllAndOverride(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
     try {
       const req = context.switchToHttp().getRequest();
-      //   if (isPublic) {
-      //     req.isRoutePublic = true;
-      //     return true;
-      //   }
+
+      if (isPublic) {
+        req.isRoutePublic = true;
+        return true;
+      }
       const rawToken = req.headers['authorization'];
 
       if (!rawToken) {
@@ -64,12 +65,12 @@ export class AccessTokenGuard extends BearerToeknGuard {
 
     const rawToken = req.headers['authorization'];
 
-    if (!rawToken) {
-      throw new UnauthorizedException('토큰이 없습니다.');
-    }
-
     if (req.isRoutePublic) {
       return true;
+    }
+
+    if (!rawToken) {
+      throw new UnauthorizedException('토큰이 없습니다.');
     }
 
     if (req.tokenType !== 'access') {

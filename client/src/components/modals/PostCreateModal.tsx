@@ -31,7 +31,8 @@ const PostCreateModal = () => {
   });
   const { isOpen, onClose } = useCreatePost();
 
-  const createPost = (post: CreatePostProps) => instance.post("/posts", post);
+  const createPost = async (post: CreatePostProps) =>
+    await instance.post("/posts", post);
 
   const { mutate, isPending } = useMutation({
     mutationFn: createPost,

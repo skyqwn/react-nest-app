@@ -13,11 +13,13 @@ import { LoginUserInput } from './dtos/login-user.dto';
 import { CookieOptions, Response } from 'express';
 import { BasickTokenGuard } from './guard/basic-token.guard';
 import { RefreshTokenGuard } from './guard/bearer-token.guard';
+import { IsPublic } from 'src/common/decorator/is-public.decorator';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('token/refresh')
+  @IsPublic()
   async postTokenRefresh(@Headers('authorization') rawToken: string) {
     const token = await this.authService.checkedTokenFromHeader(rawToken, true);
 
@@ -29,6 +31,7 @@ export class AuthController {
   }
 
   @Post('token/access')
+  @IsPublic()
   @UseGuards(RefreshTokenGuard)
   async createTokenAccess(@Headers('authorization') rawToken: string) {
     const token = await this.authService.checkedTokenFromHeader(rawToken, true);
@@ -41,6 +44,7 @@ export class AuthController {
   }
 
   @Post('login/email')
+  @IsPublic()
   @UseGuards(BasickTokenGuard)
   async loginEmail(@Headers('authorization') rawToken: string) {
     const token = await this.authService.checkedTokenFromHeader(
@@ -53,6 +57,7 @@ export class AuthController {
   }
 
   @Post('register/email')
+  @IsPublic()
   registerEmail(@Body() registerUserInput: RegisterUserInput) {
     return this.authService.registerWithEmail(registerUserInput);
   }

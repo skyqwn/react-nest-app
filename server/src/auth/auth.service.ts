@@ -93,7 +93,7 @@ export class AuthService {
       console.log(error);
     }
   }
-
+  //
   decodeBasicToken(base64String: string) {
     const decoded = Buffer.from(base64String, 'base64').toString('utf8');
 

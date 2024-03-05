@@ -17,6 +17,7 @@ export class UsersModel extends BaseModel {
 
   @Column()
   @IsString()
+  @Exclude({ toPlainOnly: true })
   password: string;
 
   @Column({ type: 'enum', enum: RolesEnum, default: RolesEnum.USER })
