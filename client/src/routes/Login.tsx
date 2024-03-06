@@ -51,7 +51,7 @@ const Login = () => {
           } = res;
           if (ok) {
             const { accessToken, refreshToken } = token;
-            onSignin({ accessToken, refreshToken });
+            onSignin();
             toast.success("로그인 성공");
             navigate(from);
           } else if (!ok) {

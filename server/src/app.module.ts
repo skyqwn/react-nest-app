@@ -46,7 +46,7 @@ import { AccessTokenGuard } from './auth/guard/bearer-token.guard';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: [PostsModel, UsersModel],
-      synchronize: true,
+      synchronize: process.env.NODE_ENV !== 'prod',
     }),
     PostsModule,
     CommonModule,

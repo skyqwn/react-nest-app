@@ -1,8 +1,6 @@
 import axios from "axios";
-import { getCookie, removeCookie, setCookie } from "../libs/cookie";
+import { getCookie, removeCookie } from "../libs/cookie";
 import toast from "react-hot-toast";
-import { useContext } from "react";
-import { UserContext } from "../context/UserContext";
 
 export const instance = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
@@ -11,13 +9,13 @@ export const instance = axios.create({
 
 instance.interceptors.request.use(
   function (config) {
-    let token: string | null = null;
+    const token = getCookie("accessToken");
 
-    if (config.url === "/auth/token/access") {
-      token = getCookie("refreshToken");
-    } else {
-      token = getCookie("accessToken");
-    }
+    // if (config.url === "/auth/token/access") {
+    //   token = getCookie("refreshToken");
+    // } else {
+    //   token = ;
+    // }
 
     // 토큰이 있으면 요청 헤더에 추가한다.
     if (token) {
@@ -56,7 +54,7 @@ instance.interceptors.response.use(
       // const result = await instance.post("/auth/token/access");
       // console.log(result);
       // toast.error("토큰이 만료되었습니다 다시 로그인해주세요.");
-      removeCookie("accessToken");
+      // removeCookie("accessToken");
       console.log(error);
     }
 
