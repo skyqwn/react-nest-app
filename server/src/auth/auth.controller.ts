@@ -46,7 +46,8 @@ export class AuthController {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
-      throw new UnauthorizedException('토큰이 없습니다.');
+      // res.redirect('http://localhost:3000/login');
+      throw new UnauthorizedException('리프레시 토큰이 만료되었습니다.');
     }
 
     // const token = await this.authService.checkedTokenFromHeader(rawToken, true);

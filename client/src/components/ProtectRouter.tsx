@@ -7,8 +7,12 @@ import { getCookie } from "../libs/cookie";
 const ProtectRouter = ({ children }: React.PropsWithChildren) => {
   const location = useLocation();
   let from = (location.state?.from as string) || "/";
-  const { auth } = useContext(UserContext) as any;
+  const { auth, loading } = useContext(UserContext) as any;
   const refreshToken = getCookie("refreshToken");
+
+  if (loading) {
+    return <>Loading...</>;
+  }
 
   if (!auth || !refreshToken) {
     return <Navigate to={"/login"} state={{ from }} />;

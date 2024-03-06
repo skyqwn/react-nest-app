@@ -5,7 +5,7 @@ import React, {
   useState,
 } from "react";
 
-import { removeCookie } from "../libs/cookie";
+import { getCookie, removeCookie } from "../libs/cookie";
 import { instance } from "../api/apiconfig";
 
 export const UserContext = createContext({});
