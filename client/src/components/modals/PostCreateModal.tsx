@@ -33,8 +33,18 @@ const PostCreateModal = () => {
 
   const createPost = async (post: CreatePostProps) =>
     await instance.post("/posts", post);
+  const randomPost = async (post: CreatePostProps) =>
+    await instance.post("/posts/random", post);
 
   const { mutate, isPending } = useMutation({
+    mutationFn: createPost,
+    onSuccess: () => {
+      toast.success("생성성공");
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      onClose();
+    },
+  });
+  const { mutate: randomMutate, isPending: randomPending } = useMutation({
     mutationFn: createPost,
     onSuccess: () => {
       toast.success("생성성공");
@@ -56,17 +66,19 @@ const PostCreateModal = () => {
   );
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      label="커뮤니티 글쓰기"
-      actionLabel="제출"
-      onAction={handleSubmit(onValid)}
-      body={body}
-      secondActionLabel="취소"
-      secondAction={onClose}
-      disabled={isPending}
-    />
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        label="커뮤니티 글쓰기"
+        actionLabel="제출"
+        onAction={handleSubmit(onValid)}
+        body={body}
+        secondActionLabel="취소"
+        secondAction={onClose}
+        disabled={isPending}
+      />
+    </>
   );
 };
 

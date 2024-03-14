@@ -36,6 +36,8 @@ import { AccessTokenGuard } from './auth/guard/bearer-token.guard';
         DB_NAME: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         HASH_ROUNDS: Joi.number().required(),
+        PROTOCOL: Joi.string().required(),
+        HOST: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({

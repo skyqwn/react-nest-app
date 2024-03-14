@@ -6,14 +6,16 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostInput } from './dtos/create-posts.dto';
 import { AuthUser } from 'src/users/decorator/auth-user.decorator';
-import { AccessTokenGuard } from 'src/auth/guard/bearer-token.guard';
 import { UpdatePostInput } from './dtos/update-posts.dto';
 import { IsPublic } from 'src/common/decorator/is-public.decorator';
+import { PaginatePostsDto } from './dtos/paginate-post.dto';
+import { UsersModel } from 'src/users/entities/users.entity';
 
 @Controller('posts')
 export class PostsController {
@@ -21,8 +23,13 @@ export class PostsController {
 
   @Get()
   @IsPublic()
-  getPosts() {
-    return this.postsService.getAllPosts();
+  getPosts(@Query() query: PaginatePostsDto) {
+    return this.postsService.paginatePosts(query);
+  }
+
+  @Post('random')
+  async postPostsRandom(@AuthUser() user: UsersModel) {
+    await this.postsService.generatePosts(user.id);
   }
 
   @Get(':id')
@@ -36,7 +43,7 @@ export class PostsController {
     @AuthUser('id') userId: number,
     @Body() createPostInput: CreatePostInput,
   ) {
-    return this.postsService.createPost(createPostInput, userId);
+    return this.postsService.createPost(userId, createPostInput);
   }
 
   @Patch(':id')

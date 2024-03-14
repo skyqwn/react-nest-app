@@ -1,15 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostsModel } from './entities/posts.entity';
-import { Not, Repository } from 'typeorm';
+import { FindOptionsWhere, LessThan, MoreThan, Not, Repository } from 'typeorm';
 import { CreatePostInput } from './dtos/create-posts.dto';
 import { UpdatePostInput } from './dtos/update-posts.dto';
+import { PaginatePostsDto } from './dtos/paginate-post.dto';
+import { ConfigService } from '@nestjs/config';
+import { CommonService } from 'src/common/common.service';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(PostsModel)
     private readonly postsRepository: Repository<PostsModel>,
+    private readonly configService: ConfigService,
+    private readonly commonService: CommonService,
   ) {}
 
   async getAllPosts() {
@@ -18,6 +23,105 @@ export class PostsService {
         author: true,
       },
     });
+  }
+
+  async generatePosts(userId: number) {
+    for (let i = 0; i < 100; i++) {
+      await this.createPost(userId, {
+        title: `임의로 생성된 포스트 제목 ${i}`,
+        content: `임의로 생성된 포스트${i}`,
+      });
+    }
+  }
+
+  async paginatePosts(dto: PaginatePostsDto) {
+    return this.commonService.paginate(
+      dto,
+      this.postsRepository,
+      { relations: ['author'] },
+      'posts',
+    );
+    // if (dto.page) {
+    //   return this.pagePaginatePosts(dto);
+    // } else {
+    //   return this.cursorPaginatePosts(dto);
+    // }
+  }
+
+  async pagePaginatePosts(dto: PaginatePostsDto) {
+    const [posts, count] = await this.postsRepository.findAndCount({
+      skip: dto.take * (dto.page - 1),
+      take: dto.take,
+      order: {
+        createdAt: dto.order__createdAt,
+      },
+    });
+    return {
+      data: posts,
+      total: count,
+    };
+  }
+
+  async cursorPaginatePosts(dto: PaginatePostsDto) {
+    const where: FindOptionsWhere<PostsModel> = {};
+
+    if (dto.where__id__less_than) {
+      where.id = LessThan(dto.where__id__less_than);
+    } else if (dto.where__id__more_than) {
+      where.id = MoreThan(dto.where__id__more_than);
+    }
+
+    const posts = await this.postsRepository.find({
+      where,
+      order: {
+        createdAt: dto.order__createdAt,
+      },
+      take: dto.take,
+    });
+
+    //
+    const lastItem =
+      posts.length > 0 && posts.length === dto.take
+        ? posts[posts.length - 1]
+        : null;
+
+    const nextUrl =
+      lastItem &&
+      new URL(
+        `${this.configService.get('PROTOCOL')}://${this.configService.get('HOST')}/posts`,
+      );
+
+    if (nextUrl) {
+      for (const key of Object.keys(dto)) {
+        if (dto[key]) {
+          if (
+            key !== 'where__id__more_than' &&
+            key !== 'where__id__less_than'
+          ) {
+            nextUrl.searchParams.append(key, dto[key]);
+          }
+        }
+      }
+
+      let key = null;
+
+      if (dto.order__createdAt === 'ASC') {
+        key = 'where__id__more_than';
+      } else {
+        key = 'where__id__less_than';
+      }
+
+      nextUrl.searchParams.append(key, lastItem.id.toString());
+    }
+
+    return {
+      data: posts,
+      cursor: {
+        after: lastItem?.id ?? null,
+      },
+      count: posts.length,
+      next: nextUrl?.toString() ?? null,
+    };
   }
 
   async getPostId(id: number) {
@@ -43,7 +147,7 @@ export class PostsService {
     }
   }
 
-  async createPost(createPostInput: CreatePostInput, authorId: number) {
+  async createPost(authorId: number, createPostInput: CreatePostInput) {
     try {
       const post = this.postsRepository.create({
         author: {

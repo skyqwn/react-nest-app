@@ -9,6 +9,7 @@ import Profile from "./routes/Profile";
 import Community from "./routes/Community";
 import PostBlock from "./components/block/PostBlock";
 import CommunityDetail from "./routes/CommunityDetail";
+import Posts from "./routes/Posts";
 
 const Router = () => {
   return (
@@ -23,6 +24,7 @@ const Router = () => {
         }
       />
       <Route path="/register" element={<Register />} />
+      <Route path="/posts" element={<Posts />} />
       <Route
         path="/post"
         element={

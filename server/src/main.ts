@@ -9,17 +9,13 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       transformOptions: {
-        enableImplicitConversion: true,
+        enableImplicitConversion: true, // class-validator옵션을 보고 자동으로 변환하고 데코레이터 통과
       },
-      whitelist: true,
-      forbidNonWhitelisted: true,
+      whitelist: true, // 데코레이터에 적용이 안된 값들은 입력되지않고 삭제해버린다
+      forbidNonWhitelisted: true, // whitelist에대한 에러값들을 반환해준다.
     }),
   );
-  // app.enableCors({
-  //   origin: true,
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-  //   credentials: true,
-  // });
+
   app.enableCors({
     origin: ['http://localhost:3000'],
     credentials: true,
