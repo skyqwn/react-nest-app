@@ -8,17 +8,22 @@ interface UserState {
   };
   onSignin: () => void;
 }
-
 interface AuthState {
   isLogged: boolean;
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
   onLogin: () => void;
   onLogout: () => void;
 }
 
 export const authStore = create<AuthState>((set) => ({
   isLogged: false,
+  isOpen: false,
   onLogin: () => set({ isLogged: true }),
   onLogout: () => set({ isLogged: false }),
+  onOpen: () => set({ isOpen: true }),
+  onClose: () => set({ isOpen: false }),
 }));
 
 const userStroe = create<UserState>()((set) => ({

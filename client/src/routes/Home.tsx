@@ -6,6 +6,7 @@ import { instance } from "../api/apiconfig";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import LoginModal from "../components/modals/LoginModal";
 
 const Home = () => {
   const { onSignout, auth } = useContext(UserContext) as any;
@@ -13,9 +14,9 @@ const Home = () => {
   const navigate = useNavigate();
   return (
     <Container>
-      <h1>홈입니다</h1>
+      <LoginModal />
       <button
-        className="m-10"
+        className="mt-20"
         onClick={() => {
           onSignout();
           navigate("/");

@@ -18,8 +18,8 @@ const Button: React.FC<IButtonProps> = ({
       onClick={onAction}
       className={`text-lg mt-3 py-4 focus:outline-none text-white transition-colors ${
         canClick
-          ? "bg-emerald-600 hover:bg-emerald-700 "
-          : "bg-gray-300 pointer-events-none"
+          ? "bg-orange-600 hover:bg-orange-800 "
+          : "bg-orange-800 pointer-events-none"
       }`}
     >
       {loading ? "Loading..." : actionText}

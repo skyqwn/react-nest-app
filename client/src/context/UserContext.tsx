@@ -5,8 +5,9 @@ import React, {
   useState,
 } from "react";
 
-import { getCookie, removeCookie } from "../libs/cookie";
+import { removeCookie } from "../libs/cookie";
 import { instance } from "../api/apiconfig";
+import toast from "react-hot-toast";
 
 export const UserContext = createContext({});
 
@@ -32,7 +33,6 @@ export const UserContextProvider = ({ children }: PropsWithChildren) => {
 
   const onSignin = () => {
     setAuth(true);
-
     return;
   };
 
@@ -41,6 +41,7 @@ export const UserContextProvider = ({ children }: PropsWithChildren) => {
     removeCookie("accessToken", { maxAge: 0 });
     removeCookie("refreshToken", { maxAge: 0 });
     setAuth(false);
+    toast.success("로그아웃되었습니다.");
   };
 
   const value = React.useMemo(() => {
