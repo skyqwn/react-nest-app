@@ -3,6 +3,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { AiOutlineClose } from "react-icons/ai";
 import { AnimatePresence, motion } from "framer-motion";
 import { Buffer } from "buffer";
+import { FcGoogle } from "react-icons/fc";
 
 import { Input } from "../Input";
 import { instance } from "../../api/apiconfig";
@@ -11,7 +12,7 @@ import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
 import Button from "../Button";
 import { useContext, useState } from "react";
 import { UserContext } from "../../context/UserContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const LoginModal = () => {
   const {
@@ -104,6 +105,14 @@ const LoginModal = () => {
         <span className="text-blue-400">개인 정보 보호</span>
         정책을 이해했음을 인정합니다.
       </span>
+
+      <Link to={"http://localhost:4000/auth/google"}>
+        <div className="w-full h-10 flex items-center justify-center border-2 rounded-2xl gap-2">
+          <FcGoogle className="text-3xl" />
+          <span className="font-semibold">구글로그인</span>
+        </div>
+      </Link>
+
       <div className="relative">
         <div className="absolute w-full border-t border-gray-300" />
         <div className="relative -top-3 text-center ">

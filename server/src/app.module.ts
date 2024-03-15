@@ -38,6 +38,9 @@ import { AccessTokenGuard } from './auth/guard/bearer-token.guard';
         HASH_ROUNDS: Joi.number().required(),
         PROTOCOL: Joi.string().required(),
         HOST: Joi.string().required(),
+        GOOGLE_CLIENT_ID: Joi.string().required(),
+        GOOGLE_SECRET: Joi.string().required(),
+        GOOGLE_OAUTH_REDIRECT_URL: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({

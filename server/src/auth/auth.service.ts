@@ -8,6 +8,8 @@ import { UsersModel } from 'src/users/entities/users.entity';
 import { RegisterUserInput } from './dtos/register-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { GoogleUser } from './auth.controller';
+import { ProviderEnum } from 'src/users/constant/roles.constant';
 
 @Injectable()
 export class AuthService {
@@ -157,6 +159,49 @@ export class AuthService {
       return {
         ok: false,
         error: '로그인에 실패하였습니다.',
+      };
+    }
+  }
+
+  async loginWithGoogle(user: GoogleUser) {
+    const { email, displayName: nickname } = user;
+    //구글 유저가 이미 있는경우
+    // 구글 유저가 아니어서 회원가입
+    const existUser = await this.userService.getUserByEmail(email);
+
+    if (!existUser) {
+      const newUser = await this.userService.createUser({
+        email,
+        nickname,
+        provider: ProviderEnum.GOOGLE,
+      });
+
+      const { user: googleUser } = newUser;
+
+      const accessToken = this.signToken(googleUser.id, false);
+      const refreshToken = this.signToken(googleUser.id, true);
+
+      const token = {
+        accessToken,
+        refreshToken,
+      };
+
+      return {
+        ok: true,
+        token,
+      };
+    } else if (existUser) {
+      const accessToken = this.signToken(existUser.id, false);
+      const refreshToken = this.signToken(existUser.id, true);
+
+      const token = {
+        accessToken,
+        refreshToken,
+      };
+
+      return {
+        ok: true,
+        token,
       };
     }
   }

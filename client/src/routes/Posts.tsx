@@ -1,8 +1,8 @@
 import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
+import InfiniteScroll from "react-infinite-scroller";
+
 import { instance } from "../api/apiconfig";
 import PostBlock from "../components/block/PostBlock";
-import InfiniteScroll from "react-infinite-scroller";
-import { useState } from "react";
 
 export interface IAuhor {
   id: number;

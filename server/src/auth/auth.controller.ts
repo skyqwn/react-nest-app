@@ -1,14 +1,17 @@
 import {
+  BadRequestException,
   Body,
   Controller,
+  Get,
   Headers,
+  HttpStatus,
   Post,
   Req,
   Res,
   UnauthorizedException,
-  UseFilters,
   UseGuards,
 } from '@nestjs/common';
+
 import { AuthService } from './auth.service';
 import { RegisterUserInput } from './dtos/register-user.dto';
 import { Request, Response } from 'express';
@@ -16,11 +19,23 @@ import { BasickTokenGuard } from './guard/basic-token.guard';
 import { RefreshTokenGuard } from './guard/bearer-token.guard';
 import { IsPublic } from 'src/common/decorator/is-public.decorator';
 import { ConfigService } from '@nestjs/config';
+import { UsersService } from 'src/users/users.service';
+import { GoogleOauthGuard } from './guard/google-oauth.guard';
+
+export interface GoogleUser {
+  provider: string;
+  id: string;
+  email: string;
+  name: string;
+  picture: string;
+  displayName: string;
+}
+
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly configService: ConfigService,
+    private readonly userService: UsersService,
   ) {}
 
   @Post('token/refresh')
@@ -114,5 +129,37 @@ export class AuthController {
   @Post('/logout')
   async logout() {
     return await this.logout();
+  }
+
+  @Get('google')
+  @IsPublic()
+  @UseGuards(GoogleOauthGuard)
+  async loginGoogle(@Req() req: Request, @Res() res: Response) {}
+
+  @Get('google/callback')
+  @IsPublic()
+  @UseGuards(GoogleOauthGuard)
+  async googleAuthCallback(
+    @Req() req: Request & { user: GoogleUser },
+    @Res() res: Response,
+  ) {
+    const googleUser = req.user;
+
+    const {
+      token: { accessToken, refreshToken },
+    } = await this.authService.loginWithGoogle(googleUser);
+
+    res.cookie('refreshToken', refreshToken, {
+      secure: process.env.NODE_ENV === 'prod',
+      httpOnly: process.env.NODE_ENV === 'prod',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+    res.cookie('accessToken', accessToken, {
+      secure: process.env.NODE_ENV === 'prod',
+      httpOnly: process.env.NODE_ENV === 'prod',
+      maxAge: 1000 * 60 * 20,
+    });
+
+    res.redirect('http://localhost:3000');
   }
 }
