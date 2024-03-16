@@ -11,7 +11,13 @@ export class UsersService {
     private readonly usersRepository: Repository<UsersModel>,
   ) {}
 
-  async createUser({ email, nickname, password }: CreateUserInput) {
+  async createUser({
+    email,
+    nickname,
+    password,
+    avatar,
+    provider,
+  }: CreateUserInput) {
     try {
       const emailExists = await this.usersRepository.exists({
         where: {
@@ -40,7 +46,13 @@ export class UsersService {
       }
 
       const newUser = await this.usersRepository.save(
-        this.usersRepository.create({ email, nickname, password }),
+        this.usersRepository.create({
+          email,
+          nickname,
+          password,
+          avatar,
+          provider,
+        }),
       );
 
       return {

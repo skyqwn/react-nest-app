@@ -8,6 +8,7 @@ interface UserAvatarProps {
 
 const UserAvatar = ({ big }: UserAvatarProps) => {
   const { user } = useAuthState();
+  console.log(user);
   if (!user) return <h3>유저가 존재하지 않음</h3>;
   return (
     <img

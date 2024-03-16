@@ -22,9 +22,10 @@ import { UsersService } from 'src/users/users.service';
 import { GoogleOauthGuard } from './guard/google-oauth.guard';
 import { AuthUser } from 'src/users/decorator/auth-user.decorator';
 import { UsersModel } from 'src/users/entities/users.entity';
+import { ProviderEnum } from 'src/users/constant/roles.constant';
 
 export interface GoogleUser {
-  provider: string;
+  provider: ProviderEnum;
   id: string;
   email: string;
   name: string;
@@ -147,17 +148,22 @@ export class AuthController {
   @Get('google')
   @IsPublic()
   @UseGuards(GoogleOauthGuard)
-  async loginGoogle(@Req() req: Request, @Res() res: Response) {}
+  async loginGoogle(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {}
 
   @Get('google/callback')
   @IsPublic()
   @UseGuards(GoogleOauthGuard)
   async googleAuthCallback(
     @Req() req: Request & { user: GoogleUser },
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
+    console.log(req.user);
     const googleUser = req.user;
 
+    console.log(googleUser);
     const {
       token: { accessToken, refreshToken },
     } = await this.authService.loginWithGoogle(googleUser);
@@ -176,10 +182,12 @@ export class AuthController {
     });
 
     res.redirect('http://localhost:3000');
+    res.end();
   }
 
   @Get('me')
-  async me(@AuthUser() user: UsersModel) {
+  async me(@Req() req: Request & { user: UsersModel }) {
+    const user = req.user;
     return this.authService.me(user);
   }
 }

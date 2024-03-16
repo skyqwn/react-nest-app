@@ -156,7 +156,7 @@ export class AuthService {
   }
 
   async loginWithGoogle(user: GoogleUser) {
-    const { email, displayName: nickname } = user;
+    const { email, displayName: nickname, picture, provider } = user;
     //구글 유저가 이미 있는경우
     // 구글 유저가 아니어서 회원가입
     const existUser = await this.userService.getUserByEmail(email);
@@ -165,7 +165,8 @@ export class AuthService {
       const newUser = await this.userService.createUser({
         email,
         nickname,
-        provider: ProviderEnum.GOOGLE,
+        provider,
+        avatar: picture,
       });
 
       const { user: googleUser } = newUser;
@@ -181,6 +182,7 @@ export class AuthService {
       return {
         ok: true,
         token,
+        user: existUser,
       };
     } else if (existUser) {
       const accessToken = this.signToken(existUser.id, false);
@@ -194,6 +196,7 @@ export class AuthService {
       return {
         ok: true,
         token,
+        user: existUser,
       };
     }
   }

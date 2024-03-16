@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loading: true,
   });
 
+  console.log(state);
   const dispatch = (type: string, payload?: any) => {
     defaultDispatch({ type, payload });
   };
