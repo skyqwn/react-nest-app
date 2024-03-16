@@ -9,6 +9,7 @@ import { CookiesProvider } from "react-cookie";
 import { HelmetProvider } from "react-helmet-async";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { UserContextProvider } from "./context/UserContext";
+import { AuthProvider } from "./context/AuthContext";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,7 +29,8 @@ const root = ReactDOM.createRoot(
 root.render(
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
-      <UserContextProvider>
+      <AuthProvider>
+        {/* <UserContextProvider> */}
         <CookiesProvider>
           <BrowserRouter>
             <App />
@@ -37,7 +39,8 @@ root.render(
             />
           </BrowserRouter>
         </CookiesProvider>
-      </UserContextProvider>
+        {/* </UserContextProvider> */}
+      </AuthProvider>
     </QueryClientProvider>
   </HelmetProvider>
 );

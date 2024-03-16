@@ -7,12 +7,13 @@ import { FcGoogle } from "react-icons/fc";
 
 import { Input } from "../Input";
 import { instance } from "../../api/apiconfig";
-import { authStore, useSignupModal } from "../../store/AuthStore";
+import { authStore } from "../../store/AuthStore";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
 import Button from "../Button";
 import { useContext, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuthDispatch } from "../../context/AuthContext";
 
 const LoginModal = () => {
   const {
@@ -31,6 +32,7 @@ const LoginModal = () => {
   const [loggedIn, setLoggedIn] = useState(true);
   const { auth, onSignin } = useContext(UserContext) as any;
   const { isOpen, onClose } = authStore();
+  const dispatch = useAuthDispatch();
 
   let from = (location.state?.from as string) || "/";
 
@@ -48,16 +50,22 @@ const LoginModal = () => {
       };
 
       try {
-        instance
+        // const res = await instance.post(
+        //   "/auth/login/email",
+        //   encodedData,
+        //   axiosConfig
+        // );
+        // console.log(res.data);
+        await instance
           .post("/auth/login/email", encodedData, axiosConfig)
           .then((res) => {
             const {
-              data: { ok, token, error },
+              data: { ok, user, error },
             } = res;
             if (ok) {
               onSignin();
+              dispatch("LOGIN", user);
               toast.success("로그인 성공");
-              navigate(from);
               onClose();
               reset();
             } else if (!ok) {

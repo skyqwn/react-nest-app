@@ -111,7 +111,10 @@ export class AuthService {
     };
   }
 
-  async logout() {}
+  async logout() {
+    try {
+    } catch (error) {}
+  }
 
   async loginWithEmail(user: Pick<UsersModel, 'email' | 'password'>) {
     try {
@@ -152,6 +155,7 @@ export class AuthService {
 
       return {
         ok: true,
+        user: existUser,
         token,
       };
     } catch (error) {
@@ -315,5 +319,9 @@ export class AuthService {
       },
       isRefreshToken,
     );
+  }
+
+  me(user: UsersModel) {
+    return user;
   }
 }

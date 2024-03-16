@@ -18,9 +18,10 @@ import { Request, Response } from 'express';
 import { BasickTokenGuard } from './guard/basic-token.guard';
 import { RefreshTokenGuard } from './guard/bearer-token.guard';
 import { IsPublic } from 'src/common/decorator/is-public.decorator';
-import { ConfigService } from '@nestjs/config';
 import { UsersService } from 'src/users/users.service';
 import { GoogleOauthGuard } from './guard/google-oauth.guard';
+import { AuthUser } from 'src/users/decorator/auth-user.decorator';
+import { UsersModel } from 'src/users/entities/users.entity';
 
 export interface GoogleUser {
   provider: string;
@@ -65,20 +66,27 @@ export class AuthController {
       throw new UnauthorizedException('리프레시 토큰이 만료되었습니다.');
     }
 
-    // const token = await this.authService.checkedTokenFromHeader(rawToken, true);
+    const rawToken = await this.authService.checkedTokenFromHeader(
+      refreshToken,
+      true,
+    );
 
-    const newAccessToken = this.authService.rotateToken(refreshToken, false);
-    const newRefreshToken = this.authService.rotateToken(refreshToken, true);
+    const newAccessToken = this.authService.rotateToken(rawToken, false);
+    console.log(newAccessToken);
+    const newRefreshToken = this.authService.rotateToken(rawToken, true);
+
+    res.cookie('accessToken', newAccessToken, {
+      secure: process.env.NODE_ENV === 'prod',
+      httpOnly: process.env.NODE_ENV === 'prod',
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 20,
+    });
 
     res.cookie('refreshToken', newRefreshToken, {
       secure: process.env.NODE_ENV === 'prod',
       httpOnly: process.env.NODE_ENV === 'prod',
+      sameSite: 'strict',
       maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
-    res.cookie('accessToken', newRefreshToken, {
-      secure: process.env.NODE_ENV === 'prod',
-      httpOnly: process.env.NODE_ENV === 'prod',
-      maxAge: 1000 * 60 * 20,
     });
 
     return {
@@ -106,15 +114,18 @@ export class AuthController {
       token: { accessToken, refreshToken },
     } = result;
 
-    res.cookie('refreshToken', refreshToken, {
-      secure: process.env.NODE_ENV === 'prod',
-      httpOnly: process.env.NODE_ENV === 'prod',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
     res.cookie('accessToken', accessToken, {
       secure: process.env.NODE_ENV === 'prod',
       httpOnly: process.env.NODE_ENV === 'prod',
+      sameSite: 'strict',
       maxAge: 1000 * 60 * 20,
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      secure: process.env.NODE_ENV === 'prod',
+      httpOnly: process.env.NODE_ENV === 'prod',
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
     return result;
@@ -126,9 +137,12 @@ export class AuthController {
     return this.authService.registerWithEmail(registerUserInput);
   }
 
-  @Post('/logout')
-  async logout() {
-    return await this.logout();
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+
+    return { ok: true };
   }
 
   @Get('google')
@@ -149,17 +163,24 @@ export class AuthController {
       token: { accessToken, refreshToken },
     } = await this.authService.loginWithGoogle(googleUser);
 
-    res.cookie('refreshToken', refreshToken, {
-      secure: process.env.NODE_ENV === 'prod',
-      httpOnly: process.env.NODE_ENV === 'prod',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
     res.cookie('accessToken', accessToken, {
       secure: process.env.NODE_ENV === 'prod',
       httpOnly: process.env.NODE_ENV === 'prod',
+      sameSite: 'strict',
       maxAge: 1000 * 60 * 20,
+    });
+    res.cookie('refreshToken', refreshToken, {
+      secure: process.env.NODE_ENV === 'prod',
+      httpOnly: process.env.NODE_ENV === 'prod',
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
     res.redirect('http://localhost:3000');
+  }
+
+  @Get('me')
+  async me(@AuthUser() user: UsersModel) {
+    return this.authService.me(user);
   }
 }

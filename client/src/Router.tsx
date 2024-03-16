@@ -23,7 +23,6 @@ const Router = () => {
           </ProtectRouter>
         }
       />
-      <Route path="/register" element={<Register />} />
       <Route path="/posts" element={<Posts />} />
       <Route
         path="/post"
@@ -34,8 +33,6 @@ const Router = () => {
         }
       />
       <Route path="/post/:id" element={<CommunityDetail />} />
-
-      <Route path="/login" element={<Login />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
