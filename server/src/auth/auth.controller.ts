@@ -62,18 +62,17 @@ export class AuthController {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
-      // res.redirect('http://localhost:3000/login');
       throw new UnauthorizedException('리프레시 토큰이 만료되었습니다.');
     }
 
-    const rawToken = await this.authService.checkedTokenFromHeader(
-      refreshToken,
-      true,
-    );
+    // const rawToken = await this.authService.checkedTokenFromHeader(
+    //   refreshToken,
+    //   true,
+    // );
 
-    const newAccessToken = this.authService.rotateToken(rawToken, false);
+    const newAccessToken = this.authService.rotateToken(refreshToken, false);
     console.log(newAccessToken);
-    const newRefreshToken = this.authService.rotateToken(rawToken, true);
+    // const newRefreshToken = this.authService.rotateToken(refreshToken, true);
 
     res.cookie('accessToken', newAccessToken, {
       secure: process.env.NODE_ENV === 'prod',
@@ -82,16 +81,16 @@ export class AuthController {
       maxAge: 1000 * 60 * 20,
     });
 
-    res.cookie('refreshToken', newRefreshToken, {
-      secure: process.env.NODE_ENV === 'prod',
-      httpOnly: process.env.NODE_ENV === 'prod',
-      sameSite: 'strict',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
+    // res.cookie('refreshToken', newRefreshToken, {
+    //   secure: process.env.NODE_ENV === 'prod',
+    //   httpOnly: process.env.NODE_ENV === 'prod',
+    //   sameSite: 'strict',
+    //   maxAge: 1000 * 60 * 60 * 24 * 7,
+    // });
 
     return {
       accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
+      // refreshToken: newRefreshToken,
     };
   }
 

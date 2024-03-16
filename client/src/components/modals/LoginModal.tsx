@@ -63,7 +63,7 @@ const LoginModal = () => {
               data: { ok, user, error },
             } = res;
             if (ok) {
-              onSignin();
+              // onSignin();
               dispatch("LOGIN", user);
               toast.success("로그인 성공");
               onClose();

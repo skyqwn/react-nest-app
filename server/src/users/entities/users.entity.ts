@@ -20,6 +20,10 @@ export class UsersModel extends BaseModel {
   @Exclude({ toPlainOnly: true })
   password?: string;
 
+  @Column({ default: '' })
+  @IsString()
+  avatar: string;
+
   @Column({ type: 'enum', enum: RolesEnum, default: RolesEnum.USER })
   @IsEnum(RolesEnum)
   role: RolesEnum;

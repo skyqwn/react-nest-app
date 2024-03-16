@@ -10,6 +10,7 @@ export interface User {
   email: string;
   role: string;
   provider: string;
+  avatar: string;
 }
 
 interface State {
@@ -64,6 +65,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const dispatch = (type: string, payload?: any) => {
     defaultDispatch({ type, payload });
   };
+  // useEffect(() => {
+  //   instance.post("/auth/token/access");
+  //   // .then((res) => {
+  //   //   setAuth(true);
+  //   // })
+  //   // .catch((err) => {
+  //   //   console.log(err.response);
+  //   //   // toast.error("토큰이 만료되었습니다 다시 로그인을 하시기 바랍니다.");
+  //   //   setAuth(false);
+  //   // })
+  //   // .finally(() => {
+  //   //   setLoading(false);
+  //   // });
+  // }, []);
 
   useEffect(() => {
     async function loadUser() {

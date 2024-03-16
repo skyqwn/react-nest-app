@@ -51,8 +51,8 @@ instance.interceptors.response.use(
 
     if (status === 401 && data.message === "토큰이 없습니다.") {
       // 모든 토큰이 없을경우
-      // const refreshToken = getCookie("refreshToken");
-      // const result = await instance.post("/auth/token/access");
+
+      await instance.post("/auth/token/access");
       // console.log(result);
       // toast.error("토큰이 만료되었습니다 다시 로그인해주세요.");
       // removeCookie("accessToken");

@@ -21,18 +21,6 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  signToken(userId: number, isRefreshToken: boolean) {
-    const payload = {
-      sub: userId,
-      type: isRefreshToken ? 'refresh' : 'access',
-    };
-
-    return this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_SECRET'),
-      expiresIn: isRefreshToken ? 3600 : 300,
-    });
-  }
-
   loginUser(userId: number) {
     return {
       accessToken: this.signToken(userId, false),
@@ -302,6 +290,18 @@ export class AuthService {
     }
   }
 
+  signToken(userId: number, isRefreshToken: boolean) {
+    const payload = {
+      sub: userId,
+      type: isRefreshToken ? 'refresh' : 'access',
+    };
+
+    return this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_SECRET'),
+      expiresIn: isRefreshToken ? 3600 : 300,
+    });
+  }
+
   rotateToken(token: string, isRefreshToken: boolean) {
     const decoded = this.jwtService.verify(token, {
       secret: this.configService.get<string>('JWT_SECRET'),
@@ -312,13 +312,8 @@ export class AuthService {
         ' Refresh Token으로만 토큰 재발급이 가능합니다.',
       );
     }
-
-    return this.signToken(
-      {
-        ...decoded,
-      },
-      isRefreshToken,
-    );
+    //{ sub: 11, type: 'refresh', iat: 1710564727, exp: 1710568327 }
+    return this.signToken(decoded.sub, isRefreshToken);
   }
 
   me(user: UsersModel) {
