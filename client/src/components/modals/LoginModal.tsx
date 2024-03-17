@@ -236,7 +236,8 @@ const LoginModal = ({ modalPosition }: LoginModalProps) => {
             initial={modalItemVariants.start}
             animate={modalItemVariants.end}
             exit={modalItemVariants.exit}
-            className="max-w-xl h-full  sm:h-3/4 bg-white rounded flex flex-col   "
+            className="max-w-xl h-full  sm:h-3/4 bg-white rounded flex flex-col"
+            onClick={(event) => event.stopPropagation()}
             // className="h-full  w-full sm:h-2/3 sm:w-1/3 md:w-2/3 lg:w-1/3 bg-white rounded flex flex-col "
           >
             {/* modal head */}
