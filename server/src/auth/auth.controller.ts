@@ -68,10 +68,10 @@ export class AuthController {
       throw new UnauthorizedException('리프레시 토큰이 만료되었습니다.');
     }
 
-    // const rawToken = await this.authService.checkedTokenFromHeader(
-    //   refreshToken,
-    //   true,
-    // );
+    const rawToken = await this.authService.checkedTokenFromHeader(
+      refreshToken,
+      true,
+    );
 
     const newAccessToken = this.authService.rotateToken(refreshToken, false);
     // const newRefreshToken = this.authService.rotateToken(refreshToken, true);

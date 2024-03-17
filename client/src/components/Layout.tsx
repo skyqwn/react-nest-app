@@ -30,14 +30,13 @@ const Layout = ({ children }: React.PropsWithChildren) => {
   };
   return (
     // container
-    // <div className="flex items-stretch mt-14">
-    <div className="flex items-stretch">
+    <div className="flex items-stretch mt-2 overflow-x-hidden">
       {/* leftSectionWrapper */}
       <header className="flex items-end flex-col flex-grow">
         {/* lefrSection */}
-        <section className="bg-orange-500 w-80 h-dvh">
+        <section className="w-80 h-dvh ">
           {/* leftSectionFixed */}
-          <div className="fixed w-80 h-dvh flex flex-col items-center ">
+          <div className="fixed w-80 h-dvh flex flex-col items-center border-r-2 ">
             <div>HOme</div>
             <nav className="flex-1">
               <ul>
@@ -99,9 +98,9 @@ const Layout = ({ children }: React.PropsWithChildren) => {
         </section>
       </header>
       <div className="flex items-start h-dvh flex-col flex-grow">
-        <div className=" h-full w-[990px] flex justify-between">
-          <main className="w-[600px] h-full">{children}</main>
-          <section className="bg-green-300 h-full w-[350px]">
+        <div className=" h-dvh w-[990px] flex justify-between">
+          <main className="w-[600px] h-full ">{children}</main>
+          <section className=" h-full w-[350px] border-l-2">
             <div className="max-w-full px-4">
               <div className="relative  flex items-center bg-gray-100 border rounded-3xl  hover:bg-white focus:outline-none">
                 <FaSearch className="ml-4 text-gray-400" />

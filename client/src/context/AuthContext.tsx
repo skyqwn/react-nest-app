@@ -29,6 +29,7 @@ const StateContext = createContext<State>({
   user: undefined,
   loading: true,
 });
+const acceesToken = getCookie("refreshToken");
 
 const DispatchContext = createContext<any>(null);
 const reducer = (state: State, { type, payload }: Action) => {
@@ -66,9 +67,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const dispatch = (type: string, payload?: any) => {
     defaultDispatch({ type, payload });
   };
-  useEffect(() => {
-    instance.post("/auth/token/access");
-  }, []);
+  // useEffect(() => {
+  //   instance.post("/auth/token/access");
+  // }, []);
 
   useEffect(() => {
     async function loadUser() {
@@ -82,7 +83,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     }
     loadUser();
-  }, []);
+  }, [acceesToken]);
 
   return (
     <DispatchContext.Provider value={dispatch}>

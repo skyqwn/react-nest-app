@@ -1,9 +1,9 @@
 import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
-import InfiniteScroll from "react-infinite-scroller";
 
 import { instance } from "../api/apiconfig";
 import PostBlock from "../components/block/PostBlock";
-import Layout from "../components/Layout";
+import { useInView } from "react-intersection-observer";
+import { Fragment, useEffect } from "react";
 
 export interface IAuhor {
   id: number;
@@ -60,26 +60,49 @@ const Posts = () => {
       return lastPage.cursor.after || undefined;
     },
   });
+  console.log(posts);
+  const { ref, inView } = useInView({
+    threshold: 0,
+    delay: 0,
+  });
+
+  useEffect(() => {
+    if (inView) {
+      !isFetching && hasNextPage && fetchNextPage();
+    }
+  }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
   return (
     <>
-      {isFetching && <div className="loading">Loading...</div>}
-      <InfiniteScroll
-        hasMore={hasNextPage}
-        loadMore={() => {
-          if (!isFetching) {
-            fetchNextPage();
-          }
-        }}
-      >
-        {posts?.pages.map((page) => {
-          return page.data.map((p: IPost) => {
-            return <PostBlock key={p.id} post={p} />;
-          });
-        })}
-      </InfiniteScroll>
+      {posts?.pages.map((page, i) => (
+        <Fragment key={i}>
+          {page?.data.map((p: IPost) => (
+            <PostBlock key={p.id} post={p} />
+          ))}
+        </Fragment>
+      ))}
+      <div ref={ref} style={{ height: 50 }} />
     </>
   );
+  // return (
+  //   <>
+  //     {isFetching && <div className="loading">Loading...</div>}
+  //     <InfiniteScroll
+  //       hasMore={hasNextPage}
+  //       loadMore={() => {
+  //         if (!isFetching) {
+  //           fetchNextPage();
+  //         }
+  //       }}
+  //     >
+  //       {posts?.pages.map((page) => {
+  //         return page.data.map((p: IPost) => {
+  //           return <PostBlock key={p.id} post={p} />;
+  //         });
+  //       })}
+  //     </InfiniteScroll>
+  //   </>
+  // );
 };
 
 export default Posts;

@@ -70,7 +70,9 @@ export class AuthService {
       const prefix = isBearer ? 'Bearer' : 'Basic';
 
       if (splitToken.length !== 2 || splitToken[0] !== prefix) {
-        throw new UnauthorizedException('잘못된 토큰입니다.');
+        // throw new UnauthorizedException('잘못된 토큰입니다.');
+        // 토큰이 없는 경우, 새로운 유저로 간주하고 처리
+        return null;
       }
 
       const token = splitToken[1];

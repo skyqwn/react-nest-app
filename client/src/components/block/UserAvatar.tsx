@@ -7,14 +7,13 @@ interface UserAvatarProps {
 }
 
 const UserAvatar = ({ big }: UserAvatarProps) => {
-  const { user } = useAuthState();
-  console.log(user);
-  if (!user) return <h3>유저가 존재하지 않음</h3>;
+  const { user, loading } = useAuthState();
+  if (!user) return <h3>Loding...</h3>;
   return (
     <img
       className={cls(
         "rounded-full  relative flex items-center justify-center ",
-        big ? "w-40 h-40" : "w-8 h-8"
+        big ? "size-40" : "size-8"
       )}
       src={user.avatar ? user.avatar : "imgs/user.png"}
     />

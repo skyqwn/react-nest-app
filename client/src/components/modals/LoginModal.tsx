@@ -10,16 +10,11 @@ import { instance } from "../../api/apiconfig";
 import { authStore } from "../../store/AuthStore";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
 import Button from "../Button";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../context/UserContext";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useAuthDispatch } from "../../context/AuthContext";
 
-interface LoginModalProps {
-  modalPosition?: { top: string; left: string; transform: string };
-}
-
-const LoginModal = ({ modalPosition }: LoginModalProps) => {
+const LoginModal = () => {
   const {
     handleSubmit,
     control,
@@ -54,8 +49,6 @@ const LoginModal = ({ modalPosition }: LoginModalProps) => {
   // 모달의 위치 계산
   // const top = `calc( ${scrollPosition}px)`;
   const top = scrollPosition + "px";
-
-  console.log(top);
 
   let from = (location.state?.from as string) || "/";
 

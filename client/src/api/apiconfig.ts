@@ -52,11 +52,12 @@ instance.interceptors.response.use(
     if (status === 401 && data.message === "토큰이 없습니다.") {
       // 모든 토큰이 없을경우
 
-      // instance.post("/auth/token/access");
+      instance.post("/auth/token/access");
       // console.log(result);
       // toast.error("토큰이 만료되었습니다 다시 로그인해주세요.");
       // removeCookie("accessToken");
       console.log(error);
+      return Promise.reject(error);
     }
     if (status === 401 && data.message === "리프레시 토큰이 만료되었습니다.") {
       // window.location.href = "/login";
@@ -66,6 +67,7 @@ instance.interceptors.response.use(
       // console.log(result);
       // toast.error("토큰이 만료되었습니다 다시 로그인해주세요.");
       // removeCookie("accessToken");
+      return Promise.reject(error);
       console.log(error);
     }
 
