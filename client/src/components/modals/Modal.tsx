@@ -28,13 +28,15 @@ const Modal = ({
 }: ModalProps) => {
   return (
     <AnimatePresence>
-      {isOpen ? ( // modal continaer
+      {isOpen ? (
+        // modal continaer
         <motion.div
           variants={modalContainerVariants}
           initial={modalContainerVariants.start}
           animate={modalContainerVariants.end}
           exit={modalContainerVariants.exit}
-          className="absolute top-0 left-0 w-screen h-screen z-10 bg-black/50 flex items-center justify-center overflow-hidden "
+          className="fixed inset-0 flex items-center justify-center z-50 "
+          // className="absolute top-0 left-0 w-screen h-screen z-10 bg-black/50 flex items-center justify-center overflow-hidden "
         >
           {/* modal body */}
           <motion.div

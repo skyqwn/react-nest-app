@@ -10,17 +10,17 @@ interface AuthState {
   onLogout: () => void;
 }
 
-interface SignupModalState {
-  isOpen: boolean;
-  onOpen: () => void;
-  onClose: () => void;
-}
+// interface SignupModalState {
+//   isOpen: boolean;
+//   onOpen: () => void;
+//   onClose: () => void;
+// }
 
-export const useSignupModal = create<SignupModalState>((set) => ({
-  isOpen: true,
-  onOpen: () => set({ isOpen: true }),
-  onClose: () => set({ isOpen: false }),
-}));
+// export const useSignupModal = create<SignupModalState>((set) => ({
+//   isOpen: true,
+//   onOpen: () => set({ isOpen: true }),
+//   onClose: () => set({ isOpen: false }),
+// }));
 
 export const authStore = create<AuthState>((set) => ({
   isLogged: false,

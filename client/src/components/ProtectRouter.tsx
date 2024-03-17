@@ -1,21 +1,25 @@
 import React, { useContext } from "react";
 import { authStore } from "../store/AuthStore";
-import { Navigate, useLocation } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { useLocation } from "react-router-dom";
 import { getCookie } from "../libs/cookie";
+import { useAuthState } from "../context/AuthContext";
 
 const ProtectRouter = ({ children }: React.PropsWithChildren) => {
   const location = useLocation();
   let from = (location.state?.from as string) || "/";
-  const { auth, loading } = useContext(UserContext) as any;
+  // const { auth, loading } = useContext(UserContext) as any;
+  const { loading, authenticated } = useAuthState();
   const refreshToken = getCookie("refreshToken");
+
+  const { onOpen } = authStore();
 
   if (loading) {
     return <>Loading...</>;
   }
 
-  if (!auth || !refreshToken) {
-    return <Navigate to={"/login"} state={{ from }} />;
+  if (!authenticated || !refreshToken) {
+    // onOpen();
+    <h1>error</h1>;
   }
   return <div>{children}</div>;
 };

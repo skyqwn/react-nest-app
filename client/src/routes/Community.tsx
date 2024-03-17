@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCreatePost } from "../store/PostStroe";
-import Container from "../components/Container";
 import PostCreateModal from "../components/modals/PostCreateModal";
 import { useQuery } from "@tanstack/react-query";
 import { instance } from "../api/apiconfig";
@@ -13,7 +12,6 @@ const Community = () => {
   const { onOpen } = useCreatePost();
 
   const fetchPosts = async () => {
-    // const res = await instance.get("/posts");
     const res = await instance.get(
       "/posts?order__createdAt=DESC&take=10&where__id__less_than=200"
     );
@@ -26,7 +24,7 @@ const Community = () => {
   });
   // console.log(posts.cursor.after);
   return (
-    <Container>
+    <>
       <PostCreateModal />
       <h1 className="w-12 bg-red-500" onClick={onOpen}>
         만들기
@@ -37,7 +35,7 @@ const Community = () => {
           <PostBlock post={post} />
         </div>
       ))}
-    </Container>
+    </>
   );
 };
 

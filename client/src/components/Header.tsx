@@ -14,10 +14,15 @@ const Header = () => {
   const dispatch = useAuthDispatch();
 
   const handleLogOut = () => {
-    instance.post("/auth/logout").then(() => {
-      dispatch("LOGOUT");
-      toast.success("로그아웃");
-    });
+    instance
+      .post("/auth/logout")
+      .then(() => {
+        dispatch("LOGOUT");
+        toast.success("로그아웃");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   if (loading) {
@@ -25,10 +30,10 @@ const Header = () => {
   }
 
   return (
-    <div className=" h-14  fixed inset-x-0 top-0 z-10 px-8 hover:border-gray-700 ">
+    <div className=" h-14  fixed inset-x-0 top-0 z-10 px-8 bg-white ">
       <div className="h-full flex items-center justify-between mx-auto">
         <Link to={"/"}>
-          <div>Home</div>
+          <div>Logo</div>
         </Link>
 
         <div className="max-w-full px-4">

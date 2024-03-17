@@ -3,6 +3,7 @@ import InfiniteScroll from "react-infinite-scroller";
 
 import { instance } from "../api/apiconfig";
 import PostBlock from "../components/block/PostBlock";
+import Layout from "../components/Layout";
 
 export interface IAuhor {
   id: number;
@@ -59,8 +60,6 @@ const Posts = () => {
       return lastPage.cursor.after || undefined;
     },
   });
-  console.log(posts);
-  console.log(hasNextPage);
 
   return (
     <>

@@ -10,12 +10,16 @@ import { instance } from "../../api/apiconfig";
 import { authStore } from "../../store/AuthStore";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
 import Button from "../Button";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthDispatch } from "../../context/AuthContext";
 
-const LoginModal = () => {
+interface LoginModalProps {
+  modalPosition?: { top: string; left: string; transform: string };
+}
+
+const LoginModal = ({ modalPosition }: LoginModalProps) => {
   const {
     handleSubmit,
     control,
@@ -27,12 +31,31 @@ const LoginModal = () => {
       password: "",
     },
   });
-  const navigate = useNavigate();
+
   const location = useLocation();
   const [loggedIn, setLoggedIn] = useState(true);
-  const { auth, onSignin } = useContext(UserContext) as any;
   const { isOpen, onClose } = authStore();
   const dispatch = useAuthDispatch();
+
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // 모달의 위치 계산
+  // const top = `calc( ${scrollPosition}px)`;
+  const top = scrollPosition + "px";
+
+  console.log(top);
 
   let from = (location.state?.from as string) || "/";
 
@@ -50,12 +73,6 @@ const LoginModal = () => {
       };
 
       try {
-        // const res = await instance.post(
-        //   "/auth/login/email",
-        //   encodedData,
-        //   axiosConfig
-        // );
-        // console.log(res.data);
         await instance
           .post("/auth/login/email", encodedData, axiosConfig)
           .then((res) => {
@@ -209,7 +226,9 @@ const LoginModal = () => {
           initial={modalContainerVariants.start}
           animate={modalContainerVariants.end}
           exit={modalContainerVariants.exit}
-          className="absolute top-0 left-0 w-screen h-screen z-10 bg-black/50 flex items-center justify-center overflow-hidden "
+          style={{ top }}
+          onClick={onClose}
+          className="absolute top-0 left-0 w-screen h-screen z-10 bg-black/50 flex items-center justify-center overflow-hidden"
         >
           {/* modal body */}
           <motion.div

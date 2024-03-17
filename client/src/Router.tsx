@@ -1,15 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 
 import NotFound from "./routes/NotFound";
-import Home from "./routes/Home";
-import Login from "./routes/Login";
-import Register from "./routes/Register";
 import ProtectRouter from "./components/ProtectRouter";
-import Profile from "./routes/Profile";
-import Community from "./routes/Community";
-import PostBlock from "./components/block/PostBlock";
 import CommunityDetail from "./routes/CommunityDetail";
 import Posts from "./routes/Posts";
+import Profile from "./routes/Profile";
+import Message from "./routes/Message";
+import Explore from "./routes/Explore";
+import { Home } from "./routes/Home";
 
 const Router = () => {
   return (
@@ -24,14 +22,17 @@ const Router = () => {
         }
       />
       <Route path="/posts" element={<Posts />} />
-      <Route
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/messages" element={<Message />} />
+      <Route path="/explore" element={<Explore />} />
+      {/* <Route
         path="/post"
         element={
           <ProtectRouter>
             <Community />
           </ProtectRouter>
         }
-      />
+      /> */}
       <Route path="/post/:id" element={<CommunityDetail />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

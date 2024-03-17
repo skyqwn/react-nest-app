@@ -62,6 +62,8 @@ export class AuthController {
   ) {
     const refreshToken = req.cookies.refreshToken;
 
+    console.log(refreshToken);
+
     if (!refreshToken) {
       throw new UnauthorizedException('리프레시 토큰이 만료되었습니다.');
     }
@@ -72,7 +74,6 @@ export class AuthController {
     // );
 
     const newAccessToken = this.authService.rotateToken(refreshToken, false);
-    console.log(newAccessToken);
     // const newRefreshToken = this.authService.rotateToken(refreshToken, true);
 
     res.cookie('accessToken', newAccessToken, {
@@ -160,10 +161,8 @@ export class AuthController {
     @Req() req: Request & { user: GoogleUser },
     @Res({ passthrough: true }) res: Response,
   ) {
-    console.log(req.user);
     const googleUser = req.user;
 
-    console.log(googleUser);
     const {
       token: { accessToken, refreshToken },
     } = await this.authService.loginWithGoogle(googleUser);
