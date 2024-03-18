@@ -6,6 +6,7 @@ import Posts from "./Posts";
 import UserAvatar from "../components/block/UserAvatar";
 import Layout from "../components/Layout";
 import { authStore } from "../store/AuthStore";
+import Layout2 from "../components/Layout2";
 
 export const Home = () => {
   const imageRef = useRef<HTMLInputElement>(null);
@@ -30,7 +31,7 @@ export const Home = () => {
   };
 
   return (
-    <Layout>
+    <Layout2>
       <div className="flex flex-col p-4">
         <div className="flex items-center mb-6 pb-4  border-b-[1px]">
           <div className="mr-4 w-10 ">
@@ -63,6 +64,6 @@ export const Home = () => {
         </div>
         <Posts />
       </div>
-    </Layout>
+    </Layout2>
   );
 };

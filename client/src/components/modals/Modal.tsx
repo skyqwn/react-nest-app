@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Button from "../Button";
+import Button from "../buttons/Button";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
 
 interface ModalProps {

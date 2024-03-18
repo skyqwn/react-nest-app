@@ -8,7 +8,7 @@ import LoginModal from "./components/modals/LoginModal";
 function App() {
   return (
     <div>
-      {/* <Header /> */}
+      <Header />
       <LoginModal />
       <Toaster position="top-center" />
       <Router />

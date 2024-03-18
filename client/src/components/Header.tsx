@@ -30,10 +30,12 @@ const Header = () => {
   }
 
   return (
-    <div className=" h-14  fixed inset-x-0 top-0 z-10 px-8 bg-white ">
+    <div className=" h-14  fixed inset-x-0 top-0 z-10 px-8 bg-white max-w-screen-xl mx-auto">
       <div className="h-full flex items-center justify-between mx-auto">
         <Link to={"/"}>
-          <div>Logo</div>
+          <div className="size-10  bg-orange-500 rounded-full flex items-center justify-center">
+            Logo
+          </div>
         </Link>
 
         <div className="max-w-full px-4">
@@ -46,6 +48,7 @@ const Header = () => {
             />
           </div>
         </div>
+
         <div className=" flex gap-5 items-center">
           <div>
             {!loading && authenticated ? (

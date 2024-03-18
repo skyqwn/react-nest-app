@@ -9,7 +9,7 @@ import { Input } from "../Input";
 import { instance } from "../../api/apiconfig";
 import { authStore } from "../../store/AuthStore";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
-import Button from "../Button";
+import Button from "../buttons/Button";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthDispatch } from "../../context/AuthContext";
