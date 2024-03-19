@@ -47,7 +47,6 @@ instance.interceptors.response.use(
       config,
       response: { status, data },
     } = error;
-    console.log(config);
 
     if (status === 401 && data.message === "토큰이 없습니다.") {
       // 모든 토큰이 없을경우

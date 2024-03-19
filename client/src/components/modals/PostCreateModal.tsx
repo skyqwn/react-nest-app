@@ -7,7 +7,7 @@ import { Input } from "../Input";
 import { useCreatePost } from "../../store/PostStroe";
 import TextArea from "../Inputs/TextArea";
 import { instance } from "../../api/apiconfig";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../..";
 
 const defaultValues = {
@@ -33,18 +33,8 @@ const PostCreateModal = () => {
 
   const createPost = async (post: CreatePostProps) =>
     await instance.post("/posts", post);
-  const randomPost = async (post: CreatePostProps) =>
-    await instance.post("/posts/random", post);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: createPost,
-    onSuccess: () => {
-      toast.success("생성성공");
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-      onClose();
-    },
-  });
-  const { mutate: randomMutate, isPending: randomPending } = useMutation({
     mutationFn: createPost,
     onSuccess: () => {
       toast.success("생성성공");

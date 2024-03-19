@@ -27,7 +27,6 @@ export interface IPost {
 
 type Props = { pageParam?: number };
 const fetchPosts = async ({ pageParam }: Props) => {
-  console.log(pageParam);
   const res = await instance.get(
     `/posts?order__createdAt=ASC&take=10&where__id__more_than=${pageParam}`
   );
@@ -60,7 +59,6 @@ const Posts = () => {
       return lastPage.cursor.after || undefined;
     },
   });
-  console.log(posts);
   const { ref, inView } = useInView({
     threshold: 0,
     delay: 0,

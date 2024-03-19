@@ -62,8 +62,6 @@ export class AuthController {
   ) {
     const refreshToken = req.cookies.refreshToken;
 
-    console.log(refreshToken);
-
     if (!refreshToken) {
       throw new UnauthorizedException('리프레시 토큰이 만료되었습니다.');
     }

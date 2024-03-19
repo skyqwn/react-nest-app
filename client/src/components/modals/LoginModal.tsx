@@ -94,7 +94,6 @@ const LoginModal = () => {
         instance
           .post("/auth/register/email", data)
           .then((res) => {
-            console.log(res);
             const { data } = res;
             if (data.ok) {
               toast.success("회원가입 성공!!");

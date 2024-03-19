@@ -11,13 +11,17 @@ export class PostsModel extends BaseModel {
   })
   author: UsersModel;
 
-  @Column()
+  @Column({ default: 'asdasd' })
   @IsString()
   title: string;
 
   @Column()
   @IsString()
   content: string;
+
+  @Column('text', { nullable: true, array: true })
+  @IsString()
+  images?: string[];
 
   @Column({ default: 0 })
   @IsNumber()

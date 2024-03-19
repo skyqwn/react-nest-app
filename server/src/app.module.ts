@@ -41,6 +41,10 @@ import { AccessTokenGuard } from './auth/guard/bearer-token.guard';
         GOOGLE_CLIENT_ID: Joi.string().required(),
         GOOGLE_SECRET: Joi.string().required(),
         GOOGLE_OAUTH_REDIRECT_URL: Joi.string().required(),
+        AWS_ACCESS_KEY: Joi.string().required(),
+        AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+        AWS_S3_REGION: Joi.string().required(),
+        AWS_BUCKET_NAME: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
