@@ -25,14 +25,14 @@ export class PostsService {
     });
   }
 
-  async generatePosts(userId: number) {
-    for (let i = 0; i < 100; i++) {
-      await this.createPost(userId, {
-        title: `임의로 생성된 포스트 제목 ${i}`,
-        content: `임의로 생성된 포스트${i}`,
-      });
-    }
-  }
+  // async generatePosts(userId: number) {
+  //   for (let i = 0; i < 100; i++) {
+  //     await this.createPost(userId, {
+  //       title: `임의로 생성된 포스트 제목 ${i}`,
+  //       content: `임의로 생성된 포스트${i}`,
+  //     });
+  //   }
+  // }
 
   async paginatePosts(dto: PaginatePostsDto) {
     return this.commonService.paginate(
@@ -147,13 +147,18 @@ export class PostsService {
     }
   }
 
-  async createPost(authorId: number, createPostInput: CreatePostInput) {
+  async createPost(
+    authorId: number,
+    createPostInput: CreatePostInput,
+    imageUrl: string[],
+  ) {
     try {
       const post = this.postsRepository.create({
         author: {
           id: authorId,
         },
         ...createPostInput,
+        images: imageUrl,
       });
 
       const newPost = await this.postsRepository.save(post);

@@ -9,10 +9,50 @@ import {
 import { BaseModel } from './entities/base.entity';
 import { FILTER_MAPPER } from './constant/filter-mapper.const';
 import { ConfigService } from '@nestjs/config';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { returnCurrentDate } from 'src/posts/util/currentDate';
+import sharp from 'sharp';
 
 @Injectable()
 export class CommonService {
-  constructor(private readonly configService: ConfigService) {}
+  private readonly s3Config: S3Client;
+
+  constructor(private readonly configService: ConfigService) {
+    this.s3Config = new S3Client({
+      region: process.env.AWS_S3_REGION,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      },
+    });
+    console.log(process.env.AWS_S3_REGION);
+  }
+
+  async fileUpload(image: Express.Multer.File) {
+    const objectName = `${returnCurrentDate() + image.originalname}`;
+
+    //이미지 사이즈 수정
+    const transfromImage = await this.sharpImage(image, 1280);
+
+    const input = {
+      Body: transfromImage,
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: objectName,
+    };
+    await this.s3Config.send(new PutObjectCommand(input));
+    const s3Domain = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com`;
+
+    return `${s3Domain}/${input.Key}`;
+  }
+
+  private async sharpImage(image: Express.Multer.File, size: number) {
+    const sharpImage = await sharp(image.buffer)
+      .resize(size)
+      .toFormat('webp')
+      .toBuffer();
+    return sharpImage;
+  }
+
   paginate<T extends BaseModel>(
     dto: BasePaginationDto,
     repository: Repository<T>,
