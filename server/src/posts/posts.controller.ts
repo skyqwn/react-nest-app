@@ -54,12 +54,10 @@ export class PostsController {
     await Promise.all(
       images.map(async (file) => {
         const url = await this.commonService.fileUpload(file);
-        console.log(url);
         imageUrl.push(url);
       }),
     );
-    console.log(imageUrl);
-    this.postsService.createPost(userId, createPostInput, imageUrl);
+    return this.postsService.createPost(userId, createPostInput, imageUrl);
   }
 
   @Patch(':id')

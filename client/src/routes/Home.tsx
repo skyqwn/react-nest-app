@@ -5,7 +5,7 @@ import CreatePosts from "../components/CreatePosts";
 export const Home = () => {
   return (
     <Layout2>
-      <div className="flex flex-col p-4">
+      <div className="flex flex-col p-4 w-full">
         <CreatePosts />
         <Posts />
       </div>

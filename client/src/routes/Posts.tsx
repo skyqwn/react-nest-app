@@ -23,6 +23,7 @@ export interface IPost {
   likeCount: string;
   commentCount: string;
   author: IAuhor;
+  images: string[];
 }
 
 type Props = { pageParam?: number };

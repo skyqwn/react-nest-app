@@ -48,7 +48,7 @@ const Layout2 = ({ children }: { children: React.ReactNode }) => {
           </Link>
         </div>
         {/* Center */}
-        <div className="flex flex-col p-4 max-w-screen-md mx-auto md:w-[900px] sm:w-[600px]">
+        <div className="flex flex-col p-2 max-w-screen-md mx-auto md:w-[900px] sm:w-[600px]">
           {children}
         </div>
         {/* Right */}

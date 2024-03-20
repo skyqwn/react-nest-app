@@ -75,9 +75,10 @@ const CreatePosts = () => {
   };
 
   return (
-    <div className="flex items-center mb-6 pb-4  border-b-[1px]">
-      <div className="mr-4 w-10 justify-start flex">
-        <UserAvatar />
+    <div className="flex mb-6 pb-4  border-b-[1px]">
+      <div className="mr-3 items-start flex h-full">
+        {/* <UserAvatar /> */}
+        <div className="size-10 rounded-full bg-orange-500" />
       </div>
       <div className="flex-1">
         <div>

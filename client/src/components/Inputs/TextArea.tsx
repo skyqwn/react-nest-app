@@ -30,7 +30,7 @@ const TextArea = ({
       <div
         onClick={() => ref.current?.focus()}
         className={cls(
-          "absolute origin-[0] font-bold left-4 text-xs scale-100 text-neutral-400 peer-placeholder-shown:scale-100 peer-focus:text-neutral-700 peer-focus:scale-105 cursor-text transition peer-disabled:cursor-not-allowed disabled:opacity-70",
+          "absolute origin-[0] font-bold  left-4 text-md scale-100 text-neutral-400 peer-placeholder-shown:scale-100 peer-focus:text-neutral-700 peer-focus:scale-105 cursor-text transition peer-disabled:cursor-not-allowed disabled:opacity-70",
           small ? "top-1" : "top-2 "
         )}
       >
