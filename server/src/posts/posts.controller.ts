@@ -44,7 +44,7 @@ export class PostsController {
   }
 
   @Post()
-  @UseInterceptors(FilesInterceptor('images', 4))
+  @UseInterceptors(FilesInterceptor('images', 10))
   async postPosts(
     @AuthUser('id') userId: number,
     @UploadedFiles() images: Express.Multer.File[],

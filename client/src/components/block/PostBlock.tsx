@@ -1,19 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { IPost } from "../../routes/Posts";
 import UserAvatar from "./UserAvatar";
 
 import { FaRegComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
+import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
+import Carousel from "../Carousel";
 
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 
 const PostBlock = ({ post }: { post: IPost }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === post.images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? post.images.length - 1 : prevIndex - 1
+    );
+  };
+
   return (
     <div className="h-[516px] border-b-2  last:border-b-0 py-4">
       <div className="flex gap-3 h-full ">
@@ -23,7 +40,7 @@ const PostBlock = ({ post }: { post: IPost }) => {
             <div className="size-10 bg-orange-500 rounded-full" />
           </Link>
         </div>
-        <div className=" flex-1 h-full">
+        <div className="flex-1 h-full">
           {/* 유지 닉네임 하고 글쓴시간 dayjs */}
           <div className="flex gap-2">
             <div>{post.author.nickname}</div>
@@ -34,16 +51,41 @@ const PostBlock = ({ post }: { post: IPost }) => {
           {/* 게시글 Content */}
           <div className="mb-2">{post.content}</div>
           {/* 게시글하고 사진들 */}
-          <div className="h-5/6">
-            {post.images.map((image) => (
-              <img
-                className="object-fill border w-full h-full border-neutral-300 rounded-lg"
-                src={image}
-              />
-            ))}
+          <div className="relative h-5/6 flex overflow-hidden bg-red-500 items-center">
+            {currentIndex !== 0 && (
+              <div
+                onClick={prevSlide}
+                className="absolute text-white text-4xl left-3 hover:bg-neutral-400 rounded-full cursor-pointer z-10"
+              >
+                <IoIosArrowBack />
+              </div>
+            )}
+            <div
+              className="w-full h-full flex transition-transform duration-300"
+              style={{
+                transform: `translateX(-${currentIndex * 100}%)`,
+              }}
+            >
+              {post.images.map((image, index) => (
+                <img
+                  key={index}
+                  className="object-fill border w-full h-full border-neutral-300 rounded-lg"
+                  src={image}
+                  alt={`Image ${index}`}
+                />
+              ))}
+            </div>
+            {currentIndex !== post.images.length - 1 && (
+              <div
+                onClick={nextSlide}
+                className="absolute text-white text-4xl right-3 hover:bg-neutral-400 rounded-full cursor-pointer"
+              >
+                <IoIosArrowForward />
+              </div>
+            )}
           </div>
           {/* 좋아요 버튼 댓글버튼 */}
-          <div className=" flex justify-around mt-2 mb-2">
+          <div className="flex justify-around mt-2 mb-2">
             <div className="flex items-center justify-center gap-2">
               <FaRegComment />
               <span>0</span>
@@ -55,13 +97,6 @@ const PostBlock = ({ post }: { post: IPost }) => {
           </div>
         </div>
       </div>
-      {/* <h1>{post.content}</h1>
-        <h3>{post.author.nickname}</h3>
-        <div className="flex flex-col">
-          {post.images.map((image) => (
-            <img src={image} />
-          ))}
-        </div> */}
     </div>
   );
 };

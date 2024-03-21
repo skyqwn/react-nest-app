@@ -23,6 +23,7 @@ const CreatePosts = () => {
     defaultValues: {
       content: "",
       images: [],
+      previews: [],
     },
   });
 
@@ -41,14 +42,29 @@ const CreatePosts = () => {
   });
 
   const watchFiles = watch("images");
+  const watchPreviews = watch("previews");
 
-  //   useEffect(() => {
-  //     const blobPreviews = watchFiles.map((file: File) =>
-  //       URL.createObjectURL(file)
-  //     );
+  console.log(watchPreviews);
 
-  //     setValue("images", blobPreviews);
-  //   }, [watchFiles]);
+  const deletePreview = (targetIndex: number) => {
+    const filterFiles = watchFiles.filter(
+      (__: any, index: number) => targetIndex !== index
+    );
+    setValue("files", filterFiles);
+
+    const filterPreviews = watchPreviews.filter(
+      (__: any, index: number) => targetIndex !== index
+    );
+    setValue("previews", filterPreviews);
+  };
+
+  useEffect(() => {
+    const blobPreviews = watchFiles.map((file: File) =>
+      URL.createObjectURL(file)
+    );
+
+    setValue("previews", blobPreviews);
+  }, [watchFiles]);
 
   useEffect(() => {
     if (isOpen) {
@@ -61,6 +77,7 @@ const CreatePosts = () => {
 
   const onValid: SubmitHandler<FieldValues> = (data) => {
     const fd = new FormData();
+    // TODO title없애야함!
     fd.append("title", "1");
     fd.append("content", data.content);
     console.log(data.images);
@@ -68,9 +85,7 @@ const CreatePosts = () => {
       console.log(image);
       fd.append("images", image);
     });
-    for (const [key, value] of fd.entries()) {
-      console.log(key, value);
-    }
+
     mutate(fd);
   };
 
@@ -80,7 +95,7 @@ const CreatePosts = () => {
         {/* <UserAvatar /> */}
         <div className="size-10 rounded-full bg-orange-500" />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 w-full overflow-x-scroll">
         <div>
           <TextArea
             control={control}
@@ -89,6 +104,28 @@ const CreatePosts = () => {
             name="content"
             small
           />
+          <div className="flex gap-3 w-full overflow-x-auto p-3">
+            {watchPreviews.map((preview: string, targetIndex: number) => {
+              return (
+                <div key={targetIndex} className="relative flex-shrink-0 ">
+                  <img
+                    src={preview}
+                    className="size-24 sm:size-32 rounded object-cover"
+                    alt={`Preview ${targetIndex}`}
+                  />
+                  <div
+                    onClick={(e) => {
+                      deletePreview(targetIndex);
+                      URL.revokeObjectURL(preview);
+                    }}
+                    className="absolute top-0 right-0 cursor-pointer text-xs"
+                  >
+                    ❌
+                  </div>
+                </div>
+              );
+            })}
+          </div>
           <div className="flex justify-between">
             <div className="cursor-pointer text-2xl">
               <ImageFileInput control={control} name="images" error={errors} />
