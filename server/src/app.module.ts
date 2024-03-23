@@ -20,6 +20,8 @@ import { LogMiddleware } from './middleware/log.middleware';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { RolesGuard } from './users/guard/roles.guard';
 import { AccessTokenGuard } from './auth/guard/bearer-token.guard';
+import { CommentsModule } from './posts/comments/comments.module';
+import { CommentsModel } from './posts/comments/entities/comments.entity';
 
 @Module({
   imports: [
@@ -54,13 +56,14 @@ import { AccessTokenGuard } from './auth/guard/bearer-token.guard';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [PostsModel, UsersModel],
+      entities: [PostsModel, UsersModel, CommentsModel],
       synchronize: process.env.NODE_ENV !== 'prod',
     }),
     PostsModule,
     CommonModule,
     UsersModule,
     AuthModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [

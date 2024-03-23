@@ -4,6 +4,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { ProviderEnum, RolesEnum } from '../constant/roles.constant';
 import { PostsModel } from 'src/posts/entities/posts.entity';
 import { Exclude } from 'class-transformer';
+import { CommentsModel } from 'src/posts/comments/entities/comments.entity';
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -35,4 +36,7 @@ export class UsersModel extends BaseModel {
   @OneToMany(() => PostsModel, (post) => post.author)
   posts: PostsModel[];
   //
+
+  @OneToMany(() => CommentsModel, (comment) => comment.author)
+  postComments: CommentsModel[];
 }

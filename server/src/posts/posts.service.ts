@@ -1,7 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostsModel } from './entities/posts.entity';
-import { FindOptionsWhere, LessThan, MoreThan, Not, Repository } from 'typeorm';
+import {
+  FindOptionsWhere,
+  LessThan,
+  MoreThan,
+  Not,
+  QueryRunner,
+  Repository,
+} from 'typeorm';
 import { CreatePostInput } from './dtos/create-posts.dto';
 import { UpdatePostInput } from './dtos/update-posts.dto';
 import { PaginatePostsDto } from './dtos/paginate-post.dto';
@@ -124,7 +131,7 @@ export class PostsService {
     };
   }
 
-  async getPostId(id: number) {
+  async getPostById(id: number) {
     try {
       const post = await this.postsRepository.findOne({
         where: {
@@ -147,13 +154,22 @@ export class PostsService {
     }
   }
 
+  getRepository(qr?: QueryRunner) {
+    return qr
+      ? qr.manager.getRepository<PostsModel>(PostsModel)
+      : this.postsRepository;
+  }
+
   async createPost(
     authorId: number,
     createPostInput: CreatePostInput,
     imageUrl: string[],
+    qr?: QueryRunner,
   ) {
+    const repository = this.getRepository(qr);
+
     try {
-      const post = this.postsRepository.create({
+      const post = repository.create({
         author: {
           id: authorId,
         },
@@ -161,7 +177,7 @@ export class PostsService {
         images: imageUrl,
       });
 
-      const newPost = await this.postsRepository.save(post);
+      const newPost = await repository.save(post);
       return newPost;
     } catch (error) {
       return {

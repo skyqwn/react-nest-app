@@ -18,12 +18,16 @@ import { IsPublic } from 'src/common/decorator/is-public.decorator';
 import { PaginatePostsDto } from './dtos/paginate-post.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CommonService } from 'src/common/common.service';
+import { DataSource, QueryRunner } from 'typeorm';
+import { TransactionInterceptor } from 'src/common/interceptor/transaction.intercepter';
+import { QueryRunnerDecorator } from 'src/common/decorator/query-runner.decorator';
 
 @Controller('posts')
 export class PostsController {
   constructor(
     private readonly postsService: PostsService,
     private readonly commonService: CommonService,
+    private readonly dataSource: DataSource,
   ) {}
 
   @Get()
@@ -40,15 +44,17 @@ export class PostsController {
   @Get(':id')
   @IsPublic()
   getPostById(@Param('id', ParseIntPipe) id: number) {
-    return this.postsService.getPostId(id);
+    return this.postsService.getPostById(id);
   }
 
   @Post()
+  @UseInterceptors(TransactionInterceptor)
   @UseInterceptors(FilesInterceptor('images', 10))
   async postPosts(
     @AuthUser('id') userId: number,
     @UploadedFiles() images: Express.Multer.File[],
     @Body() createPostInput: CreatePostInput,
+    @QueryRunnerDecorator() qr: QueryRunner,
   ) {
     const imageUrl: string[] = [];
     await Promise.all(
@@ -57,7 +63,13 @@ export class PostsController {
         imageUrl.push(url);
       }),
     );
-    return this.postsService.createPost(userId, createPostInput, imageUrl);
+
+    return await this.postsService.createPost(
+      userId,
+      createPostInput,
+      imageUrl,
+      qr,
+    );
   }
 
   @Patch(':id')
