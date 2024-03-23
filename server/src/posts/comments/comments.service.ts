@@ -4,8 +4,9 @@ import { CommentsModel } from './entities/comments.entity';
 import { QueryRunner, Repository } from 'typeorm';
 import { CommonService } from 'src/common/common.service';
 import { PaginateCommentsDto } from './dtos/paginate-comments.dto';
-import { CreateCommentDto } from './dtos/create-comment-dto';
+import { CreateCommentsDto } from './dtos/create-comments-dto';
 import { UsersModel } from 'src/users/entities/users.entity';
+import { UpdateCommentsDto } from './dtos/update-comments.dto';
 
 @Injectable()
 export class CommentsService {
@@ -68,7 +69,11 @@ export class CommentsService {
     return comment;
   }
 
-  createComment(dto: CreateCommentDto, postId: number, author: UsersModel) {
+  async createComment(
+    dto: CreateCommentsDto,
+    postId: number,
+    author: UsersModel,
+  ) {
     return this.commentsRepository.save({
       ...dto,
       post: {
@@ -76,5 +81,45 @@ export class CommentsService {
       },
       author,
     });
+  }
+
+  async patchComment(dto: UpdateCommentsDto, commentId: number) {
+    const comment = this.commentsRepository.findOne({
+      where: {
+        id: commentId,
+      },
+    });
+
+    if (!comment) {
+      throw new BadRequestException(
+        `${commentId}에 해당하는 댓글이 존재하지 않습니다.`,
+      );
+    }
+
+    const prevComment = await this.commentsRepository.preload({
+      id: commentId,
+      ...dto,
+    });
+
+    const newComment = await this.commentsRepository.save(prevComment);
+
+    return newComment;
+  }
+
+  async deleteComment(commentId: number) {
+    const comment = this.commentsRepository.findOne({
+      where: {
+        id: commentId,
+      },
+    });
+    if (!comment) {
+      throw new BadRequestException(
+        `${commentId}에 해당하는 댓글이 존재하지 않습니다.`,
+      );
+    }
+
+    await this.commentsRepository.delete(commentId);
+
+    return commentId;
   }
 }

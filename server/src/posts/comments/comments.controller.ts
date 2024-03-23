@@ -1,20 +1,23 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { IsPublic } from 'src/common/decorator/is-public.decorator';
 import { PaginateCommentsDto } from './dtos/paginate-comments.dto';
-import { CreateCommentDto } from './dtos/create-comment-dto';
+import { CreateCommentsDto } from './dtos/create-comments-dto';
 import { AuthUser } from 'src/users/decorator/auth-user.decorator';
 import { UsersModel } from 'src/users/entities/users.entity';
 import { QueryRunnerDecorator } from 'src/common/decorator/query-runner.decorator';
 import { QueryRunner } from 'typeorm';
+import { UpdateCommentsDto } from './dtos/update-comments.dto';
 
 @Controller('posts/:postId/comments')
 export class CommentsController {
@@ -38,10 +41,25 @@ export class CommentsController {
   @Post()
   postComment(
     @Param('postId', ParseIntPipe) postId: number,
-    @Body() body: CreateCommentDto,
+    @Body() body: CreateCommentsDto,
     @AuthUser() user: UsersModel,
     // @QueryRunnerDecorator() qr: QueryRunner,
   ) {
     return this.commentsService.createComment(body, postId, user);
+  }
+
+  @Patch(':commentId')
+  @IsPublic()
+  patchComment(
+    @Param('commentId', ParseIntPipe) commentId: number,
+    @Body() body: UpdateCommentsDto,
+  ) {
+    return this.commentsService.patchComment(body, commentId);
+  }
+
+  @Delete(':commentId')
+  @IsPublic()
+  deleteComment(@Param('commentId', ParseIntPipe) commentId: number) {
+    return this.commentsService.deleteComment(commentId);
   }
 }
