@@ -16,5 +16,6 @@ import { CommonModule } from 'src/common/common.module';
   ],
   controllers: [PostsController],
   providers: [PostsService],
+  exports: [PostsService],
 })
 export class PostsModule {}

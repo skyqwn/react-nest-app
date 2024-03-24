@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
@@ -21,6 +22,7 @@ import { CommonService } from 'src/common/common.service';
 import { DataSource, QueryRunner } from 'typeorm';
 import { TransactionInterceptor } from 'src/common/interceptor/transaction.intercepter';
 import { QueryRunnerDecorator } from 'src/common/decorator/query-runner.decorator';
+import { IsPostMindOrAdminGuard } from './guard/is-post-mind-or-admin.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -72,9 +74,10 @@ export class PostsController {
     );
   }
 
-  @Patch(':id')
+  @Patch(':postId')
+  @UseGuards(IsPostMindOrAdminGuard)
   patchPost(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('postId', ParseIntPipe) id: number,
     @Body() updatePostInput: UpdatePostInput,
   ) {
     return this.postsService.updatePost(updatePostInput, id);

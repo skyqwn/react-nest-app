@@ -214,4 +214,36 @@ export class PostsService {
 
     return newPost;
   }
+
+  async deletePost(postId: number) {
+    const post = this.postsRepository.findOne({ where: { id: postId } });
+
+    if (!post) {
+      throw new NotFoundException();
+    }
+
+    await this.postsRepository.delete(postId);
+
+    return postId;
+  }
+
+  async checkPostExistsById(id: number) {
+    return this.postsRepository.exists({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async isPostMine(userId: number, postId: number) {
+    return this.postsRepository.exists({
+      where: {
+        id: postId,
+        author: { id: userId },
+      },
+      relations: {
+        author: true,
+      },
+    });
+  }
 }
