@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { IPost } from "../../routes/Posts";
-import UserAvatar from "./UserAvatar";
 
 import { FaRegComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
@@ -11,7 +10,6 @@ import { IoIosArrowForward } from "react-icons/io";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
-import Carousel from "../Carousel";
 
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
@@ -55,7 +53,7 @@ const PostBlock = ({ post }: { post: IPost }) => {
             {currentIndex !== 0 && (
               <div
                 onClick={prevSlide}
-                className="absolute text-white text-4xl left-3 hover:bg-neutral-400 rounded-full cursor-pointer z-10"
+                className="absolute text-white text-4xl left-3 bg-neutral-400 flex items-center justify-center hover:bg-neutral-400 rounded-full cursor-pointer z-10"
               >
                 <IoIosArrowBack />
               </div>
@@ -69,7 +67,7 @@ const PostBlock = ({ post }: { post: IPost }) => {
               {post.images.map((image, index) => (
                 <img
                   key={index}
-                  className="object-fill border w-full h-full border-neutral-300 rounded-lg"
+                  className="object-fill border w-full h-full border-neutral-300"
                   src={image}
                   alt={`Image ${index}`}
                 />
@@ -78,7 +76,7 @@ const PostBlock = ({ post }: { post: IPost }) => {
             {currentIndex !== post.images.length - 1 && (
               <div
                 onClick={nextSlide}
-                className="absolute text-white text-4xl right-3 hover:bg-neutral-400 rounded-full cursor-pointer"
+                className="absolute text-white text-4xl right-3 bg-neutral-400 flex items-center justify-center hover:bg-neutral-500 rounded-full cursor-pointer"
               >
                 <IoIosArrowForward />
               </div>
@@ -86,11 +84,11 @@ const PostBlock = ({ post }: { post: IPost }) => {
           </div>
           {/* 좋아요 버튼 댓글버튼 */}
           <div className="flex justify-around mt-2 mb-2">
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-2 hover:text-blue-500">
               <FaRegComment />
               <span>0</span>
             </div>
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-2 hover:text-red-500">
               <FaRegHeart />
               <span>0</span>
             </div>

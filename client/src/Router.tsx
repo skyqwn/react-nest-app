@@ -8,6 +8,7 @@ import Profile from "./routes/Profile";
 import Message from "./routes/Message";
 import Explore from "./routes/Explore";
 import { Home } from "./routes/Home";
+import PostDetail from "./routes/PostDetail";
 
 const Router = () => {
   return (
@@ -22,6 +23,7 @@ const Router = () => {
         }
       />
       <Route path="/posts" element={<Posts />} />
+      <Route path="/posts/:postId" element={<PostDetail />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/messages" element={<Message />} />
       <Route path="/explore" element={<Explore />} />

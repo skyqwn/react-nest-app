@@ -4,6 +4,7 @@ import { instance } from "../api/apiconfig";
 import PostBlock from "../components/block/PostBlock";
 import { useInView } from "react-intersection-observer";
 import { Fragment, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export interface IAuhor {
   id: number;
@@ -76,7 +77,9 @@ const Posts = () => {
       {posts?.pages.map((page, i) => (
         <Fragment key={i}>
           {page?.data.map((p: IPost) => (
-            <PostBlock key={p.id} post={p} />
+            <Link to={`/posts/${p.id}`}>
+              <PostBlock key={p.id} post={p} />
+            </Link>
           ))}
         </Fragment>
       ))}

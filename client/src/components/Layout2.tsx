@@ -28,9 +28,9 @@ const Layout2 = ({ children }: { children: React.ReactNode }) => {
         console.log(error);
       });
   };
+
   return (
     <div className="w-dvw h-dvh mt-14 px-8 max-w-screen-xl mx-auto">
-      <div className="h-[1px] bg-slate-200 rounded-lg" />
       <div className="md:flex ">
         {/* Left */}
         <div className="hidden lg:flex lg:flex-col lg:items-center lg:justify-start lg:gap-5 w-[220px] lg:py-2 lg:border-r-2">
