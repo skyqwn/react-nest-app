@@ -28,7 +28,6 @@ const CreatePosts = () => {
   });
 
   const createPost = async (data: FieldValues) => {
-    console.log(data);
     await instance.post("/posts", data);
   };
 
@@ -43,8 +42,6 @@ const CreatePosts = () => {
 
   const watchFiles = watch("images");
   const watchPreviews = watch("previews");
-
-  console.log(watchPreviews);
 
   const deletePreview = (targetIndex: number) => {
     const filterFiles = watchFiles.filter(
@@ -80,9 +77,7 @@ const CreatePosts = () => {
     // TODO title없애야함!
     fd.append("title", "1");
     fd.append("content", data.content);
-    console.log(data.images);
     data.images.map((image: File) => {
-      console.log(image);
       fd.append("images", image);
     });
 

@@ -6,10 +6,15 @@ import { FaRegComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
+import { IoCloseOutline } from "react-icons/io5";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
+import toast from "react-hot-toast";
+import { queryClient } from "../..";
+import { useMutation } from "@tanstack/react-query";
+import { instance } from "../../api/apiconfig";
 
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
@@ -17,17 +22,35 @@ dayjs.extend(relativeTime);
 const PostBlock = ({ post }: { post: IPost }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const nextSlide = () => {
+  const nextSlide = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
     setCurrentIndex((prevIndex) =>
       prevIndex === post.images.length - 1 ? 0 : prevIndex + 1
     );
   };
 
-  const prevSlide = () => {
+  const prevSlide = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? post.images.length - 1 : prevIndex - 1
     );
   };
+
+  const deletePost = async (postId: number) => {
+    if (window.confirm("정말 이 게시물을 삭제하시겠습니까?")) {
+      await instance.delete(`/posts/${post.id}`);
+      toast.success("삭제성공!");
+    }
+  };
+
+  const { mutate } = useMutation({
+    mutationFn: (postId: number) => deletePost(postId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["posts"],
+      });
+    },
+  });
 
   return (
     <div className="h-[516px] border-b-2  last:border-b-0 py-4">
@@ -40,10 +63,21 @@ const PostBlock = ({ post }: { post: IPost }) => {
         </div>
         <div className="flex-1 h-full">
           {/* 유지 닉네임 하고 글쓴시간 dayjs */}
-          <div className="flex gap-2">
-            <div>{post.author.nickname}</div>
-            <div className="text-neutral-400">
-              {dayjs(post.createdAt).fromNow()}
+          <div className="flex justify-between">
+            <div className="flex gap-2">
+              <div>{post.author.nickname}</div>
+              <div className="text-neutral-400">
+                {dayjs(post.createdAt).fromNow()}
+              </div>
+            </div>
+            <div
+              onClick={(e: React.MouseEvent<HTMLElement>) => {
+                e.stopPropagation();
+                mutate(post.id);
+              }}
+              className="flex items-center justify-center size-8 hover:text-red-500 hover:bg-neutral-300 text-lg  rounded-full cursor-pointer"
+            >
+              <IoCloseOutline />
             </div>
           </div>
           {/* 게시글 Content */}

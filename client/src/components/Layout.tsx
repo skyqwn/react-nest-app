@@ -12,7 +12,7 @@ import { authStore } from "../store/AuthStore";
 import { instance } from "../api/apiconfig";
 import LoginModal from "./modals/LoginModal";
 
-const Layout = ({ children }: React.PropsWithChildren) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   const { authenticated, loading } = useAuthState();
   const { user } = useAuthState();
   const { onOpen } = authStore();
@@ -28,93 +28,32 @@ const Layout = ({ children }: React.PropsWithChildren) => {
         console.log(error);
       });
   };
+
   return (
-    // container
-    <div className="flex items-stretch overflow-x-hidden mt-14">
-      {/* leftSectionWrapper */}
-      <header className="flex items-end flex-col flex-grow">
-        {/* lefrSection */}
-        <section className="w-80 h-dvh">
-          {/* leftSectionFixed */}
-          <div className="fixed w-16 lg:w-80 h-dvh flex flex-col items-center border-r-2 lg:inline-flex ">
-            <div className="flex justify-start">HOme</div>
-            <nav className="flex-1 ">
-              <ul className="flex flex-col gap-3 mt-2">
-                <li>
-                  <Link to={"/"}>
-                    <div className="nav-pill">
-                      <FaHome /> <span className="hidden lg:block">HOME</span>
-                    </div>
-                  </Link>
-                </li>
-                <li>
-                  <Link to={"/explore"}>
-                    <div className="nav-pill">
-                      <SlMagnifier /> <span>EXPLORE</span>
-                    </div>
-                  </Link>
-                </li>
-                <li>
-                  <Link to={"/messages"}>
-                    <div className="nav-pill">
-                      <RiMessage2Line /> <span>MESSAGES</span>
-                    </div>
-                  </Link>
-                </li>
-                <li>
-                  <Link to={"/profile"}>
-                    <div className="nav-pill">
-                      <IoPerson /> <span>PROFILE</span>
-                    </div>
-                  </Link>
-                </li>
-              </ul>
-              <button className="mt-2 flex bg-orange-500 font-semibold text-white items-center justify-center gap-3  w-52 p-2 rounded-full hover:bg-orange-600 transition">
-                게시하기
-              </button>
-            </nav>
-            <div className=" flex gap-5 items-center p-4  justify-center">
-              <div className="w-full">
-                {!loading && authenticated ? (
-                  <div className="flex  items-center justify-center gap-4 w-full">
-                    <UserAvatar />
-                    <div>{user?.nickname}</div>
-                    <div
-                      className="bg-orange-600 py-2 px-3 rounded-3xl text-white hover:bg-orange-800 text-md cursor-pointer text-xs sm:text-base"
-                      onClick={handleLogOut}
-                    >
-                      로그아웃
-                    </div>
-                  </div>
-                ) : (
-                  <span
-                    className=" bg-orange-600  py-2 px-3 rounded-3xl text-white hover:bg-orange-800 text-md cursor-pointer w-full"
-                    onClick={onOpen}
-                  >
-                    로그인
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
-      </header>
-      <div className="flex items-start h-dvh flex-col flex-grow">
-        <div className=" h-dvh w-[990px] flex justify-between">
-          <main className="w-[600px] h-full ">{children}</main>
-          {/* right section */}
-          <section className=" h-full lg:w-[350px] border-l-2">
-            <div className="max-w-full px-4">
-              <div className="relative  flex items-center bg-gray-100 border rounded-3xl  hover:bg-white focus:outline-none">
-                <FaSearch className="ml-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search."
-                  className="px-3 py-5 bg-transparent rounded h-7 focus:outline-none"
-                />
-              </div>
-            </div>
-          </section>
+    <div className="w-dvw h-dvh mt-14 px-8 max-w-screen-xl mx-auto">
+      <div className="md:flex ">
+        {/* Left */}
+        <div className="hidden lg:flex lg:flex-col lg:items-center lg:justify-start lg:gap-5 w-[220px] lg:py-2 lg:border-r-2">
+          <Link to={"/"} className="nav-pill">
+            <FaHome /> <span>HOME</span>
+          </Link>
+          <Link to={"/explore"} className="nav-pill">
+            <SlMagnifier /> <span>EXPLORE</span>
+          </Link>
+          <Link to={"/messages"} className="nav-pill">
+            <RiMessage2Line /> <span>MESSAGES</span>
+          </Link>
+          <Link to={"/profile"} className="nav-pill">
+            <IoPerson /> <span>PROFILE</span>
+          </Link>
+        </div>
+        {/* Center */}
+        <div className="flex flex-col p-2 max-w-screen-sm mx-auto md:w-[900px] ">
+          {children}
+        </div>
+        {/* Right */}
+        <div className="hidden md:block md:max-w-72 md:border-l-2 md:p-2">
+          POPULAR COMMUNITYLIST
         </div>
       </div>
     </div>

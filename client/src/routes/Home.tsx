@@ -1,15 +1,15 @@
 import Posts from "./Posts";
-import Layout2 from "../components/Layout2";
+import Layout from "../components/Layout";
 import CreatePosts from "../components/CreatePosts";
 import PostDetail from "./PostDetail";
 
 export const Home = () => {
   return (
-    <Layout2>
+    <Layout>
       <div className="flex flex-col p-4 w-full">
         <CreatePosts />
         <Posts />
       </div>
-    </Layout2>
+    </Layout>
   );
 };

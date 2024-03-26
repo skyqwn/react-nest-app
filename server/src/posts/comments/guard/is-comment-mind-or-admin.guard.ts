@@ -7,35 +7,41 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { Observable } from 'rxjs';
+import { RolesEnum } from 'src/users/constant/roles.constant';
 import { UsersModel } from 'src/users/entities/users.entity';
 import { CommentsService } from '../comments.service';
 
 @Injectable()
-export class IsCommentMindOrAdminGuard implements CanActivate {
+export class IsCommentMineOrAdminGuard implements CanActivate {
   constructor(private readonly commentsService: CommentsService) {}
-
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest() as Request & {
       user: UsersModel;
     };
+    console.log(req.user);
 
-    const user = req.user;
+    const { user } = req;
 
     if (!user) {
-      throw new BadRequestException(`유저가 존재하지 않습니다.`);
+      throw new UnauthorizedException('사용자의 정보를 가져올 수 없습니다.');
+    }
+
+    if (user.role === RolesEnum.ADMIN) {
+      return true;
     }
 
     const commentId = req.params.commentId;
 
     if (!commentId) {
-      throw new BadRequestException(`코멘트 아이디가 존재하지않습니다.`);
+      throw new BadRequestException(
+        'CommentId가 파라미터로 제공 되어야합니다.',
+      );
     }
 
-    const isOk = await this.commentsService.isCommentMind(user.id, +commentId);
+    const isOk = await this.commentsService.isCommentMind(+commentId, user.id);
 
     if (!isOk) {
-      throw new ForbiddenException(`코멘트가 존재하지 않습니다.`);
+      throw new ForbiddenException('코멘트가 존재하지 않습니다.');
     }
 
     return true;

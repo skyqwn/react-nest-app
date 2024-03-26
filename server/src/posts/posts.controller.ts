@@ -85,7 +85,7 @@ export class PostsController {
   }
 
   @Delete(':id')
-  @UseGuards(IsPostMindOrAdminGuard)
+  // @UseGuards(IsPostMindOrAdminGuard)
   deletePost(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.deletePost(id);
   }

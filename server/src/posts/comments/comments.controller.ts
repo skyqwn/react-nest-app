@@ -19,7 +19,7 @@ import { UsersModel } from 'src/users/entities/users.entity';
 import { QueryRunnerDecorator } from 'src/common/decorator/query-runner.decorator';
 import { QueryRunner } from 'typeorm';
 import { UpdateCommentsDto } from './dtos/update-comments.dto';
-import { IsCommentMindOrAdminGuard } from './guard/is-comment-mind-or-admin.guard';
+import { IsCommentMineOrAdminGuard } from './guard/is-comment-mind-or-admin.guard';
 
 @Controller('posts/:postId/comments')
 export class CommentsController {
@@ -51,7 +51,7 @@ export class CommentsController {
   }
 
   @Patch(':commentId')
-  @UseGuards(IsCommentMindOrAdminGuard)
+  // @UseGuards(IsCommentMineOrAdminGuard)
   patchComment(
     @Param('commentId', ParseIntPipe) commentId: number,
     @Body() body: UpdateCommentsDto,
@@ -60,9 +60,11 @@ export class CommentsController {
   }
 
   @Delete(':commentId')
-  @UseGuards(IsCommentMindOrAdminGuard)
+  // @UseGuards(IsCommentMineOrAdminGuard)
   @IsPublic()
-  deleteComment(@Param('commentId', ParseIntPipe) commentId: number) {
+  deleteComment(
+    @Param('commentId', ParseIntPipe) commentId: number,
+  ): Promise<number> {
     return this.commentsService.deleteComment(commentId);
   }
 }

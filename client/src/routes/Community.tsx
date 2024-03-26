@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCreatePost } from "../store/PostStroe";
 import PostCreateModal from "../components/modals/PostCreateModal";
@@ -17,6 +17,7 @@ const Community = () => {
     );
     return res.data;
   };
+
   const { data: posts, isPending } = useQuery({
     queryKey: ["posts"],
     queryFn: fetchPosts,

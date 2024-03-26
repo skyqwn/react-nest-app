@@ -27,14 +27,6 @@ const Router = () => {
       <Route path="/profile" element={<Profile />} />
       <Route path="/messages" element={<Message />} />
       <Route path="/explore" element={<Explore />} />
-      {/* <Route
-        path="/post"
-        element={
-          <ProtectRouter>
-            <Community />
-          </ProtectRouter>
-        }
-      /> */}
       <Route path="/post/:id" element={<CommunityDetail />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

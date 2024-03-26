@@ -4,7 +4,7 @@ import { instance } from "../api/apiconfig";
 import PostBlock from "../components/block/PostBlock";
 import { useInView } from "react-intersection-observer";
 import { Fragment, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export interface IAuhor {
   id: number;
@@ -13,6 +13,7 @@ export interface IAuhor {
   nickname: string;
   email: string;
   role: string;
+  avatar: string;
 }
 
 export interface IPost {
@@ -71,40 +72,30 @@ const Posts = () => {
       !isFetching && hasNextPage && fetchNextPage();
     }
   }, [inView, isFetching, hasNextPage, fetchNextPage]);
+  const navigate = useNavigate();
 
+  const handlePostClick = (postId: number) => {
+    navigate(`/posts/${postId}`);
+  };
   return (
     <>
       {posts?.pages.map((page, i) => (
         <Fragment key={i}>
           {page?.data.map((p: IPost) => (
-            <Link to={`/posts/${p.id}`}>
+            // <Link to={`/posts/${p.id}`}>
+            <div
+              onClick={() => handlePostClick(p.id)}
+              className="cursor-pointer"
+            >
               <PostBlock key={p.id} post={p} />
-            </Link>
+            </div>
+            // </Link>
           ))}
         </Fragment>
       ))}
       <div ref={ref} style={{ height: 50 }} />
     </>
   );
-  // return (
-  //   <>
-  //     {isFetching && <div className="loading">Loading...</div>}
-  //     <InfiniteScroll
-  //       hasMore={hasNextPage}
-  //       loadMore={() => {
-  //         if (!isFetching) {
-  //           fetchNextPage();
-  //         }
-  //       }}
-  //     >
-  //       {posts?.pages.map((page) => {
-  //         return page.data.map((p: IPost) => {
-  //           return <PostBlock key={p.id} post={p} />;
-  //         });
-  //       })}
-  //     </InfiniteScroll>
-  //   </>
-  // );
 };
 
 export default Posts;
