@@ -22,6 +22,7 @@ import { RolesGuard } from './users/guard/roles.guard';
 import { AccessTokenGuard } from './auth/guard/bearer-token.guard';
 import { CommentsModule } from './posts/comments/comments.module';
 import { CommentsModel } from './posts/comments/entities/comments.entity';
+import { UserFollowersModel } from './users/entities/user-followers.entity';
 
 @Module({
   imports: [
@@ -56,7 +57,7 @@ import { CommentsModel } from './posts/comments/entities/comments.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [PostsModel, UsersModel, CommentsModel],
+      entities: [PostsModel, UsersModel, CommentsModel, UserFollowersModel],
       synchronize: process.env.NODE_ENV !== 'prod',
     }),
     PostsModule,

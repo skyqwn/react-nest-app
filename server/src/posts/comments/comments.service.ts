@@ -73,8 +73,11 @@ export class CommentsService {
     dto: CreateCommentsDto,
     postId: number,
     author: UsersModel,
+    qr?: QueryRunner,
   ) {
-    return this.commentsRepository.save({
+    const commentsRepository = this.getRepositoy(qr);
+
+    return commentsRepository.save({
       ...dto,
       post: {
         id: postId,
@@ -106,8 +109,10 @@ export class CommentsService {
     return newComment;
   }
 
-  async deleteComment(commentId: number) {
-    const comment = this.commentsRepository.findOne({
+  async deleteComment(commentId: number, qr?: QueryRunner) {
+    const commentsRepository = this.getRepositoy(qr);
+
+    const comment = commentsRepository.findOne({
       where: {
         id: commentId,
       },
@@ -118,7 +123,7 @@ export class CommentsService {
       );
     }
 
-    await this.commentsRepository.delete(commentId);
+    await commentsRepository.delete(commentId);
 
     return commentId;
   }

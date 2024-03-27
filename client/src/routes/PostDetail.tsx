@@ -105,6 +105,8 @@ const PostDetail = () => {
     navigate(-1);
   };
 
+  if (!post) return null;
+
   return (
     <div className="h-dvh w-dvw relative bg-white z-20 flex flex-col overflow-y-auto md:flex md:flex-row">
       {/* <div className="h-dvh w-dvw relative bg-white z-20 flex "> */}
@@ -115,14 +117,14 @@ const PostDetail = () => {
             <img className="object-fit w-full h-full" src={post?.images[0]} />
           </div>
         </div>
-        <PostActionBlock />
+        <PostActionBlock postCommentCounter={+post.commentCount} />
         <div className="absolute top-3 left-3" onClick={backButton}>
           ❌
         </div>
       </div>
       {/* 오른쪽섹션 */}
-      <div className="h-full w-full md:w-[430px] p-3  lg:border-l-[1px] lg:flex lg:flex-col overflow-y-auto">
-        <div className="w-full h-1/6 flex flex-col  ">
+      <div className="h-full w-full md:w-[530px] p-3  lg:border-l-[1px] overflow-y-auto">
+        <div className=" h-1/6 flex flex-col  ">
           <div className="flex items-center gap-1">
             <img className="size-10 rounded-full" src={post?.author.avatar} />
             <div className="flex flex-col justify-center">
@@ -137,7 +139,7 @@ const PostDetail = () => {
             {/* <div className="text-neutral-400 mt-10"> */}
             {dayjs(post?.createdAt).format("HH:mm MMM DD, YYYY")}
           </div>
-          <div className="w-full h-[150px] flex  gap-3 items-center justify-between border-t-2 mt-1  ">
+          <div className="h-[450px] flex  gap-3 items-center justify-between border-t-2 mt-1  ">
             {/* <UserAvatar /> */}
             <div className="size-10 bg-neutral-400 rounded-full" />
             <div>
@@ -151,40 +153,42 @@ const PostDetail = () => {
             </div>
             <div
               onClick={handleSubmit(onValid)}
-              className=" flex items-center justify-center bg-orange-500 text-white w-32 h-12 rounded-2xl font-semibold cursor-pointer hover:bg-orange-600 transition"
+              className=" flex items-center justify-center bg-orange-500 text-white w-32 h-12 md:size-12 rounded-2xl font-semibold cursor-pointer hover:bg-orange-600 transition"
             >
-              댓글달기
+              댓글
             </div>
           </div>
-          <div className="w-full h-[90px] md:min-w-36 flex gap-4 flex-col divide-y-[1px]">
+          <div className="h-[90px]  md:w-[450px] flex gap-4 flex-col divide-y-[1px]">
             {postComments?.data.map((comment: IPostComments) => (
               <div className=" flex flex-col">
-                <div className="flex gap-3 w-full h-fullp-2">
-                  <div>
+                <div className="flex gap-3 w-full h-full  ">
+                  <div className="size-10 ">
                     <img
-                      className="size-10 rounded-full"
+                      className="rounded-full size-10"
                       src={comment.author.avatar}
                     />
                   </div>
-                  <div className="flex gap-1 items-start flex-col ">
-                    <div className="flex gap-2">
-                      <div>{comment.author.nickname}</div>
-                      <div className="text-xs text-neutral-400">{`@ ${comment.author.nickname}`}</div>
-                      <div className="text-xs text-neutral-400">
-                        {dayjs(comment.createdAt).fromNow()}
+                  <div className="flex flex-1 gap-1 items-start flex-col w-full ">
+                    <div className="flex gap-2 items-center w-full justify-between md:w-[380px] md:justify-start">
+                      <div className="flex gap-2 items-center">
+                        <div>{comment.author.nickname}</div>
+                        <div className="text-xs text-neutral-400">{`@ ${comment.author.nickname}`}</div>
+                        <div className="text-xs text-neutral-400">
+                          {dayjs(comment.createdAt).fromNow()}
+                        </div>
                       </div>
                       {user?.nickname === comment.author.nickname && (
-                        <div className=" flex items-center justify-center gap-2">
+                        <div className=" flex items-center p-1 justify-center gap-2 ">
                           <IoCloseOutline
-                            className=" ml-10 hover:text-red-500 hover:bg-neutral-300 text-lg  rounded-full "
+                            className=" ml-10 hover:text-red-500 hover:bg-neutral-300 text-lg  rounded-full cursor-pointer "
                             onClick={() => mutate(comment.id)}
                           />
-                          <MdOutlineEdit className="hover:text-blue-500 hover:bg-neutral-300  rounded-full" />
+                          <MdOutlineEdit className="hover:text-blue-500 hover:bg-neutral-300  rounded-full cursor-pointer" />
                         </div>
                       )}
                     </div>
                     <div>{comment.comment}</div>
-                    <div className="hover:text-red-500 flex items-center justify-center gap-1">
+                    <div className="hover:text-red-500 flex items-center justify-center gap-1 cursor-pointer">
                       <FaRegHeart />
                       <div>{comment.likeCount}</div>
                     </div>

@@ -246,4 +246,31 @@ export class PostsService {
       },
     });
   }
+
+  async incrementCommentCount(postId: number, qr?: QueryRunner) {
+    const postRepository = this.getRepository(qr);
+
+    await postRepository.increment(
+      {
+        id: postId,
+      },
+      'commentCount',
+      1,
+    );
+    return true;
+  }
+
+  async decrementCommentCount(postId: number, qr?: QueryRunner) {
+    const postRepository = this.getRepository(qr);
+
+    await postRepository.decrement(
+      {
+        id: postId,
+      },
+      'commentCount',
+      1,
+    );
+
+    return true;
+  }
 }
