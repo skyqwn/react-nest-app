@@ -4,6 +4,7 @@ import { UsersModel } from './entities/users.entity';
 import { QueryRunner, Repository } from 'typeorm';
 import { CreateUserInput, CreateUserOutput } from './dtos/creat-user.dto';
 import { UserFollowersModel } from './entities/user-followers.entity';
+import { classToClassFromExist } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -104,19 +105,74 @@ export class UsersService {
 
   async followUser(followerId: number, followeeId: number, qr?: QueryRunner) {
     const userFollowersRepository = this.getUserFolloweRepository(qr);
+    const user = await this.getUserById(followerId);
+    const { avatar } = user;
 
-    await userFollowersRepository.save({
+    const result = await userFollowersRepository.save({
       follower: {
         id: followerId,
       },
       followee: {
         id: followeeId,
       },
+      avatar,
+      standByConfirm: true,
     });
+
     return true;
   }
 
-  async getFollowes(userId: number, includeNotConfirmed: boolean) {
+  async getConfirmFollow(userId: number) {
+    const result = await this.userFollowersRepository.find({
+      where: {
+        isConfirmed: true,
+      },
+      relations: {
+        follower: true,
+        followee: true,
+      },
+    });
+    return result.map((user) => ({
+      id: user.follower.id,
+      nickname: user.follower.nickname,
+      email: user.follower.email,
+      isConfirmed: user.isConfirmed,
+      avatar: user.avatar,
+    }));
+  }
+
+  async getFollowees(userId: number) {
+    const result = await this.userFollowersRepository.find({
+      where: {
+        follower: {
+          id: userId,
+        },
+      },
+      relations: {
+        followee: true,
+      },
+    });
+    return result.map((user) => ({
+      id: user.followee.id,
+      nickname: user.followee.nickname,
+      email: user.followee.email,
+      isConfirmed: user.isConfirmed,
+      standByConfirm: user.standByConfirm,
+    }));
+  }
+
+  async getFolloweeById(userId: number, followeeId: number) {
+    const result = await this.userFollowersRepository.findOne({
+      where: {
+        follower: { id: userId },
+        followee: { id: followeeId },
+      },
+    });
+
+    return result;
+  }
+
+  async getFollowers(userId: number, includeNotConfirmed: boolean) {
     const where = {
       followee: {
         id: userId,
@@ -140,6 +196,7 @@ export class UsersService {
       nickname: user.follower.nickname,
       email: user.follower.email,
       isConfirmed: user.isConfirmed,
+      avatar: user.avatar,
     }));
   }
 
@@ -178,16 +235,20 @@ export class UsersService {
 
   async deleteFollow(followerId: number, followeeId: number, qr?: QueryRunner) {
     const userFollowersRepository = this.getUserFolloweRepository(qr);
-    await userFollowersRepository.delete({
-      follower: {
-        id: followerId,
-      },
-      followee: {
-        id: followeeId,
-      },
-    });
+    try {
+      await userFollowersRepository.delete({
+        follower: {
+          id: followerId,
+        },
+        followee: {
+          id: followeeId,
+        },
+      });
 
-    return true;
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async incrementFollowerCount(userId: number, qr?: QueryRunner) {

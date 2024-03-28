@@ -30,7 +30,6 @@ export class BearerToeknGuard implements CanActivate {
         return true;
       }
       const rawToken = req.headers['authorization'];
-
       if (!rawToken) {
         throw new UnauthorizedException('토큰이 없습니다.');
       }
@@ -39,7 +38,6 @@ export class BearerToeknGuard implements CanActivate {
         rawToken,
         true,
       );
-
       const result = await this.authService.verifyToken(token);
 
       const user = await this.usersService.getUserById(result.sub);

@@ -22,7 +22,7 @@ export class UsersModel extends BaseModel {
   @Exclude({ toPlainOnly: true })
   password?: string;
 
-  @Column({ default: '' })
+  @Column({ default: null })
   @IsString()
   avatar: string;
 

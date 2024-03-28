@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IPost } from "../../routes/Posts";
 
 import { FaRegComment } from "react-icons/fa";
@@ -21,7 +21,7 @@ dayjs.extend(relativeTime);
 
 const PostBlock = ({ post }: { post: IPost }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const navigate = useNavigate();
   const nextSlide = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     setCurrentIndex((prevIndex) =>
@@ -52,14 +52,21 @@ const PostBlock = ({ post }: { post: IPost }) => {
     },
   });
 
+  const clickProfile = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    navigate(`/profile/${post.author.id}`);
+  };
+
   return (
     <div className="h-[516px] border-b-2  last:border-b-0 py-4">
       <div className="flex gap-3 h-full ">
         <div>
           {/* 유저 이미지 */}
-          <Link to={"#"}>
-            <div className="size-10 bg-orange-500 rounded-full" />
-          </Link>
+          <img
+            src={post.author.avatar}
+            className="size-10  rounded-full"
+            onClick={(e) => clickProfile(e)}
+          />
         </div>
         <div className="flex-1 h-full">
           {/* 유지 닉네임 하고 글쓴시간 dayjs */}

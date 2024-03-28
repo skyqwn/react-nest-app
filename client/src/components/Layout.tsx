@@ -1,7 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { FaHome, FaSearch } from "react-icons/fa";
+import { TbFriends } from "react-icons/tb";
+
 import { SlMagnifier } from "react-icons/sl";
 import { RiMessage2Line } from "react-icons/ri";
 import { IoPerson } from "react-icons/io5";
@@ -13,10 +15,11 @@ import { instance } from "../api/apiconfig";
 import LoginModal from "./modals/LoginModal";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const { authenticated, loading } = useAuthState();
-  const { user } = useAuthState();
+  const { user, authenticated } = useAuthState();
+  console.log(authenticated);
   const { onOpen } = authStore();
   const dispatch = useAuthDispatch();
+  const navigate = useNavigate();
   const handleLogOut = () => {
     instance
       .post("/auth/logout")
@@ -40,10 +43,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <Link to={"/explore"} className="nav-pill">
             <SlMagnifier /> <span>EXPLORE</span>
           </Link>
-          <Link to={"/messages"} className="nav-pill">
-            <RiMessage2Line /> <span>MESSAGES</span>
+          <Link to={"/alter"} className="nav-pill">
+            <TbFriends /> <span>Alter</span>
           </Link>
-          <Link to={"/profile"} className="nav-pill">
+          <Link to={`/profile/${user?.id}`} className="nav-pill">
             <IoPerson /> <span>PROFILE</span>
           </Link>
         </div>

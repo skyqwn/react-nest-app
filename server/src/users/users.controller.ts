@@ -29,18 +29,43 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
+  @Get(':id')
+  getFindById(@Param('id', ParseIntPipe) userId: number) {
+    return this.usersService.getUserById(userId);
+  }
+
   @Post()
   createUser(@Body() createUserInput: CreateUserInput) {
     return this.usersService.createUser(createUserInput);
   }
 
+  //내가 팔로잉하고있는 사람들
   @Get('follow/me')
   async getFollow(
     @AuthUser() user: UsersModel,
     @Query('includeNotConfirmed', new DefaultValuePipe(false), ParseBoolPipe)
     includeNotConfirmed: boolean,
   ) {
-    return this.usersService.getFollowes(user.id, includeNotConfirmed);
+    return await this.usersService.getFollowers(user.id, includeNotConfirmed);
+  }
+
+  //내가 팔로잉 하고 있는 사람들
+  @Get('followee/me')
+  async getFollowee(@AuthUser() user: UsersModel) {
+    return await this.usersService.getFollowees(user.id);
+  }
+  //내가 팔로잉하고 있는 특정 사람
+  @Get('followee/:id')
+  async getFolloweeById(
+    @AuthUser() user: UsersModel,
+    @Param('id', ParseIntPipe) followeeId: number,
+  ) {
+    return await this.usersService.getFolloweeById(user.id, followeeId);
+  }
+
+  @Get('follow/me/confirm')
+  async getConfirmFollow(@AuthUser() user: UsersModel) {
+    return await this.usersService.getConfirmFollow(user.id);
   }
 
   @Post('follow/:id')
@@ -48,9 +73,7 @@ export class UsersController {
     @AuthUser() user: UsersModel,
     @Param('id', ParseIntPipe) followeeId: number,
   ) {
-    await this.usersService.followUser(user.id, followeeId);
-
-    return true;
+    return await this.usersService.followUser(user.id, followeeId);
   }
 
   @Patch('follow/:id/confirm')
@@ -68,7 +91,7 @@ export class UsersController {
     return true;
   }
 
-  //상대방의 아이디
+  //내가 팔로워한 상대방의 팔로우 취소
   @Delete('follow/:id')
   @UseInterceptors(TransactionInterceptor)
   async deleteFollow(
@@ -76,6 +99,9 @@ export class UsersController {
     @QueryRunnerDecorator() qr: QueryRunner,
     @Param('id', ParseIntPipe) followeeId: number,
   ) {
+    console.log('followeeID' + followeeId);
+    console.log('userID' + user.id);
+
     await this.usersService.deleteFollow(user.id, followeeId, qr);
 
     await this.usersService.decrementFollowerCount(user.id, qr);

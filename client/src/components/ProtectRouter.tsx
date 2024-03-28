@@ -11,14 +11,15 @@ const ProtectRouter = ({ children }: React.PropsWithChildren) => {
   const { loading, authenticated } = useAuthState();
   const refreshToken = getCookie("refreshToken");
 
+  console.log(authenticated);
   const { onOpen } = authStore();
 
   if (loading) {
     return <>Loading...</>;
   }
 
-  if (!authenticated || !refreshToken) {
-    // onOpen();
+  if (!authenticated) {
+    onOpen();
     <h1>error</h1>;
   }
   return <div>{children}</div>;
