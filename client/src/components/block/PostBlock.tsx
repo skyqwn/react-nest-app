@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { IPost } from "../../routes/Posts";
 
 import { FaRegComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
@@ -15,6 +14,8 @@ import toast from "react-hot-toast";
 import { queryClient } from "../..";
 import { useMutation } from "@tanstack/react-query";
 import { instance } from "../../api/apiconfig";
+import { IPost } from "../../types/PostsTypes";
+import PostActionBlock from "./PostActionBlock";
 
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
@@ -124,16 +125,21 @@ const PostBlock = ({ post }: { post: IPost }) => {
             )}
           </div>
           {/* 좋아요 버튼 댓글버튼 */}
-          <div className="flex justify-around mt-2 mb-2">
+          <PostActionBlock
+            postCommentCount={+post.commentCount}
+            postLikeCount={+post.likeCount}
+            // postId={postId}
+          />
+          {/* <div className="flex justify-around mt-2 mb-2">
             <div className="flex items-center justify-center gap-2 hover:text-blue-500">
               <FaRegComment />
-              <span>0</span>
+              <span>{post?.commentCount}</span>
             </div>
             <div className="flex items-center justify-center gap-2 hover:text-red-500">
               <FaRegHeart />
-              <span>0</span>
+              <span>{post?.likeCount}</span>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

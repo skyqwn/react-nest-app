@@ -273,4 +273,30 @@ export class PostsService {
 
     return true;
   }
+
+  async increamentLikeCount(postId: number, qr?: QueryRunner) {
+    const postRepository = this.getRepository(qr);
+
+    await postRepository.increment(
+      {
+        id: postId,
+      },
+      'likeCount',
+      1,
+    );
+    return true;
+  }
+
+  async decrementLikeCount(postId: number, qr?: QueryRunner) {
+    const postRepository = this.getRepository(qr);
+
+    await postRepository.decrement(
+      {
+        id: postId,
+      },
+      'likeCount',
+      1,
+    );
+    return true;
+  }
 }

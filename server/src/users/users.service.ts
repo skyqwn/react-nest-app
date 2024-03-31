@@ -129,7 +129,24 @@ export class UsersService {
       },
       relations: {
         follower: true,
-        followee: true,
+      },
+    });
+    return result.map((user) => ({
+      id: user.follower.id,
+      nickname: user.follower.nickname,
+      email: user.follower.email,
+      isConfirmed: user.isConfirmed,
+      avatar: user.avatar,
+    }));
+  }
+
+  async getNotConfirmFollow(userId: number) {
+    const result = await this.userFollowersRepository.find({
+      where: {
+        isConfirmed: false,
+      },
+      relations: {
+        follower: true,
       },
     });
     return result.map((user) => ({

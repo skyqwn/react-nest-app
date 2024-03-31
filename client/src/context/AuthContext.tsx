@@ -66,9 +66,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const dispatch = (type: string, payload?: any) => {
     defaultDispatch({ type, payload });
   };
-  // useEffect(() => {
-  //   instance.post("/auth/token/access");
-  // }, []);
+
+  useEffect(() => {
+    instance.post("/auth/token/access");
+  }, []);
 
   useEffect(() => {
     async function loadUser() {

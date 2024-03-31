@@ -28,8 +28,6 @@ interface IProfile {
 interface IFollowConfirm {
   avatar: string;
   createdAt: string;
-  followee: any;
-  follower: any;
   id: number;
   isConfirmed: boolean;
   updatedAt: string;
@@ -61,6 +59,16 @@ const Profile = () => {
     onSuccess: () => {
       toast.success("팔로우 요청을 하였습니다.");
     },
+    onMutate: () => {
+      const value: IFollowConfirm | undefined = queryClient.getQueryData([
+        "user",
+        "followee",
+      ]);
+      console.log(value);
+      const shallow = { ...value, isConfirmed: true };
+      queryClient.setQueryData(["user", "followee"], shallow);
+      console.log(shallow);
+    },
   });
 
   const fetchFollowee = async () => {
@@ -72,8 +80,6 @@ const Profile = () => {
     queryKey: ["user", "followee"],
     queryFn: fetchFollowee,
   });
-
-  console.log(followee);
 
   if (!user) return null;
 

@@ -5,28 +5,8 @@ import PostBlock from "../components/block/PostBlock";
 import { useInView } from "react-intersection-observer";
 import { Fragment, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-export interface IAuhor {
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  nickname: string;
-  email: string;
-  role: string;
-  avatar: string;
-}
-
-export interface IPost {
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  title: string;
-  content: string;
-  likeCount: string;
-  commentCount: string;
-  author: IAuhor;
-  images: string[];
-}
+import { IPost } from "../types/PostsTypes";
+import PostActionBlock from "../components/block/PostActionBlock";
 
 type Props = { pageParam?: number };
 const fetchPosts = async ({ pageParam }: Props) => {

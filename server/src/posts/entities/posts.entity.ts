@@ -3,6 +3,7 @@ import { BaseModel } from 'src/common/entities/base.entity';
 import { UsersModel } from 'src/users/entities/users.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { CommentsModel } from '../comments/entities/comments.entity';
+import { LikesModel } from '../likes/entities/likes.entity';
 
 @Entity()
 export class PostsModel extends BaseModel {
@@ -35,4 +36,7 @@ export class PostsModel extends BaseModel {
 
   @OneToMany(() => CommentsModel, (comment) => comment.post)
   comments: CommentsModel[];
+
+  @OneToMany(() => LikesModel, (like) => like.post)
+  likes: LikesModel[];
 }

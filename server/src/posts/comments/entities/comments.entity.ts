@@ -1,8 +1,9 @@
 import { IsNumber, IsString } from 'class-validator';
 import { BaseModel } from 'src/common/entities/base.entity';
 import { PostsModel } from 'src/posts/entities/posts.entity';
+import { LikesModel } from 'src/posts/likes/entities/likes.entity';
 import { UsersModel } from 'src/users/entities/users.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class CommentsModel extends BaseModel {
@@ -19,4 +20,7 @@ export class CommentsModel extends BaseModel {
   @Column({ default: 0 })
   @IsNumber()
   likeCount: number;
+
+  // @OneToMany(() => LikesModel, (like) => like.comment)
+  // like: LikesModel;
 }

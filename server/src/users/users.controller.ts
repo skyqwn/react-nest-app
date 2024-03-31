@@ -68,6 +68,11 @@ export class UsersController {
     return await this.usersService.getConfirmFollow(user.id);
   }
 
+  @Get('follow/me/notconfirm')
+  async getNotConfirmFollow(@AuthUser() user: UsersModel) {
+    return await this.usersService.getNotConfirmFollow(user.id);
+  }
+
   @Post('follow/:id')
   async postFollow(
     @AuthUser() user: UsersModel,

@@ -6,6 +6,7 @@ import { PostsModel } from 'src/posts/entities/posts.entity';
 import { Exclude } from 'class-transformer';
 import { CommentsModel } from 'src/posts/comments/entities/comments.entity';
 import { UserFollowersModel } from './user-followers.entity';
+import { LikesModel } from 'src/posts/likes/entities/likes.entity';
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -62,6 +63,9 @@ export class UsersModel extends BaseModel {
   // // 내가 팔로워 하고 있는 사람
   @Column({ default: 0 })
   followeeCount: number;
+
+  @OneToMany(() => LikesModel, (like) => like.author)
+  likePosts: LikesModel[];
 
   // @ManyToMany(() => UsersModel, (user) => user.follwees)
   // @JoinTable()

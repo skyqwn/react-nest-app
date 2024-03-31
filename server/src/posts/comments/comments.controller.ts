@@ -53,7 +53,6 @@ export class CommentsController {
     @Body() body: CreateCommentsDto,
     @QueryRunnerDecorator() qr: QueryRunner,
     @AuthUser() user: UsersModel,
-    // @QueryRunnerDecorator() qr: QueryRunner,
   ) {
     const result = await this.commentsService.createComment(
       body,

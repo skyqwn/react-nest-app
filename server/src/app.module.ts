@@ -23,6 +23,8 @@ import { AccessTokenGuard } from './auth/guard/bearer-token.guard';
 import { CommentsModule } from './posts/comments/comments.module';
 import { CommentsModel } from './posts/comments/entities/comments.entity';
 import { UserFollowersModel } from './users/entities/user-followers.entity';
+import { LikesModule } from './posts/likes/likes.module';
+import { LikesModel } from './posts/likes/entities/likes.entity';
 
 @Module({
   imports: [
@@ -57,7 +59,13 @@ import { UserFollowersModel } from './users/entities/user-followers.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [PostsModel, UsersModel, CommentsModel, UserFollowersModel],
+      entities: [
+        PostsModel,
+        UsersModel,
+        CommentsModel,
+        UserFollowersModel,
+        LikesModel,
+      ],
       synchronize: process.env.NODE_ENV !== 'prod',
     }),
     PostsModule,
@@ -65,6 +73,7 @@ import { UserFollowersModel } from './users/entities/user-followers.entity';
     UsersModule,
     AuthModule,
     CommentsModule,
+    LikesModule,
   ],
   controllers: [AppController],
   providers: [

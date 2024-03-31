@@ -2,7 +2,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import PostActionBlock from "../components/block/PostActionBlock";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { instance } from "../api/apiconfig";
-import { IPost } from "../routes/Posts";
 import { FaRegHeart } from "react-icons/fa6";
 import { IoCloseOutline } from "react-icons/io5";
 import { MdOutlineEdit } from "react-icons/md";
@@ -15,8 +14,8 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { queryClient } from "..";
 import { useAuthState } from "../context/AuthContext";
-import UserAvatar from "../components/block/UserAvatar";
 import { authStore } from "../store/AuthStore";
+import { IPost } from "../types/PostsTypes";
 
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
@@ -37,10 +36,8 @@ const PostDetail = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
 
-  const { isOpen, onClose, onOpen } = authStore();
   const { authenticated, loading, user } = useAuthState();
 
-  console.log(authenticated);
   const {
     control,
     handleSubmit,
@@ -60,6 +57,20 @@ const PostDetail = () => {
         queryKey: ["posts", postId, "comments"],
       });
       reset({ comment: "" });
+    },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["posts", postId] });
+      const prev: IPost | undefined = queryClient.getQueryData([
+        "posts",
+        postId,
+      ]);
+      const shallow = { ...prev, commentCount: prev?.commentCount! + 1 };
+      queryClient.setQueryData(["posts", postId], shallow);
+    },
+    onError(error) {
+      const prev: any = queryClient.getQueryData(["posts", postId]);
+      const shallow = { ...prev, commentCount: prev.commentCount - 1 };
+      queryClient.setQueryData(["posts", postId], shallow);
     },
   });
 
@@ -92,12 +103,23 @@ const PostDetail = () => {
     }
   };
 
-  const { mutate } = useMutation({
+  const { mutate: deleteCommentMutate } = useMutation({
     mutationFn: (commentId: number) => deleteComment(commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["posts", postId, "comments"],
       });
+    },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["posts", postId] });
+      const prev: any = queryClient.getQueryData(["posts", postId]);
+      const shallow = { ...prev, commentCount: prev.commentCount - 1 };
+      queryClient.setQueryData(["posts", postId], shallow);
+    },
+    onError(error) {
+      const prev: any = queryClient.getQueryData(["posts", postId]);
+      const shallow = { ...prev, commentCount: prev.commentCount + 1 };
+      queryClient.setQueryData(["posts", postId], shallow);
     },
   });
 
@@ -117,9 +139,13 @@ const PostDetail = () => {
             <img className="object-fit w-full h-full" src={post?.images[0]} />
           </div>
         </div>
-        <PostActionBlock postCommentCounter={+post.commentCount} />
+        <PostActionBlock
+          postCommentCount={+post.commentCount}
+          postLikeCount={+post.likeCount}
+          // postId={post.id}
+        />
         <div className="absolute top-3 left-3" onClick={backButton}>
-          ❌
+          뒤로가기
         </div>
       </div>
       {/* 오른쪽섹션 */}
@@ -160,7 +186,7 @@ const PostDetail = () => {
           </div>
           <div className="h-[90px]  md:w-[450px] flex gap-4 flex-col divide-y-[1px]">
             {postComments?.data.map((comment: IPostComments) => (
-              <div className=" flex flex-col">
+              <div className=" flex flex-col" key={comment.id}>
                 <div className="flex gap-3 w-full h-full  ">
                   <div className="size-10 ">
                     <img
@@ -181,7 +207,7 @@ const PostDetail = () => {
                         <div className=" flex items-center p-1 justify-center gap-2 ">
                           <IoCloseOutline
                             className=" ml-10 hover:text-red-500 hover:bg-neutral-300 text-lg  rounded-full cursor-pointer "
-                            onClick={() => mutate(comment.id)}
+                            onClick={() => deleteCommentMutate(comment.id)}
                           />
                           <MdOutlineEdit className="hover:text-blue-500 hover:bg-neutral-300  rounded-full cursor-pointer" />
                         </div>
