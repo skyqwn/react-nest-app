@@ -35,7 +35,7 @@ const Modal = ({
           initial={modalContainerVariants.start}
           animate={modalContainerVariants.end}
           exit={modalContainerVariants.exit}
-          className="fixed inset-0 flex items-center justify-center z-50 "
+          className="fixed inset-0 flex items-center justify-center z-50 bg-black/50  "
           // className="absolute top-0 left-0 w-screen h-screen z-10 bg-black/50 flex items-center justify-center overflow-hidden "
         >
           {/* modal body */}
@@ -59,7 +59,7 @@ const Modal = ({
             {/* modal body */}
             <div className="flex-1 px-6">{body}</div>
             {/* modal footer */}
-            <div className="px-6 py-4 flex gap-6 ">
+            <div className="px-6 py-4 flex gap-6  ">
               {secondActionLabel && secondAction && (
                 <Button
                   actionText={secondActionLabel}

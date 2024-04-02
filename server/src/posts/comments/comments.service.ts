@@ -22,6 +22,29 @@ export class CommentsService {
       : this.commentsRepository;
   }
 
+  async fetchComments(postId: number) {
+    return this.commentsRepository.find({
+      where: {
+        post: {
+          id: postId,
+        },
+      },
+      relations: {
+        author: true,
+      },
+      select: {
+        author: {
+          avatar: true,
+          nickname: true,
+          id: true,
+        },
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+  }
+
   async paginateComments(dto: PaginateCommentsDto, postId: number) {
     return this.commonService.paginate(
       dto,
@@ -39,6 +62,7 @@ export class CommentsService {
           author: {
             avatar: true,
             nickname: true,
+            id: true,
           },
         },
       },
@@ -129,7 +153,7 @@ export class CommentsService {
   }
 
   async isCommentMind(userId: number, commentId: number) {
-    return this.commentsRepository.exists({
+    return await this.commentsRepository.exists({
       where: {
         id: commentId,
         author: {
@@ -140,5 +164,53 @@ export class CommentsService {
         author: true,
       },
     });
+  }
+
+  async incrementLikeCount(commentId: number) {
+    await this.commentsRepository.increment(
+      {
+        id: commentId,
+      },
+      'likeCount',
+      1,
+    );
+
+    return true;
+  }
+  async decrementLikeCount(commentId: number) {
+    await this.commentsRepository.decrement(
+      {
+        id: commentId,
+      },
+      'likeCount',
+      1,
+    );
+
+    return true;
+  }
+
+  async alreadyLike(userId: number, commentId: number) {
+    const comment = await this.commentsRepository.find({
+      where: {
+        id: commentId,
+        commentLikeUsers: userId,
+      },
+    });
+    return comment;
+  }
+
+  async includeLikeUsers(userId: number, commentId: number) {
+    const comment = await this.commentsRepository.findOne({
+      where: {
+        id: commentId,
+      },
+    });
+    const newComment = {
+      ...comment,
+      commentLikeUsers: [...comment.commentLikeUsers, userId],
+    };
+
+    const result = await this.commentsRepository.save(newComment);
+    return result;
   }
 }

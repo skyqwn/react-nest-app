@@ -1,36 +1,16 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import { FaHome, FaSearch } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaHome } from "react-icons/fa";
 import { TbFriends } from "react-icons/tb";
 
 import { SlMagnifier } from "react-icons/sl";
-import { RiMessage2Line } from "react-icons/ri";
 import { IoPerson } from "react-icons/io5";
 
 import { useAuthDispatch, useAuthState } from "../context/AuthContext";
-import UserAvatar from "./block/UserAvatar";
-import { authStore } from "../store/AuthStore";
-import { instance } from "../api/apiconfig";
-import LoginModal from "./modals/LoginModal";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { user, authenticated } = useAuthState();
-  console.log(authenticated);
-  const { onOpen } = authStore();
   const dispatch = useAuthDispatch();
-  const navigate = useNavigate();
-  const handleLogOut = () => {
-    instance
-      .post("/auth/logout")
-      .then(() => {
-        dispatch("LOGOUT");
-        toast.success("로그아웃");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
   return (
     <div className="w-dvw h-dvh mt-14 px-8 max-w-screen-xl mx-auto">

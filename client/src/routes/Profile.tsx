@@ -10,6 +10,7 @@ import { IoCalendarOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { queryClient } from "..";
 import { useState } from "react";
+import { useEditProfile } from "../store/ProfilStore";
 
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
@@ -31,12 +32,12 @@ interface IFollowConfirm {
   id: number;
   isConfirmed: boolean;
   updatedAt: string;
-  standByConfirm: boolean;
 }
 
 const Profile = () => {
   const { id } = useParams();
   const { user: loggedInUser } = useAuthState();
+  const { onOpen } = useEditProfile();
 
   const fetchUserProfile = async () => {
     const res = await instance.get(`/users/${id}`);
@@ -65,9 +66,6 @@ const Profile = () => {
         "followee",
       ]);
       console.log(value);
-      const shallow = { ...value, isConfirmed: true };
-      queryClient.setQueryData(["user", "followee"], shallow);
-      console.log(shallow);
     },
   });
 
@@ -81,6 +79,31 @@ const Profile = () => {
     queryFn: fetchFollowee,
   });
 
+  const deleteFollowHandler = async (id: number) => {
+    await instance.delete(`/users/follow/${id}`);
+  };
+
+  const { mutate: deleteFollowMutate } = useMutation({
+    mutationFn: deleteFollowHandler,
+    onSuccess: () => {
+      toast.success("팔로우 삭제");
+      queryClient.invalidateQueries({
+        queryKey: ["followee", "me"],
+      });
+    },
+    onMutate: async () => {
+      const prev = queryClient.getQueryData(["followee", "me"]);
+      if (prev) {
+        console.log(prev);
+      } else {
+        console.log(2);
+      }
+    },
+  });
+
+  const isFolloing = !!followee;
+  console.log(isFolloing);
+  console.log(followee);
   if (!user) return null;
 
   return (
@@ -93,15 +116,18 @@ const Profile = () => {
           </div>
           <div>
             {loggedInUser?.id === user?.id ? (
-              <button className="border rounded-xl  p-2 font-bold hover:bg-neutral-300 cursor-pointer transition">
+              <div
+                onClick={onOpen}
+                className="border rounded-xl  p-2 font-bold hover:bg-neutral-300 cursor-pointer transition"
+              >
                 Edit profile
-              </button>
+              </div>
             ) : (
               <div
                 onClick={() => mutate(user.id)}
                 className="border rounded-xl  p-2 font-bold hover:bg-neutral-300 cursor-pointer transition"
               >
-                {followee?.standByConfirm ? "요청됨" : "팔로잉"}
+                {isFolloing ? "요청됨" : "팔로잉"}
               </div>
             )}
           </div>

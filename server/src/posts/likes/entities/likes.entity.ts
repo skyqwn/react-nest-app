@@ -9,9 +9,13 @@ export class LikesModel extends BaseModel {
   @ManyToOne(() => UsersModel, (user) => user.likePosts)
   author: UsersModel;
 
-  @ManyToOne(() => PostsModel, (post) => post.likes)
+  @ManyToOne(() => PostsModel, (post) => post.likes, {
+    onDelete: 'CASCADE',
+  })
   post: PostsModel;
 
-  // @ManyToOne(() => CommentsModel, (comment) => comment.like)
-  // comment: CommentsModel;
+  @ManyToOne(() => CommentsModel, (comment) => comment.like, {
+    onDelete: 'CASCADE',
+  })
+  comment: CommentsModel;
 }

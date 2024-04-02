@@ -2,9 +2,9 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersModel } from './entities/users.entity';
 import { QueryRunner, Repository } from 'typeorm';
-import { CreateUserInput, CreateUserOutput } from './dtos/creat-user.dto';
+import { CreateUserInput } from './dtos/creat-user.dto';
 import { UserFollowersModel } from './entities/user-followers.entity';
-import { classToClassFromExist } from 'class-transformer';
+import { EditUserInput } from './dtos/edit-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -84,6 +84,21 @@ export class UsersService {
     }
   }
 
+  async editUser(
+    userId: number,
+    { nickname }: EditUserInput,
+    imageUrl: string[],
+  ) {
+    await this.usersRepository.update(
+      {
+        id: userId,
+      },
+      { nickname, avatar: imageUrl[0] },
+    );
+
+    return true;
+  }
+
   async getAllUsers() {
     return this.usersRepository.find({});
   }
@@ -116,7 +131,6 @@ export class UsersService {
         id: followeeId,
       },
       avatar,
-      standByConfirm: true,
     });
 
     return true;
@@ -174,7 +188,6 @@ export class UsersService {
       nickname: user.followee.nickname,
       email: user.followee.email,
       isConfirmed: user.isConfirmed,
-      standByConfirm: user.standByConfirm,
     }));
   }
 

@@ -10,6 +10,8 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -19,10 +21,16 @@ import { UsersModel } from './entities/users.entity';
 import { TransactionInterceptor } from 'src/common/interceptor/transaction.intercepter';
 import { QueryRunnerDecorator } from 'src/common/decorator/query-runner.decorator';
 import { QueryRunner } from 'typeorm';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { CommonService } from 'src/common/common.service';
+import { EditUserInput } from './dtos/edit-user.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly commonService: CommonService,
+  ) {}
 
   @Get()
   getAllUsers() {
@@ -32,6 +40,27 @@ export class UsersController {
   @Get(':id')
   getFindById(@Param('id', ParseIntPipe) userId: number) {
     return this.usersService.getUserById(userId);
+  }
+
+  @Patch('edit/:id')
+  @UseInterceptors(TransactionInterceptor)
+  @UseInterceptors(FilesInterceptor('files', 1))
+  // @UseInterceptors(FileInterceptor('image'))
+  async editUser(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFiles() files: Express.Multer.File[],
+    // @UploadedFile() files: Express.Multer.File,
+    @QueryRunnerDecorator() qr: QueryRunner,
+    @Body() body: EditUserInput,
+  ) {
+    const imageUrl: string[] = [];
+    await Promise.all(
+      files.map(async (file) => {
+        const url = await this.commonService.fileUpload(file);
+        imageUrl.push(url);
+      }),
+    );
+    return this.usersService.editUser(id, body, imageUrl);
   }
 
   @Post()

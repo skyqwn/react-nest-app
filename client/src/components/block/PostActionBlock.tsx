@@ -2,7 +2,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { FaRegComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
+import { FaHeart } from "react-icons/fa";
 import { useParams } from "react-router-dom";
+
 import { instance } from "../../api/apiconfig";
 import { queryClient } from "../..";
 import { IPost } from "../../types/PostsTypes";
@@ -122,7 +124,11 @@ PostActionBlockProps) => {
         }
         className="flex items-center  justify-center gap-2 hover:text-red-500 cursor-pointer transition active:scale-150"
       >
-        <FaRegHeart className={cls(isLike ? "text-red-500" : "text-black")} />
+        {isLike ? (
+          <FaHeart className="text-red-500" />
+        ) : (
+          <FaRegHeart className="text-black" />
+        )}
         <span>{postLikeCount}</span>
       </div>
     </div>

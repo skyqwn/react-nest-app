@@ -64,6 +64,7 @@ const Posts = () => {
           {page?.data.map((p: IPost) => (
             // <Link to={`/posts/${p.id}`}>
             <div
+              key={p.id}
               onClick={() => handlePostClick(p.id)}
               className="cursor-pointer"
             >

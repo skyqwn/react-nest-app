@@ -13,19 +13,33 @@ import { UsersModel } from 'src/users/entities/users.entity';
 import { TransactionInterceptor } from 'src/common/interceptor/transaction.intercepter';
 import { QueryRunnerDecorator } from 'src/common/decorator/query-runner.decorator';
 import { QueryRunner } from 'typeorm';
+import { CommentsService } from '../comments/comments.service';
 
 @Controller('likes')
 export class LikesController {
-  constructor(private readonly likesService: LikesService) {}
+  constructor(
+    private readonly likesService: LikesService,
+    private readonly commentService: CommentsService,
+  ) {}
 
   @Get('posts/:id')
   @UseInterceptors(TransactionInterceptor)
-  async alreadyLike(
+  async alreadyPostLike(
     @AuthUser() user: UsersModel,
     @Param('id', ParseIntPipe) postId: number,
     @QueryRunnerDecorator() qr: QueryRunner,
   ) {
-    return await this.likesService.alreadyLike(postId, user.id);
+    return await this.likesService.alreadyPostLike(postId, user.id);
+  }
+
+  @Get('comments/alreadyLike/:id')
+  @UseInterceptors(TransactionInterceptor)
+  async alreadyCommentLike(
+    @AuthUser() user: UsersModel,
+    @Param('id', ParseIntPipe) commentId: number,
+    @QueryRunnerDecorator() qr: QueryRunner,
+  ) {
+    return await this.likesService.alreadyCommentLike(user.id, commentId);
   }
 
   @Post('posts/:id')
@@ -46,5 +60,17 @@ export class LikesController {
     @QueryRunnerDecorator() qr: QueryRunner,
   ) {
     return await this.likesService.postDisLikes(id, user, qr);
+  }
+
+  @Post('comments/:id')
+  @UseInterceptors(TransactionInterceptor)
+  async commentLike(
+    @Param('id', ParseIntPipe) id: number,
+    @AuthUser() user: UsersModel,
+    @QueryRunnerDecorator() qr: QueryRunner,
+  ) {
+    await this.likesService.commentLikes(id, user, qr);
+    await this.commentService.incrementLikeCount(id);
+    return true;
   }
 }

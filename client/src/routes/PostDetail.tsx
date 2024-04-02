@@ -1,42 +1,27 @@
-import { useNavigate, useParams } from "react-router-dom";
-import PostActionBlock from "../components/block/PostActionBlock";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { instance } from "../api/apiconfig";
-import { FaRegHeart } from "react-icons/fa6";
-import { IoCloseOutline } from "react-icons/io5";
-import { MdOutlineEdit } from "react-icons/md";
-
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import "dayjs/locale/ko";
-import TextArea from "../components/Inputs/TextArea";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+
+import PostActionBlock from "../components/block/PostActionBlock";
+import TextArea from "../components/Inputs/TextArea";
+import PostCommentBlock from "../components/block/PostCommentBlock";
 import { queryClient } from "..";
-import { useAuthState } from "../context/AuthContext";
-import { authStore } from "../store/AuthStore";
+import { instance } from "../api/apiconfig";
 import { IPost } from "../types/PostsTypes";
 
+import { IoIosArrowBack } from "react-icons/io";
+
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import relativeTime from "dayjs/plugin/relativeTime";
+import UserAvatar from "../components/block/UserAvatar";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
-
-interface IPostComments {
-  author: {
-    avatar: string;
-    nickname: string;
-  };
-  comment: string;
-  createdAt: string;
-  updatedAt: string;
-  id: number;
-  likeCount: number;
-}
 
 const PostDetail = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
-
-  const { authenticated, loading, user } = useAuthState();
 
   const {
     control,
@@ -82,45 +67,10 @@ const PostDetail = () => {
     const res = await instance.get(`/posts/${postId}`);
     return res.data;
   };
-  const fetchPostsComments = async () => {
-    const res = await instance.get(`/posts/${postId}/comments`);
-    return res.data;
-  };
 
   const { data: post } = useQuery<IPost>({
     queryKey: ["posts", postId],
     queryFn: fetchPostsDetail,
-  });
-  const { data: postComments } = useQuery({
-    queryKey: ["posts", postId, "comments"],
-    queryFn: fetchPostsComments,
-  });
-
-  const deleteComment = async (commentId: number) => {
-    if (window.confirm("정말 댓글을 삭제하시겠습니까?")) {
-      await instance.delete(`/posts/${postId}/comments/${commentId}`);
-      toast.success("삭제성공!");
-    }
-  };
-
-  const { mutate: deleteCommentMutate } = useMutation({
-    mutationFn: (commentId: number) => deleteComment(commentId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["posts", postId, "comments"],
-      });
-    },
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["posts", postId] });
-      const prev: any = queryClient.getQueryData(["posts", postId]);
-      const shallow = { ...prev, commentCount: prev.commentCount - 1 };
-      queryClient.setQueryData(["posts", postId], shallow);
-    },
-    onError(error) {
-      const prev: any = queryClient.getQueryData(["posts", postId]);
-      const shallow = { ...prev, commentCount: prev.commentCount + 1 };
-      queryClient.setQueryData(["posts", postId], shallow);
-    },
   });
 
   const backButton = () => {
@@ -145,14 +95,16 @@ const PostDetail = () => {
           // postId={post.id}
         />
         <div className="absolute top-3 left-3" onClick={backButton}>
-          뒤로가기
+          <IoIosArrowBack className="text-3xl bg-neutral-200 size-10 rounded-full hover:bg-neutral-300 transition cursor-pointer" />
         </div>
       </div>
       {/* 오른쪽섹션 */}
       <div className="h-full w-full md:w-[530px] p-3  lg:border-l-[1px] overflow-y-auto">
         <div className=" h-1/6 flex flex-col  ">
           <div className="flex items-center gap-1">
-            <img className="size-10 rounded-full" src={post?.author.avatar} />
+            <Link to={`/profile/${post.author.id}`}>
+              <img className="size-10 rounded-full" src={post?.author.avatar} />
+            </Link>
             <div className="flex flex-col justify-center">
               <div>{post?.author.nickname}</div>
               <div className="text-neutral-400 text-sm">
@@ -162,12 +114,10 @@ const PostDetail = () => {
           </div>
           <div className="mt-2">{post?.content}</div>
           <div className="text-neutral-400 ">
-            {/* <div className="text-neutral-400 mt-10"> */}
             {dayjs(post?.createdAt).format("HH:mm MMM DD, YYYY")}
           </div>
           <div className="h-[450px] flex  gap-3 items-center justify-between border-t-2 mt-1  ">
-            {/* <UserAvatar /> */}
-            <div className="size-10 bg-neutral-400 rounded-full" />
+            <UserAvatar />
             <div>
               <TextArea
                 control={control}
@@ -184,44 +134,9 @@ const PostDetail = () => {
               댓글
             </div>
           </div>
+          {/* 포스트 댓글 */}
           <div className="h-[90px]  md:w-[450px] flex gap-4 flex-col divide-y-[1px]">
-            {postComments?.data.map((comment: IPostComments) => (
-              <div className=" flex flex-col" key={comment.id}>
-                <div className="flex gap-3 w-full h-full  ">
-                  <div className="size-10 ">
-                    <img
-                      className="rounded-full size-10"
-                      src={comment.author.avatar}
-                    />
-                  </div>
-                  <div className="flex flex-1 gap-1 items-start flex-col w-full ">
-                    <div className="flex gap-2 items-center w-full justify-between md:w-[380px] md:justify-start">
-                      <div className="flex gap-2 items-center">
-                        <div>{comment.author.nickname}</div>
-                        <div className="text-xs text-neutral-400">{`@ ${comment.author.nickname}`}</div>
-                        <div className="text-xs text-neutral-400">
-                          {dayjs(comment.createdAt).fromNow()}
-                        </div>
-                      </div>
-                      {user?.nickname === comment.author.nickname && (
-                        <div className=" flex items-center p-1 justify-center gap-2 ">
-                          <IoCloseOutline
-                            className=" ml-10 hover:text-red-500 hover:bg-neutral-300 text-lg  rounded-full cursor-pointer "
-                            onClick={() => deleteCommentMutate(comment.id)}
-                          />
-                          <MdOutlineEdit className="hover:text-blue-500 hover:bg-neutral-300  rounded-full cursor-pointer" />
-                        </div>
-                      )}
-                    </div>
-                    <div>{comment.comment}</div>
-                    <div className="hover:text-red-500 flex items-center justify-center gap-1 cursor-pointer">
-                      <FaRegHeart />
-                      <div>{comment.likeCount}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+            <PostCommentBlock />
           </div>
         </div>
       </div>

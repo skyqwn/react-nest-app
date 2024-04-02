@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from 'class-validator';
 import { BaseModel } from 'src/common/entities/base.entity';
 import { PostsModel } from 'src/posts/entities/posts.entity';
 import { LikesModel } from 'src/posts/likes/entities/likes.entity';
@@ -21,6 +21,9 @@ export class CommentsModel extends BaseModel {
   @IsNumber()
   likeCount: number;
 
-  // @OneToMany(() => LikesModel, (like) => like.comment)
-  // like: LikesModel;
+  @OneToMany(() => LikesModel, (like) => like.comment)
+  like: LikesModel;
+
+  @Column('text', { array: true, default: [] })
+  commentLikeUsers: number[];
 }

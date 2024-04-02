@@ -37,13 +37,22 @@ export class CommentsController {
     @Param('postId', ParseIntPipe) postId: number,
     @Query() query: PaginateCommentsDto,
   ) {
-    return this.commentsService.paginateComments(query, postId);
+    return this.commentsService.fetchComments(postId);
+    // return this.commentsService.paginateComments(query, postId);
   }
 
   @Get(':commentId')
   @IsPublic()
   getComment(@Param('commentId', ParseIntPipe) commentId: number) {
     return this.commentsService.getCommentById(commentId);
+  }
+
+  @Get('already/:commentId')
+  async getAlreadyComment(
+    @Param('commentId', ParseIntPipe) commentId: number,
+    @AuthUser() author: UsersModel,
+  ) {
+    return this.commentsService.alreadyLike(author.id, commentId);
   }
 
   @Post()

@@ -19,9 +19,6 @@ export class UserFollowersModel extends BaseModel {
   })
   isConfirmed: boolean;
 
-  @Column({ default: false })
-  standByConfirm: boolean;
-
   @Column({ nullable: true })
   avatar: string;
 }

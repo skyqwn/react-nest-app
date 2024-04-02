@@ -4,6 +4,7 @@ import { LikesModel } from './entities/likes.entity';
 import { QueryRunner, Repository } from 'typeorm';
 import { UsersModel } from 'src/users/entities/users.entity';
 import { PostsService } from '../posts.service';
+import { CommentsService } from '../comments/comments.service';
 
 @Injectable()
 export class LikesService {
@@ -11,6 +12,7 @@ export class LikesService {
     @InjectRepository(LikesModel)
     private readonly likesRepository: Repository<LikesModel>,
     private readonly postsService: PostsService,
+    private readonly commentsService: CommentsService,
   ) {}
 
   getRepositoy(qr: QueryRunner) {
@@ -19,7 +21,7 @@ export class LikesService {
       : this.likesRepository;
   }
 
-  async alreadyLike(postId: number, userId: number) {
+  async alreadyPostLike(postId: number, userId: number) {
     const alreadyLike = await this.likesRepository.exists({
       where: {
         author: {
@@ -31,9 +33,33 @@ export class LikesService {
       },
     });
 
-    console.log(alreadyLike);
-
     return alreadyLike;
+  }
+
+  async alreadyCommentLike(userId: number, commentId: number) {
+    const alreadyCommentLike = await this.likesRepository.find({
+      where: {
+        author: {
+          id: userId,
+        },
+        comment: {
+          id: commentId,
+        },
+      },
+      relations: {
+        author: true,
+        comment: true,
+      },
+      select: {
+        comment: {
+          commentLikeUsers: true,
+        },
+      },
+    });
+
+    console.log(alreadyCommentLike);
+
+    return alreadyCommentLike;
   }
 
   async postLikes(postId: number, author: UsersModel, qr?: QueryRunner) {
@@ -62,6 +88,19 @@ export class LikesService {
     });
 
     await this.postsService.decrementLikeCount(postId);
+
+    return true;
+  }
+
+  async commentLikes(commentId: number, author: UsersModel, qr?: QueryRunner) {
+    await this.likesRepository.save({
+      author,
+      comment: {
+        id: commentId,
+      },
+    });
+
+    await this.commentsService.includeLikeUsers(author.id, commentId);
 
     return true;
   }

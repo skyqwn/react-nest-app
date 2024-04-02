@@ -1,6 +1,13 @@
 import { IsEmail, IsEnum, IsString } from 'class-validator';
 import { BaseModel } from 'src/common/entities/base.entity';
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { ProviderEnum, RolesEnum } from '../constant/roles.constant';
 import { PostsModel } from 'src/posts/entities/posts.entity';
 import { Exclude } from 'class-transformer';

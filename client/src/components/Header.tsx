@@ -7,6 +7,9 @@ import { authStore } from "../store/AuthStore";
 import { instance } from "../api/apiconfig";
 import UserAvatar from "./block/UserAvatar";
 
+import { SiNestjs } from "react-icons/si";
+import { TbBrandReact } from "react-icons/tb";
+
 const Header = () => {
   const { onOpen } = authStore();
   const { authenticated, loading } = useAuthState();
@@ -33,8 +36,9 @@ const Header = () => {
       <div className=" max-w-screen-xl mx-auto">
         <div className="h-full flex items-center justify-between mx-auto">
           <Link to={"/"}>
-            <div className="size-10  bg-orange-500 rounded-full flex items-center justify-center">
-              Logo
+            <div className="  rounded-full flex items-center justify-center gap-2">
+              <TbBrandReact className="text-2xl" /> &
+              <SiNestjs className="text-2xl" />
             </div>
           </Link>
 

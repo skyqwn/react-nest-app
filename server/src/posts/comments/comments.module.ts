@@ -17,6 +17,7 @@ import { PostExistMiddleware } from './middleware/post-exist.middleware';
   ],
   controllers: [CommentsController],
   providers: [CommentsService],
+  exports: [CommentsService],
 })
 export class CommentsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
