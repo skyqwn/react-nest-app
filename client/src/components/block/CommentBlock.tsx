@@ -34,13 +34,10 @@ const CommentBlock = ({ comment, postId }: CommentProps) => {
     queryKey: ["comment", "alreadyLike"],
     queryFn: () => fetchAlreadyCommentLike(comment.id),
   });
-  console.log(alreadyCommentLike);
 
   const isLike = !!alreadyCommentLike?.find(
     (v: any) => v.author.id === user?.id
   );
-
-  console.log(isLike);
 
   const test = async (commentId: number) => {
     const res = await instance.get(
@@ -53,8 +50,6 @@ const CommentBlock = ({ comment, postId }: CommentProps) => {
     queryKey: ["comment", "alreadyLike"],
     queryFn: () => test(comment.id),
   });
-
-  console.log(textAlready);
 
   //   console.log(alreadyCommentLike.find(user?.id));
 

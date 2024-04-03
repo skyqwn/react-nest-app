@@ -2,6 +2,7 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../buttons/Button";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
+import { IoMdClose } from "react-icons/io";
 
 interface ModalProps {
   isOpen: boolean;
@@ -44,22 +45,22 @@ const Modal = ({
             initial={modalItemVariants.start}
             animate={modalItemVariants.end}
             exit={modalItemVariants.exit}
-            className="h-full  sm:h-2/3 w-full sm:w-2/3 lg:w-1/2 bg-white rounded flex flex-col "
+            className="h-full  sm:h-2/4 w-full sm:w-2/3 lg:w-1/3 bg-white rounded flex flex-col "
           >
             {/* modal head */}
             <div className="relative h-16 font-bold text-xl flex items-center justify-center">
               <div className="text-center">{label}</div>
               <div
-                className="absolute  h-full w-16 right-0 flex items-center justify-center hover:opacity-50"
+                className="absolute cursor-pointer  h-full w-16 right-0 flex items-center justify-center hover:opacity-50"
                 onClick={onClose}
               >
-                ❌{/* <AiOutlineClose size={24} /> */}
+                <IoMdClose />
               </div>
             </div>
             {/* modal body */}
             <div className="flex-1 px-6">{body}</div>
             {/* modal footer */}
-            <div className="px-6 py-4 flex gap-6  ">
+            <div className="px-6 py-4 flex gap-6 items-center justify-end   ">
               {secondActionLabel && secondAction && (
                 <Button
                   actionText={secondActionLabel}

@@ -1,6 +1,7 @@
 import { ChangeEvent, useRef } from "react";
 import { Control, FieldErrors, useController } from "react-hook-form";
 import { cls } from "../../libs/util";
+import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 
 interface FileInputProps {
   name: string;
@@ -27,6 +28,9 @@ const FileInput = ({
 }: FileInputProps) => {
   const ref = useRef<HTMLInputElement>(null);
   const { field } = useController({ control, name, rules: { required } });
+  const onClickButton = () => {
+    ref.current?.click();
+  };
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const array = [...field.value];
     const oneArr = [];
@@ -57,19 +61,14 @@ const FileInput = ({
         name={field.name}
         onChange={onChange}
         className={cls(
-          "w-full outline-none px-4 pt-6 pb-2 border-2 focus:border-neutral-700 rounded peer transition disabled:cursor-not-allowed disabled:opacity-70 hidden",
+          "w-full  outline-none px-4 pt-6 pb-2 border-2 focus:border-neutral-700 rounded transition disabled:cursor-not-allowed disabled:opacity-70 hidden",
           small ? "px-4 pt-4 pb-2" : "px-4 pt-7 pb-3"
         )}
       />
-      <div
-        onClick={() => ref.current?.focus()}
-        className={cls(
-          "absolute origin-[0] font-bold left-4 text-xs scale-100 text-neutral-400 peer-placeholder-shown:scale-100 peer-focus:text-neutral-700 peer-focus:scale-105 cursor-text transition peer-disabled:cursor-not-allowed",
-          small ? "top-1" : "top-2 "
-        )}
-      >
-        {label}
-      </div>
+      <MdOutlineAddPhotoAlternate
+        onClick={onClickButton}
+        className="text-2xl  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer  rounded-full "
+      />
     </div>
   );
 };

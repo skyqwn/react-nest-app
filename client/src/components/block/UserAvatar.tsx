@@ -15,7 +15,7 @@ const UserAvatar = ({ big }: UserAvatarProps) => {
         "rounded-full  relative flex items-center justify-center ",
         big ? "size-40" : "size-10"
       )}
-      src={user.avatar ? user.avatar : "imgs/user.png"}
+      src={user?.avatar ? user?.avatar : "imgs/user.png"}
     />
   );
 };

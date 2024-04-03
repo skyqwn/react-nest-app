@@ -6,4 +6,10 @@
   .nav-pill {
     @apply flex items-center justify-start gap-3 p-2 text-xl bg-transparent hover:bg-neutral-300 rounded-full w-52 transition;
   }
+  .inset-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }

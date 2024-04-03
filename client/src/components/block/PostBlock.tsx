@@ -1,8 +1,6 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { FaRegComment } from "react-icons/fa";
-import { FaRegHeart } from "react-icons/fa6";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
@@ -16,13 +14,25 @@ import { useMutation } from "@tanstack/react-query";
 import { instance } from "../../api/apiconfig";
 import { IPost } from "../../types/PostsTypes";
 import PostActionBlock from "./PostActionBlock";
+import { useAuthState } from "../../context/AuthContext";
 
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 
 const PostBlock = ({ post }: { post: IPost }) => {
+  const { user } = useAuthState();
+
+  const isLike = useMemo(() => {
+    if (post) {
+      return post?.likeUsers?.includes(user?.id! + "") ? true : false;
+    }
+    return false;
+  }, [post]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
+
   const navigate = useNavigate();
+
   const nextSlide = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     setCurrentIndex((prevIndex) =>
@@ -91,44 +101,47 @@ const PostBlock = ({ post }: { post: IPost }) => {
           {/* 게시글 Content */}
           <div className="mb-2">{post.content}</div>
           {/* 게시글하고 사진들 */}
-          <div className="relative h-5/6 flex overflow-hidden bg-red-500 items-center">
-            {currentIndex !== 0 && (
+          {post.images && (
+            <div className="relative h-5/6 flex overflow-hidden bg-red-500 items-center">
+              {currentIndex !== 0 && (
+                <div
+                  onClick={prevSlide}
+                  className="absolute text-white text-4xl left-3 bg-neutral-400 flex items-center justify-center hover:bg-neutral-400 rounded-full cursor-pointer z-10"
+                >
+                  <IoIosArrowBack />
+                </div>
+              )}
               <div
-                onClick={prevSlide}
-                className="absolute text-white text-4xl left-3 bg-neutral-400 flex items-center justify-center hover:bg-neutral-400 rounded-full cursor-pointer z-10"
+                className="w-full h-full flex transition-transform duration-300"
+                style={{
+                  transform: `translateX(-${currentIndex * 100}%)`,
+                }}
               >
-                <IoIosArrowBack />
+                {post.images.map((image, index) => (
+                  <img
+                    key={index}
+                    className="object-fill border w-full h-full border-neutral-300"
+                    src={image}
+                    alt={`Image ${index}`}
+                  />
+                ))}
               </div>
-            )}
-            <div
-              className="w-full h-full flex transition-transform duration-300"
-              style={{
-                transform: `translateX(-${currentIndex * 100}%)`,
-              }}
-            >
-              {post.images.map((image, index) => (
-                <img
-                  key={index}
-                  className="object-fill border w-full h-full border-neutral-300"
-                  src={image}
-                  alt={`Image ${index}`}
-                />
-              ))}
+              {currentIndex !== post.images.length - 1 && (
+                <div
+                  onClick={nextSlide}
+                  className="absolute text-white text-4xl right-3 bg-neutral-400 flex items-center justify-center hover:bg-neutral-500 rounded-full cursor-pointer"
+                >
+                  <IoIosArrowForward />
+                </div>
+              )}
             </div>
-            {currentIndex !== post.images.length - 1 && (
-              <div
-                onClick={nextSlide}
-                className="absolute text-white text-4xl right-3 bg-neutral-400 flex items-center justify-center hover:bg-neutral-500 rounded-full cursor-pointer"
-              >
-                <IoIosArrowForward />
-              </div>
-            )}
-          </div>
+          )}
           {/* 좋아요 버튼 댓글버튼 */}
           <PostActionBlock
             postCommentCount={+post.commentCount}
             postLikeCount={+post.likeCount}
-            // postId={postId}
+            postId={post.id}
+            isLike={isLike}
           />
           {/* <div className="flex justify-around mt-2 mb-2">
             <div className="flex items-center justify-center gap-2 hover:text-blue-500">

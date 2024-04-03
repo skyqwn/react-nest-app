@@ -39,11 +39,6 @@ export class PostsController {
     return this.postsService.paginatePosts(query);
   }
 
-  // @Post('random')
-  // async postPostsRandom(@AuthUser() user: UsersModel) {
-  //   await this.postsService.generatePosts(user.id);
-  // }
-
   @Get(':id')
   @IsPublic()
   getPostById(@Param('id', ParseIntPipe) id: number) {

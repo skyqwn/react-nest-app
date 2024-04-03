@@ -73,14 +73,14 @@ const EditProfileModal = () => {
         <label htmlFor="avatar" className="">
           <img src={previewImage} className="size-32 rounded-full " />
         </label>
-        <div
+        {/* <div
           onClick={() => {
             setValue("previewImage", NO_USER_IMAGE_SRC);
           }}
           className="absolute top-2 right-10 text-lg cursor-pointer bg-white border rounded-full w-8 h-8 flex items-center justify-center hover:ring-2 hover:ring-purple-300 "
         >
           ❌
-        </div>
+        </div> */}
       </div>
       <FileInput
         control={control}

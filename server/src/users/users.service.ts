@@ -118,60 +118,42 @@ export class UsersService {
     });
   }
 
-  async followUser(followerId: number, followeeId: number, qr?: QueryRunner) {
+  async followUser(followerId: number, userId: number, qr?: QueryRunner) {
     const userFollowersRepository = this.getUserFolloweRepository(qr);
-    const user = await this.getUserById(followerId);
-    const { avatar } = user;
 
     const result = await userFollowersRepository.save({
       follower: {
         id: followerId,
       },
       followee: {
-        id: followeeId,
+        id: userId,
       },
-      avatar,
     });
 
-    return true;
+    return result;
   }
 
-  async getConfirmFollow(userId: number) {
-    const result = await this.userFollowersRepository.find({
+  //followee가 받은사람
+
+  async patchFollow(followId: number, userId: number) {
+    const follow = await this.userFollowersRepository.findOne({
       where: {
-        isConfirmed: true,
+        id: followId,
       },
       relations: {
+        followee: true,
         follower: true,
       },
     });
-    return result.map((user) => ({
-      id: user.follower.id,
-      nickname: user.follower.nickname,
-      email: user.follower.email,
-      isConfirmed: user.isConfirmed,
-      avatar: user.avatar,
-    }));
+    if (follow.followee.id !== userId) {
+      throw new BadRequestException('잘못된 접근입니다.');
+    }
+    follow.status = 'CONFIRMED';
+    await this.userFollowersRepository.save(follow);
+    return { followeeId: follow.followee.id, followerId: follow.follower.id };
   }
 
-  async getNotConfirmFollow(userId: number) {
-    const result = await this.userFollowersRepository.find({
-      where: {
-        isConfirmed: false,
-      },
-      relations: {
-        follower: true,
-      },
-    });
-    return result.map((user) => ({
-      id: user.follower.id,
-      nickname: user.follower.nickname,
-      email: user.follower.email,
-      isConfirmed: user.isConfirmed,
-      avatar: user.avatar,
-    }));
-  }
-
+  //내가 팔로워 요청받은거
   async getFollowees(userId: number) {
     const result = await this.userFollowersRepository.find({
       where: {
@@ -183,12 +165,7 @@ export class UsersService {
         followee: true,
       },
     });
-    return result.map((user) => ({
-      id: user.followee.id,
-      nickname: user.followee.nickname,
-      email: user.followee.email,
-      isConfirmed: user.isConfirmed,
-    }));
+    return result;
   }
 
   async getFolloweeById(userId: number, followeeId: number) {

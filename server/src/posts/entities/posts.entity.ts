@@ -34,6 +34,10 @@ export class PostsModel extends BaseModel {
   @IsNumber()
   commentCount: number;
 
+  @Column('text', { nullable: true, array: true, default: [] })
+  @IsString()
+  likeUsers: string[];
+
   @OneToMany(() => CommentsModel, (comment) => comment.post)
   comments: CommentsModel[];
 

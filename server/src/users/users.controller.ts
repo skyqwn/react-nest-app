@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   Query,
-  UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -21,7 +20,7 @@ import { UsersModel } from './entities/users.entity';
 import { TransactionInterceptor } from 'src/common/interceptor/transaction.intercepter';
 import { QueryRunnerDecorator } from 'src/common/decorator/query-runner.decorator';
 import { QueryRunner } from 'typeorm';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { CommonService } from 'src/common/common.service';
 import { EditUserInput } from './dtos/edit-user.dto';
 
@@ -92,22 +91,13 @@ export class UsersController {
     return await this.usersService.getFolloweeById(user.id, followeeId);
   }
 
-  @Get('follow/me/confirm')
-  async getConfirmFollow(@AuthUser() user: UsersModel) {
-    return await this.usersService.getConfirmFollow(user.id);
-  }
-
-  @Get('follow/me/notconfirm')
-  async getNotConfirmFollow(@AuthUser() user: UsersModel) {
-    return await this.usersService.getNotConfirmFollow(user.id);
-  }
-
+  //팔로우 요청
   @Post('follow/:id')
   async postFollow(
     @AuthUser() user: UsersModel,
-    @Param('id', ParseIntPipe) followeeId: number,
+    @Param('id', ParseIntPipe) followerId: number,
   ) {
-    return await this.usersService.followUser(user.id, followeeId);
+    return await this.usersService.followUser(followerId, user.id);
   }
 
   @Patch('follow/:id/confirm')
@@ -119,9 +109,18 @@ export class UsersController {
     @Param('id', ParseIntPipe) followerId: number,
   ) {
     await this.usersService.confirmFollow(followerId, user.id, qr);
+  }
 
+  @Patch('follow/:id')
+  async patchFollow(
+    @AuthUser() user: UsersModel,
+    @Param('id', ParseIntPipe) id: number,
+    @QueryRunnerDecorator() qr: QueryRunner,
+  ) {
+    const result = await this.usersService.patchFollow(id, user.id);
+    await this.usersService.incrementFollweeCount(result.followeeId, qr);
     await this.usersService.incrementFollowerCount(user.id, qr);
-    await this.usersService.incrementFollweeCount(followerId, qr);
+
     return true;
   }
 

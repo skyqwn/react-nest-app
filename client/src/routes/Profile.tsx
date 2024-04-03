@@ -8,8 +8,6 @@ import { useAuthState } from "../context/AuthContext";
 
 import { IoCalendarOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
-import { queryClient } from "..";
-import { useState } from "react";
 import { useEditProfile } from "../store/ProfilStore";
 
 dayjs.locale("ko");
@@ -26,17 +24,9 @@ interface IProfile {
   followeeCount: number;
 }
 
-interface IFollowConfirm {
-  avatar: string;
-  createdAt: string;
-  id: number;
-  isConfirmed: boolean;
-  updatedAt: string;
-}
-
 const Profile = () => {
   const { id } = useParams();
-  const { user: loggedInUser } = useAuthState();
+  const { user: loggedInUser, authenticated } = useAuthState();
   const { onOpen } = useEditProfile();
 
   const fetchUserProfile = async () => {
@@ -55,17 +45,11 @@ const Profile = () => {
     return res.data;
   };
 
-  const { mutate, data } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: handleFollowing,
     onSuccess: () => {
       toast.success("팔로우 요청을 하였습니다.");
-    },
-    onMutate: () => {
-      const value: IFollowConfirm | undefined = queryClient.getQueryData([
-        "user",
-        "followee",
-      ]);
-      console.log(value);
+      refetch();
     },
   });
 
@@ -74,37 +58,13 @@ const Profile = () => {
     return res.data;
   };
 
-  const { data: followee } = useQuery({
+  const { data: fetchFollow, refetch } = useQuery({
     queryKey: ["user", "followee"],
     queryFn: fetchFollowee,
   });
 
-  const deleteFollowHandler = async (id: number) => {
-    await instance.delete(`/users/follow/${id}`);
-  };
-
-  const { mutate: deleteFollowMutate } = useMutation({
-    mutationFn: deleteFollowHandler,
-    onSuccess: () => {
-      toast.success("팔로우 삭제");
-      queryClient.invalidateQueries({
-        queryKey: ["followee", "me"],
-      });
-    },
-    onMutate: async () => {
-      const prev = queryClient.getQueryData(["followee", "me"]);
-      if (prev) {
-        console.log(prev);
-      } else {
-        console.log(2);
-      }
-    },
-  });
-
-  const isFolloing = !!followee;
-  console.log(isFolloing);
-  console.log(followee);
   if (!user) return null;
+  if (!authenticated) return null;
 
   return (
     <Layout>
@@ -127,7 +87,12 @@ const Profile = () => {
                 onClick={() => mutate(user.id)}
                 className="border rounded-xl  p-2 font-bold hover:bg-neutral-300 cursor-pointer transition"
               >
-                {isFolloing ? "요청됨" : "팔로잉"}
+                {/* {followee.status === "default" ? "팔로잉" :followee.status === "pending" ? "요청됨" : "친구됨"} */}
+                {!fetchFollow
+                  ? "팔로잉"
+                  : fetchFollow.status === "PENDING"
+                  ? "요청됨"
+                  : "친구됨"}
               </div>
             )}
           </div>

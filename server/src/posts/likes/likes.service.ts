@@ -1,18 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LikesModel } from './entities/likes.entity';
-import { QueryRunner, Repository } from 'typeorm';
+import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { UsersModel } from 'src/users/entities/users.entity';
 import { PostsService } from '../posts.service';
 import { CommentsService } from '../comments/comments.service';
+import { PostsModel } from '../entities/posts.entity';
 
 @Injectable()
 export class LikesService {
   constructor(
     @InjectRepository(LikesModel)
     private readonly likesRepository: Repository<LikesModel>,
+    @InjectRepository(PostsModel)
+    private readonly postsRepository: Repository<PostsModel>,
     private readonly postsService: PostsService,
     private readonly commentsService: CommentsService,
+    private readonly dataSource: DataSource,
   ) {}
 
   getRepositoy(qr: QueryRunner) {
@@ -71,7 +75,26 @@ export class LikesService {
         id: postId,
       },
     });
+    // await this.postsRepository.update(
+    //   {
+    //     id: postId,
+    //   },
+    //   { likeUsers: inse },
+    // );
+    // const post = await this.postsRepository.findOne({
+    //   where: {
+    //     id: postId,
+    //   },
+    // });
 
+    // await this.postsRepository.update(
+    //   {
+    //     id: postId,
+    //   },
+    //   {
+    //     likeUsers: [...post.likeUsers, author.id],
+    //   },
+    // );
     await this.postsService.increamentLikeCount(postId);
 
     return true;

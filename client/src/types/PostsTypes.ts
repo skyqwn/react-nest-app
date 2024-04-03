@@ -8,6 +8,7 @@ export interface IPost {
   commentCount: string;
   author: IAuhor;
   images: string[];
+  likeUsers: string[];
 }
 
 export interface IAuhor {

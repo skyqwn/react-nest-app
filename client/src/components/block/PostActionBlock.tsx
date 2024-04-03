@@ -8,29 +8,32 @@ import { useParams } from "react-router-dom";
 import { instance } from "../../api/apiconfig";
 import { queryClient } from "../..";
 import { IPost } from "../../types/PostsTypes";
-import { cls } from "../../libs/util";
 
 interface PostActionBlockProps {
   postCommentCount: number | undefined;
   postLikeCount: number | undefined;
-  // postId?: number;
+  postId?: number;
+  isLike?: boolean;
 }
 
 const PostActionBlock = ({
   postCommentCount,
   postLikeCount,
+  postId,
+  isLike,
 }: // postId,
 PostActionBlockProps) => {
-  const { postId } = useParams();
+  // const { postId } = useParams();
+
   const fetchAlreadyLike = async (postId: number) => {
     const res = await instance.get(`/likes/posts/${postId}`);
     return res.data;
   };
 
-  const { data: isLike } = useQuery({
-    queryKey: ["likes", "posts", postId],
-    queryFn: () => fetchAlreadyLike(+postId!),
-  });
+  // const { data: isLike } = useQuery({
+  //   queryKey: ["likes", "posts", postId],
+  //   queryFn: () => fetchAlreadyLike(+postId!),
+  // });
 
   const likeMutate = async (postId: number) => {
     await instance.post(`/likes/posts/${postId}`);

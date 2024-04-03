@@ -16,6 +16,9 @@ import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import relativeTime from "dayjs/plugin/relativeTime";
 import UserAvatar from "../components/block/UserAvatar";
+import { useMemo } from "react";
+import { useAuthState } from "../context/AuthContext";
+import useIncludes from "../hooks/useIncludes";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 
@@ -29,6 +32,7 @@ const PostDetail = () => {
     formState: { errors },
     reset,
   } = useForm<FieldValues>({});
+  const { user } = useAuthState();
 
   const createComment = async (data: FieldValues) => {
     await instance.post(`/posts/${postId}/comments`, data);
@@ -73,6 +77,8 @@ const PostDetail = () => {
     queryFn: fetchPostsDetail,
   });
 
+  const isLike = useIncludes(post?.likeUsers!, user?.id + "");
+
   const backButton = () => {
     navigate(-1);
   };
@@ -92,7 +98,8 @@ const PostDetail = () => {
         <PostActionBlock
           postCommentCount={+post.commentCount}
           postLikeCount={+post.likeCount}
-          // postId={post.id}
+          postId={post.id}
+          isLike={isLike}
         />
         <div className="absolute top-3 left-3" onClick={backButton}>
           <IoIosArrowBack className="text-3xl bg-neutral-200 size-10 rounded-full hover:bg-neutral-300 transition cursor-pointer" />

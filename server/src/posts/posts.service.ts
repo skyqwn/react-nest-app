@@ -5,7 +5,6 @@ import {
   FindOptionsWhere,
   LessThan,
   MoreThan,
-  Not,
   QueryRunner,
   Repository,
 } from 'typeorm';
