@@ -72,12 +72,17 @@ const PostDetail = () => {
     return res.data;
   };
 
-  const { data: post } = useQuery<IPost>({
+  const { data: post, refetch } = useQuery<IPost>({
     queryKey: ["posts", postId],
     queryFn: fetchPostsDetail,
   });
 
-  const isLike = useIncludes(post?.likeUsers!, user?.id + "");
+  const isLike = useMemo(() => {
+    if (post) {
+      return post?.likeUsers?.includes(user?.id! + "") ? true : false;
+    }
+    return false;
+  }, [post]);
 
   const backButton = () => {
     navigate(-1);
@@ -100,6 +105,7 @@ const PostDetail = () => {
           postLikeCount={+post.likeCount}
           postId={post.id}
           isLike={isLike}
+          refetch={refetch}
         />
         <div className="absolute top-3 left-3" onClick={backButton}>
           <IoIosArrowBack className="text-3xl bg-neutral-200 size-10 rounded-full hover:bg-neutral-300 transition cursor-pointer" />

@@ -22,26 +22,6 @@ export class LikesController {
     private readonly commentService: CommentsService,
   ) {}
 
-  @Get('posts/:id')
-  @UseInterceptors(TransactionInterceptor)
-  async alreadyPostLike(
-    @AuthUser() user: UsersModel,
-    @Param('id', ParseIntPipe) postId: number,
-    @QueryRunnerDecorator() qr: QueryRunner,
-  ) {
-    return await this.likesService.alreadyPostLike(postId, user.id);
-  }
-
-  @Get('comments/alreadyLike/:id')
-  @UseInterceptors(TransactionInterceptor)
-  async alreadyCommentLike(
-    @AuthUser() user: UsersModel,
-    @Param('id', ParseIntPipe) commentId: number,
-    @QueryRunnerDecorator() qr: QueryRunner,
-  ) {
-    return await this.likesService.alreadyCommentLike(user.id, commentId);
-  }
-
   @Post('posts/:id')
   @UseInterceptors(TransactionInterceptor)
   async postLike(
@@ -59,7 +39,7 @@ export class LikesController {
     @AuthUser() user: UsersModel,
     @QueryRunnerDecorator() qr: QueryRunner,
   ) {
-    return await this.likesService.postDisLikes(id, user, qr);
+    return await this.likesService.postUnLikes(id, user, qr);
   }
 
   @Post('comments/:id')
@@ -72,5 +52,16 @@ export class LikesController {
     await this.likesService.commentLikes(id, user, qr);
     await this.commentService.incrementLikeCount(id);
     return true;
+  }
+
+  @Delete('comments/:id')
+  @UseInterceptors(TransactionInterceptor)
+  async commentUnlike(
+    @Param('id', ParseIntPipe) id: number,
+    @AuthUser() user: UsersModel,
+    @QueryRunnerDecorator() qr: QueryRunner,
+  ) {
+    await this.likesService.commentUnlikes(id, user, qr);
+    await this.commentService.decrementLikeCount(id);
   }
 }

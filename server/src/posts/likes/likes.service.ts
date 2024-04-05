@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LikesModel } from './entities/likes.entity';
-import { DataSource, QueryRunner, Repository } from 'typeorm';
+import { ChildEntity, DataSource, QueryRunner, Repository } from 'typeorm';
 import { UsersModel } from 'src/users/entities/users.entity';
 import { PostsService } from '../posts.service';
 import { CommentsService } from '../comments/comments.service';
@@ -25,47 +25,6 @@ export class LikesService {
       : this.likesRepository;
   }
 
-  async alreadyPostLike(postId: number, userId: number) {
-    const alreadyLike = await this.likesRepository.exists({
-      where: {
-        author: {
-          id: userId,
-        },
-        post: {
-          id: postId,
-        },
-      },
-    });
-
-    return alreadyLike;
-  }
-
-  async alreadyCommentLike(userId: number, commentId: number) {
-    const alreadyCommentLike = await this.likesRepository.find({
-      where: {
-        author: {
-          id: userId,
-        },
-        comment: {
-          id: commentId,
-        },
-      },
-      relations: {
-        author: true,
-        comment: true,
-      },
-      select: {
-        comment: {
-          commentLikeUsers: true,
-        },
-      },
-    });
-
-    console.log(alreadyCommentLike);
-
-    return alreadyCommentLike;
-  }
-
   async postLikes(postId: number, author: UsersModel, qr?: QueryRunner) {
     const likesRepository = this.getRepositoy(qr);
 
@@ -75,56 +34,100 @@ export class LikesService {
         id: postId,
       },
     });
-    // await this.postsRepository.update(
-    //   {
-    //     id: postId,
-    //   },
-    //   { likeUsers: inse },
-    // );
-    // const post = await this.postsRepository.findOne({
-    //   where: {
-    //     id: postId,
-    //   },
-    // });
 
-    // await this.postsRepository.update(
-    //   {
-    //     id: postId,
-    //   },
-    //   {
-    //     likeUsers: [...post.likeUsers, author.id],
-    //   },
     // );
+    const post = await this.postsRepository.findOne({
+      where: {
+        id: postId,
+      },
+    });
+
+    await this.postsRepository.update(
+      {
+        id: postId,
+      },
+      {
+        likeUsers: [...post.likeUsers, author.id + ''],
+      },
+    );
     await this.postsService.increamentLikeCount(postId);
 
     return true;
   }
 
-  async postDisLikes(postId: number, author: UsersModel, qr?: QueryRunner) {
-    const likesRepository = this.getRepositoy(qr);
+  async postUnLikes(postId: number, author: UsersModel, qr?: QueryRunner) {
+    try {
+      const likesRepository = this.getRepositoy(qr);
 
-    await likesRepository.delete({
-      author,
-      post: {
-        id: postId,
-      },
-    });
+      await likesRepository.delete({
+        author,
+        post: {
+          id: postId,
+        },
+      });
 
-    await this.postsService.decrementLikeCount(postId);
+      const post = await this.postsRepository.findOne({
+        where: {
+          id: postId,
+        },
+      });
 
-    return true;
+      const newPostLikeUsers = post.likeUsers.filter(
+        (v) => v !== author.id + '',
+      );
+
+      await this.postsRepository.update(
+        {
+          id: postId,
+        },
+        {
+          likeUsers: newPostLikeUsers,
+        },
+      );
+
+      await this.postsService.decrementLikeCount(postId);
+
+      return true;
+    } catch (error) {
+      throw new BadRequestException('서버 에러 발생');
+    }
   }
 
   async commentLikes(commentId: number, author: UsersModel, qr?: QueryRunner) {
-    await this.likesRepository.save({
-      author,
-      comment: {
-        id: commentId,
-      },
-    });
+    try {
+      await this.likesRepository.save({
+        author,
+        comment: {
+          id: commentId,
+        },
+      });
 
-    await this.commentsService.includeLikeUsers(author.id, commentId);
+      await this.commentsService.includeLikeUsers(author.id, commentId);
 
-    return true;
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async commentUnlikes(
+    commentId: number,
+    author: UsersModel,
+    qr?: QueryRunner,
+  ) {
+    try {
+      await this.likesRepository.delete({
+        author,
+        comment: {
+          id: commentId,
+        },
+      });
+
+      await this.commentsService.excludeLikeUsers(author.id, commentId);
+
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

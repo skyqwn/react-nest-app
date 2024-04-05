@@ -14,61 +14,54 @@ interface PostActionBlockProps {
   postLikeCount: number | undefined;
   postId?: number;
   isLike?: boolean;
+  refetch: () => void;
 }
 
 const PostActionBlock = ({
   postCommentCount,
   postLikeCount,
-  postId,
   isLike,
-}: // postId,
-PostActionBlockProps) => {
-  // const { postId } = useParams();
-
-  const fetchAlreadyLike = async (postId: number) => {
-    const res = await instance.get(`/likes/posts/${postId}`);
-    return res.data;
-  };
-
-  // const { data: isLike } = useQuery({
-  //   queryKey: ["likes", "posts", postId],
-  //   queryFn: () => fetchAlreadyLike(+postId!),
-  // });
-
+  postId,
+  refetch,
+}: PostActionBlockProps) => {
+  // const {postId} = useParams();
   const likeMutate = async (postId: number) => {
     await instance.post(`/likes/posts/${postId}`);
   };
 
   const { mutate: likeMutation } = useMutation({
     mutationFn: likeMutate,
-    onMutate: () => {
-      const prev: IPost | undefined = queryClient.getQueryData([
-        "posts",
-        postId,
-      ]);
-      const prevIsLike: boolean | undefined = queryClient.getQueryData([
-        "likes",
-        "posts",
-        postId,
-      ]);
-      const shallow = { ...prev, likeCount: +prev?.likeCount! + 1 };
-      queryClient.setQueryData(["posts", postId], shallow);
-      queryClient.setQueryData(["likes", "posts", postId], !prevIsLike);
-    },
-    onError: () => {
-      const prev: IPost | undefined = queryClient.getQueryData([
-        "posts",
-        postId,
-      ]);
-      const prevIsLike: boolean | undefined = queryClient.getQueryData([
-        "likes",
-        "posts",
-        postId,
-      ]);
-      const shallow = { ...prev, likeCount: +prev?.likeCount! - 1 };
-      queryClient.setQueryData(["posts", postId], shallow);
-      queryClient.setQueryData(["likes", "posts", postId], !prevIsLike);
-    },
+    onSuccess: () => refetch(),
+    // onMutate: () => {
+    //   const prev: IPost | undefined = queryClient.getQueryData([
+    //     "posts",
+    //     postId,
+    //   ]);
+
+    //   console.log(prev);
+    //   const prevIsLike: boolean | undefined = queryClient.getQueryData([
+    //     "likes",
+    //     "posts",
+    //     postId,
+    //   ]);
+    //   const shallow = { ...prev, likeCount: +prev?.likeCount! + 1 };
+    //   queryClient.setQueryData(["posts", postId], shallow);
+    //   queryClient.setQueryData(["likes", "posts", postId], !prevIsLike);
+    // },
+    // onError: () => {
+    //   const prev: IPost | undefined = queryClient.getQueryData([
+    //     "posts",
+    //     postId,
+    //   ]);
+    //   const prevIsLike: boolean | undefined = queryClient.getQueryData([
+    //     "likes",
+    //     "posts",
+    //     postId,
+    //   ]);
+    //   const shallow = { ...prev, likeCount: +prev?.likeCount! - 1 };
+    //   queryClient.setQueryData(["posts", postId], shallow);
+    //   queryClient.setQueryData(["likes", "posts", postId], !prevIsLike);
+    // },
   });
 
   const disLikeMutate = async (postId: number) => {
@@ -77,35 +70,35 @@ PostActionBlockProps) => {
 
   const { mutate: disLikeMutation } = useMutation({
     mutationFn: disLikeMutate,
-    onMutate: () => {
-      const prev: IPost | undefined = queryClient.getQueryData([
-        "posts",
-        postId,
-      ]);
-      console.log(prev);
-      const prevIsLike: boolean | undefined = queryClient.getQueryData([
-        "likes",
-        "posts",
-        postId,
-      ]);
-      const shallow = { ...prev, likeCount: +prev?.likeCount! - 1 };
-      queryClient.setQueryData(["posts", postId], shallow);
-      queryClient.setQueryData(["likes", "posts", postId], !prevIsLike);
-    },
-    onError: () => {
-      const prev: IPost | undefined = queryClient.getQueryData([
-        "posts",
-        postId,
-      ]);
-      const prevIsLike: boolean | undefined = queryClient.getQueryData([
-        "likes",
-        "posts",
-        postId,
-      ]);
-      const shallow = { ...prev, likeCount: +prev?.likeCount! + 1 };
-      queryClient.setQueryData(["posts", postId], shallow);
-      queryClient.setQueryData(["likes", "posts", postId], !prevIsLike);
-    },
+    onSuccess: () => refetch(),
+    // onMutate: () => {
+    //   const prev: IPost | undefined = queryClient.getQueryData([
+    //     "posts",
+    //     postId,
+    //   ]);
+    //   const prevIsLike: boolean | undefined = queryClient.getQueryData([
+    //     "likes",
+    //     "posts",
+    //     postId,
+    //   ]);
+    //   const shallow = { ...prev, likeCount: +prev?.likeCount! - 1 };
+    //   queryClient.setQueryData(["posts", postId], shallow);
+    //   queryClient.setQueryData(["likes", "posts", postId], !prevIsLike);
+    // },
+    // onError: () => {
+    //   const prev: IPost | undefined = queryClient.getQueryData([
+    //     "posts",
+    //     postId,
+    //   ]);
+    //   const prevIsLike: boolean | undefined = queryClient.getQueryData([
+    //     "likes",
+    //     "posts",
+    //     postId,
+    //   ]);
+    //   const shallow = { ...prev, likeCount: +prev?.likeCount! + 1 };
+    //   queryClient.setQueryData(["posts", postId], shallow);
+    //   queryClient.setQueryData(["likes", "posts", postId], !prevIsLike);
+    // },
   });
   return (
     <div className="flex justify-around mt-2 mb-2 ">

@@ -47,14 +47,6 @@ export class CommentsController {
     return this.commentsService.getCommentById(commentId);
   }
 
-  @Get('already/:commentId')
-  async getAlreadyComment(
-    @Param('commentId', ParseIntPipe) commentId: number,
-    @AuthUser() author: UsersModel,
-  ) {
-    return this.commentsService.alreadyLike(author.id, commentId);
-  }
-
   @Post()
   @UseInterceptors(TransactionInterceptor)
   async postComment(

@@ -7,6 +7,7 @@ import { Fragment, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IPost } from "../types/PostsTypes";
 import PostActionBlock from "../components/block/PostActionBlock";
+import React from "react";
 
 type Props = { pageParam?: number };
 const fetchPosts = async ({ pageParam }: Props) => {
@@ -79,4 +80,4 @@ const Posts = () => {
   );
 };
 
-export default Posts;
+export default React.memo(Posts);

@@ -25,40 +25,19 @@ interface CommentProps {
 const CommentBlock = ({ comment, postId }: CommentProps) => {
   const { user } = useAuthState();
 
-  const fetchAlreadyCommentLike = async (commentId: number) => {
-    const res = await instance.get(`/likes/comments/alreadyLike/${commentId}`);
-    return res.data;
-  };
-
-  const { data: alreadyCommentLike } = useQuery({
-    queryKey: ["comment", "alreadyLike"],
-    queryFn: () => fetchAlreadyCommentLike(comment.id),
-  });
-
-  const isLike = !!alreadyCommentLike?.find(
-    (v: any) => v.author.id === user?.id
-  );
-
-  const test = async (commentId: number) => {
-    const res = await instance.get(
-      `posts/:postId/comments/already/${commentId}`
-    );
-    return res.data;
-  };
-
-  const { data: textAlready } = useQuery({
-    queryKey: ["comment", "alreadyLike"],
-    queryFn: () => test(comment.id),
-  });
-
-  //   console.log(alreadyCommentLike.find(user?.id));
+  const isLike = comment.commentLikeUsers.includes(user?.id + "");
 
   const commentLikeFunction = async (commentId: number) => {
-    return instance.post(`likes/comments/${commentId}`);
+    return await instance.post(`likes/comments/${commentId}`);
   };
 
   const { mutate: commentLikeMutation } = useMutation({
     mutationFn: commentLikeFunction,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["posts", postId, "comments"],
+      });
+    },
     onMutate: (variables) => {
       const prev: IPostComments[] | undefined = queryClient.getQueryData([
         "posts",
@@ -93,6 +72,19 @@ const CommentBlock = ({ comment, postId }: CommentProps) => {
 
         queryClient.setQueryData(["posts", postId, "comments"], shallow);
       }
+    },
+  });
+
+  const commentUnLikeFunction = async (commentId: number) => {
+    return await instance.delete(`likes/comments/${commentId}`);
+  };
+
+  const { mutate: commentUnLikeMutation } = useMutation({
+    mutationFn: commentUnLikeFunction,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["posts", postId, "comments"],
+      });
     },
   });
 
@@ -155,12 +147,15 @@ const CommentBlock = ({ comment, postId }: CommentProps) => {
           </div>
           <div>{comment.comment}</div>
           {/* 좋아요 기능 */}
-          <div
-            onClick={() => commentLikeMutation(comment.id)}
-            className="hover:text-red-500 flex items-center justify-center gap-1 cursor-pointer"
-          >
-            {isLike ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
-            {/* <FaRegHeart /> */}
+          <div className="hover:text-red-500 flex items-center justify-center gap-1 cursor-pointer">
+            {isLike ? (
+              <FaHeart
+                className="text-red-500"
+                onClick={() => commentUnLikeMutation(comment.id)}
+              />
+            ) : (
+              <FaRegHeart onClick={() => commentLikeMutation(comment.id)} />
+            )}
             <div>{comment.likeCount}</div>
           </div>
         </div>

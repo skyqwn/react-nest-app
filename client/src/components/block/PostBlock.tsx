@@ -142,6 +142,7 @@ const PostBlock = ({ post }: { post: IPost }) => {
             postLikeCount={+post.likeCount}
             postId={post.id}
             isLike={isLike}
+            refetch={() => {}}
           />
           {/* <div className="flex justify-around mt-2 mb-2">
             <div className="flex items-center justify-center gap-2 hover:text-blue-500">

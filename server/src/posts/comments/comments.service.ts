@@ -189,16 +189,6 @@ export class CommentsService {
     return true;
   }
 
-  async alreadyLike(userId: number, commentId: number) {
-    const comment = await this.commentsRepository.find({
-      where: {
-        id: commentId,
-        commentLikeUsers: userId,
-      },
-    });
-    return comment;
-  }
-
   async includeLikeUsers(userId: number, commentId: number) {
     const comment = await this.commentsRepository.findOne({
       where: {
@@ -212,5 +202,36 @@ export class CommentsService {
 
     const result = await this.commentsRepository.save(newComment);
     return result;
+  }
+
+  async excludeLikeUsers(userId: number, commentId: number, qr?: QueryRunner) {
+    try {
+      const comment = await this.commentsRepository.findOne({
+        where: {
+          id: commentId,
+        },
+      });
+
+      console.log(comment.commentLikeUsers);
+
+      console.log(userId);
+
+      const newCommentLikeUsers = comment.commentLikeUsers.filter(
+        (v) => v === userId,
+      );
+
+      console.log(newCommentLikeUsers);
+
+      const result = await this.commentsRepository.update(
+        { id: commentId },
+        { commentLikeUsers: newCommentLikeUsers },
+      );
+
+      console.log(result);
+
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
