@@ -26,6 +26,7 @@ const Posts = () => {
     isFetching,
     isError,
     error,
+    refetch,
   } = useInfiniteQuery<
     any,
     Object,
@@ -58,6 +59,9 @@ const Posts = () => {
   const handlePostClick = (postId: number) => {
     navigate(`/posts/${postId}`);
   };
+
+  if (!posts) return null;
+
   return (
     <>
       {posts?.pages.map((page, i) => (
@@ -69,7 +73,7 @@ const Posts = () => {
               onClick={() => handlePostClick(p.id)}
               className="cursor-pointer"
             >
-              <PostBlock key={p.id} post={p} />
+              <PostBlock key={p.id} post={p} refetch={refetch} />
             </div>
             // </Link>
           ))}

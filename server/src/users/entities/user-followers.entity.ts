@@ -2,7 +2,7 @@ import { BaseModel } from 'src/common/entities/base.entity';
 import { UsersModel } from './users.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
-type Status = 'PENDING' | 'CONFIRMED';
+export type FollowStatus = 'PENDING' | 'CONFIRMED';
 @Entity()
 export class UserFollowersModel extends BaseModel {
   @ManyToOne(() => UsersModel, (user) => user.followers, {
@@ -21,7 +21,7 @@ export class UserFollowersModel extends BaseModel {
   isConfirmed: boolean;
 
   @Column({ default: 'PENDING' })
-  status: Status;
+  status: FollowStatus;
 
   @Column({ nullable: true })
   avatar: string;

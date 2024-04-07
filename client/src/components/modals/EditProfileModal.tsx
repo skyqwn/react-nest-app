@@ -1,15 +1,15 @@
 import React, { useMemo } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useMutation } from "@tanstack/react-query";
+
 import { useEditProfile } from "../../store/ProfilStore";
 import Modal from "./Modal";
 import { Input } from "../Input";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useAuthState } from "../../context/AuthContext";
 import FileInput from "../Inputs/FileInput";
-import { useMutation } from "@tanstack/react-query";
 import { instance } from "../../api/apiconfig";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { queryClient } from "../..";
 
 const EditProfileModal = () => {
   const { isOpen, onClose } = useEditProfile();

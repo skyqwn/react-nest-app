@@ -134,9 +134,9 @@ export class UsersService {
   }
 
   //followee가 받은사람
-
-  async patchFollow(followId: number, userId: number) {
-    const follow = await this.userFollowersRepository.findOne({
+  async patchFollow(followId: number, userId: number, qr?: QueryRunner) {
+    const userFollowersRepository = this.getUserFolloweRepository(qr);
+    const follow = await userFollowersRepository.findOne({
       where: {
         id: followId,
       },
@@ -145,7 +145,7 @@ export class UsersService {
         follower: true,
       },
     });
-    if (follow.followee.id !== userId) {
+    if (follow.follower.id !== userId) {
       throw new BadRequestException('잘못된 접근입니다.');
     }
     follow.status = 'CONFIRMED';
@@ -153,19 +153,67 @@ export class UsersService {
     return { followeeId: follow.followee.id, followerId: follow.follower.id };
   }
 
-  //내가 팔로워 요청받은거
-  async getFollowees(userId: number) {
+  //나에게 팔로우 요청한 사람들 목록
+  async requsetFollow(userId: number) {
+    try {
+      const result = await this.userFollowersRepository.find({
+        where: {
+          follower: {
+            id: userId,
+          },
+          status: 'PENDING',
+        },
+        relations: {
+          followee: true,
+        },
+      });
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  //내가 팔로잉하고있는 사람들
+  async getFollowings(userId: number) {
+    const result = await this.userFollowersRepository.find({
+      where: {
+        followee: {
+          id: userId,
+        },
+      },
+      relations: {
+        follower: true,
+      },
+    });
+    return result;
+  }
+
+  //나를 팔로워하고 있는 사람들
+  async getFollowers(userId: number) {
     const result = await this.userFollowersRepository.find({
       where: {
         follower: {
           id: userId,
         },
+        status: 'CONFIRMED',
       },
       relations: {
         followee: true,
       },
     });
     return result;
+  }
+
+  //나를 팔로워하고있는 사람 팔로워 끊기
+  async myFollowerDelete(followerId: number, userId: number, qr?: QueryRunner) {
+    try {
+      const userFollowersRepository = this.getUserFolloweRepository(qr);
+      await userFollowersRepository.delete({
+        id: followerId,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async getFolloweeById(userId: number, followeeId: number) {
@@ -177,34 +225,6 @@ export class UsersService {
     });
 
     return result;
-  }
-
-  async getFollowers(userId: number, includeNotConfirmed: boolean) {
-    const where = {
-      followee: {
-        id: userId,
-      },
-    };
-
-    if (!includeNotConfirmed) {
-      where['isConfirmed'] = true;
-    }
-
-    const result = await this.userFollowersRepository.find({
-      where,
-      relations: {
-        follower: true,
-        followee: true,
-      },
-    });
-
-    return result.map((user) => ({
-      id: user.follower.id,
-      nickname: user.follower.nickname,
-      email: user.follower.email,
-      isConfirmed: user.isConfirmed,
-      avatar: user.avatar,
-    }));
   }
 
   async confirmFollow(
@@ -294,15 +314,66 @@ export class UsersService {
     );
   }
 
+  //팔로워 모달에서 -1
   async decrementFolloweeCount(followeeId: number, qr?: QueryRunner) {
-    const userRepository = this.getUsersRepository(qr);
+    try {
+      const follower = await this.userFollowersRepository.findOne({
+        where: {
+          id: followeeId,
+        },
+        relations: {
+          followee: true,
+        },
+      });
 
-    await userRepository.decrement(
+      const userRepository = this.getUsersRepository(qr);
+
+      await userRepository.decrement(
+        {
+          id: follower.followee.id,
+        },
+        'followeeCount',
+        1,
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  //내 팔로잉목록에서 팔루잉 삭제했을경우 -1
+  async decrementFolloingModalCount(userId: number, qr?: QueryRunner) {
+    const usersRepository = this.getUsersRepository(qr);
+
+    await usersRepository.decrement(
       {
-        id: followeeId,
+        id: userId,
       },
       'followeeCount',
       1,
     );
+
+    return true;
+  }
+
+  //상대방이 자신팔로잉목록에서 나를 팔로잉을 끊었을때 내 팔로워목록 -1
+  async decrementFollwerModalCount(followerId: number, qr?: QueryRunner) {
+    try {
+      const result = await this.userFollowersRepository.findOne({
+        where: {
+          id: followerId,
+        },
+        relations: { follower: true },
+      });
+      await this.usersRepository.decrement(
+        {
+          id: result.follower.id,
+        },
+        'followerCount',
+        1,
+      );
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

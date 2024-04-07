@@ -6,24 +6,39 @@ import toast from "react-hot-toast";
 import { queryClient } from "..";
 import { useAuthState } from "../context/AuthContext";
 
+export interface IFollowUser {
+  avatar: string;
+  createdAt: string;
+  email: string;
+  followeeCount: number;
+  followerCount: number;
+  id: number;
+  nickname: string;
+  provider: string;
+  role: string;
+  updatedAt: string;
+}
+
 interface IFollow {
   email: string;
   id: number;
   isConfirmed: boolean;
   nickname: string;
   avatar: string;
+  status: "PENDING" | "CONFIRMED";
+  followee: IFollowUser;
+  follower: IFollowUser;
 }
 
 const Alter = () => {
-  const { user: loggedInUser } = useAuthState();
   const queryClient = useQueryClient();
 
   const fetchFollowers = async () => {
-    const res = await instance.get(`/users/follow/me?includeNotConfirmed=true`);
+    const res = await instance.get(`users/requestFollow/me`);
     return res.data;
   };
 
-  const { data: followerList } = useQuery({
+  const { data: requsetFollower, refetch } = useQuery({
     queryKey: ["follower", "me"],
     queryFn: fetchFollowers,
   });
@@ -47,36 +62,27 @@ const Alter = () => {
   const { mutate: deleteFollowMutate } = useMutation({
     mutationFn: deleteFollowHandler,
     onSuccess: () => {
-      toast.success("팔로우 삭제");
+      refetch();
+      toast.success("팔로우 거절");
       queryClient.invalidateQueries({
         queryKey: ["followee", "me"],
       });
     },
   });
 
-  const fetchFollowee = async () => {
-    const res = await instance.get(`/users/followee/me`);
-    return res.data;
-  };
-
-  const { data: followeeList, refetch } = useQuery({
-    queryKey: ["followee", "me"],
-    queryFn: fetchFollowee,
-  });
-
   return (
     <Layout>
       <div className="flex flex-col gap-6 p-3">
         <h2>팔로우 요청</h2>
-        {followeeList?.map((follow: any, i: number) => (
+        {requsetFollower?.map((follow: IFollow, i: number) => (
           <div key={i} className="flex gap-4 mt-2 justify-between">
             <>
               <div className="flex items-center gap-2">
                 <img
                   className="size-10 rounded-full"
-                  src={follow.follower?.avatar}
+                  src={follow.followee?.avatar}
                 />
-                <span>{follow.follower?.nickname}</span>
+                <span>{follow.followee?.nickname}</span>
               </div>
               <div className="flex gap-2">
                 {follow.status === "PENDING" ? (
@@ -89,7 +95,12 @@ const Alter = () => {
                     >
                       확인
                     </button>
-                    <button className="bg-neutral-200 w-14 h-10 rounded-2xl hover:bg-neutral-300 transition">
+                    <button
+                      onClick={() => {
+                        deleteFollowMutate(follow.followee.id);
+                      }}
+                      className="bg-neutral-200 w-14 h-10 rounded-2xl hover:bg-neutral-300 transition"
+                    >
                       삭제
                     </button>
                   </>

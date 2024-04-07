@@ -67,21 +67,61 @@ export class UsersController {
     return this.usersService.createUser(createUserInput);
   }
 
-  //내가 팔로잉하고있는 사람들
-  @Get('follow/me')
+  //나한테 팔로워 요청 들어온것들
+  @Get('requestFollow/me')
+  async requsetFollow(@AuthUser() user: UsersModel) {
+    return await this.usersService.requsetFollow(user.id);
+  }
+
+  //나를 팔로워하고있는 사람들 followerModal
+  @Get('follow/me/:id')
   async getFollow(
-    @AuthUser() user: UsersModel,
+    @Param('id', ParseIntPipe) id: number,
     @Query('includeNotConfirmed', new DefaultValuePipe(false), ParseBoolPipe)
     includeNotConfirmed: boolean,
   ) {
-    return await this.usersService.getFollowers(user.id, includeNotConfirmed);
+    return await this.usersService.getFollowers(id);
   }
 
-  //내가 팔로잉 하고 있는 사람들
-  @Get('followee/me')
-  async getFollowee(@AuthUser() user: UsersModel) {
-    return await this.usersService.getFollowees(user.id);
+  //내가 팔로잉 하고 있는 사람들 folloingModl
+  @Get('followee/me/:id')
+  async getFollowee(
+    // @AuthUser() user: UsersModel,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return await this.usersService.getFollowings(id);
   }
+
+  //내 팔로워 목록에서 삭제 팔로워 끊기
+  @Delete('follow/me/:id')
+  @UseInterceptors(TransactionInterceptor)
+  async myFollowerDelete(
+    @Param('id', ParseIntPipe) followerId: number,
+    @AuthUser() user: UsersModel,
+    @QueryRunnerDecorator() qr: QueryRunner,
+  ) {
+    await this.usersService.myFollowerDelete(followerId, user.id, qr);
+    await this.usersService.decrementFollowerCount(user.id, qr);
+    await this.usersService.decrementFolloweeCount(followerId, qr);
+
+    return true;
+  }
+
+  // 내 팔로잉 모달 목록에서 삭제 // 팔로잉 끊기
+  @Delete('following/me/:id')
+  @UseInterceptors(TransactionInterceptor)
+  async myFolloweeDelete(
+    @Param('id', ParseIntPipe) followerId: number,
+    @AuthUser() user: UsersModel,
+    @QueryRunnerDecorator() qr: QueryRunner,
+  ) {
+    await this.usersService.myFollowerDelete(followerId, user.id, qr);
+    await this.usersService.decrementFolloingModalCount(user.id, qr);
+    await this.usersService.decrementFollwerModalCount(followerId, qr);
+
+    return true;
+  }
+
   //내가 팔로잉하고 있는 특정 사람
   @Get('followee/:id')
   async getFolloweeById(
@@ -112,6 +152,7 @@ export class UsersController {
   }
 
   @Patch('follow/:id')
+  @UseInterceptors(TransactionInterceptor)
   async patchFollow(
     @AuthUser() user: UsersModel,
     @Param('id', ParseIntPipe) id: number,
@@ -124,7 +165,7 @@ export class UsersController {
     return true;
   }
 
-  //내가 팔로워한 상대방의 팔로우 취소
+  //팔로우 요청들어온 상대방의 팔로우 취소
   @Delete('follow/:id')
   @UseInterceptors(TransactionInterceptor)
   async deleteFollow(

@@ -1,13 +1,10 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { FaRegComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
 import { FaHeart } from "react-icons/fa";
-import { useParams } from "react-router-dom";
 
 import { instance } from "../../api/apiconfig";
-import { queryClient } from "../..";
-import { IPost } from "../../types/PostsTypes";
 
 interface PostActionBlockProps {
   postCommentCount: number | undefined;
@@ -24,7 +21,6 @@ const PostActionBlock = ({
   postId,
   refetch,
 }: PostActionBlockProps) => {
-  // const {postId} = useParams();
   const likeMutate = async (postId: number) => {
     await instance.post(`/likes/posts/${postId}`);
   };

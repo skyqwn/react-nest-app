@@ -19,7 +19,7 @@ import { useAuthState } from "../../context/AuthContext";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 
-const PostBlock = ({ post }: { post: IPost }) => {
+const PostBlock = ({ post, refetch }: { post: IPost; refetch: () => void }) => {
   const { user } = useAuthState();
 
   const isLike = useMemo(() => {
@@ -142,18 +142,8 @@ const PostBlock = ({ post }: { post: IPost }) => {
             postLikeCount={+post.likeCount}
             postId={post.id}
             isLike={isLike}
-            refetch={() => {}}
+            refetch={refetch}
           />
-          {/* <div className="flex justify-around mt-2 mb-2">
-            <div className="flex items-center justify-center gap-2 hover:text-blue-500">
-              <FaRegComment />
-              <span>{post?.commentCount}</span>
-            </div>
-            <div className="flex items-center justify-center gap-2 hover:text-red-500">
-              <FaRegHeart />
-              <span>{post?.likeCount}</span>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>

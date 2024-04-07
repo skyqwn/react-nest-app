@@ -9,6 +9,9 @@ import { useAuthState } from "../context/AuthContext";
 import { IoCalendarOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { useEditProfile } from "../store/ProfilStore";
+import { useFollowerModal, useFollowingModal } from "../store/FollowStore";
+import FollowingModal from "../components/modals/FollowingModal";
+import FollowerModal from "../components/modals/FollowerModal";
 
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
@@ -27,6 +30,8 @@ interface IProfile {
 const Profile = () => {
   const { id } = useParams();
   const { user: loggedInUser, authenticated } = useAuthState();
+  const { onOpen: onFolloweModalOpen } = useFollowerModal();
+  const { onOpen: onFollowingModalOpen } = useFollowingModal();
   const { onOpen } = useEditProfile();
 
   const fetchUserProfile = async () => {
@@ -68,6 +73,8 @@ const Profile = () => {
 
   return (
     <Layout>
+      <FollowingModal profileId={id!} />
+      <FollowerModal profileId={id!} />
       <div className=" flex flex-col">
         <div className="flex justify-between items-end">
           <div className="mt-2 flex flex-col gap-2">
@@ -102,13 +109,19 @@ const Profile = () => {
           {dayjs(user?.createdAt).format("MMMM YYYY")}
         </div>
         <div className="flex gap-2 mt-1">
-          <div className="flex gap-1 hover:cursor-pointer hover:underline">
-            <p className="text-neutral-900 font-bold">{user?.followeeCount}</p>{" "}
-            <p className="text-neutral-500">Following</p>
-          </div>
-          <div className="flex gap-1 hover:cursor-pointer hover:underline">
+          <div
+            className="flex gap-1 hover:cursor-pointer hover:underline"
+            onClick={onFolloweModalOpen}
+          >
             <p className="text-neutral-900 font-bold">{user?.followerCount}</p>
             <p className="text-neutral-500"> Followers</p>
+          </div>
+          <div
+            className="flex gap-1 hover:cursor-pointer hover:underline"
+            onClick={onFollowingModalOpen}
+          >
+            <p className="text-neutral-900 font-bold">{user?.followeeCount}</p>{" "}
+            <p className="text-neutral-500">Following</p>
           </div>
         </div>
       </div>
