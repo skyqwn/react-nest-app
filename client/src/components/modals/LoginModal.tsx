@@ -10,8 +10,13 @@ import { instance } from "../../api/apiconfig";
 import { authStore } from "../../store/AuthStore";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
 import Button from "../buttons/Button";
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { useAuthDispatch } from "../../context/AuthContext";
 
 const LoginModal = () => {
@@ -28,11 +33,19 @@ const LoginModal = () => {
   });
 
   const location = useLocation();
+  const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(true);
   const { isOpen, onClose } = authStore();
   const dispatch = useAuthDispatch();
+  const [searchParams] = useSearchParams();
 
   const [scrollPosition, setScrollPosition] = useState(0);
+  const fixPage = useMemo(() => {
+    if (location.pathname === "/unauthorize") {
+      return { ok: true, redirect: searchParams.get("redirect") || "/" };
+    }
+    return { ok: false, redirect: "/" };
+  }, [location]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,8 +62,6 @@ const LoginModal = () => {
   // 모달의 위치 계산
   // const top = `calc( ${scrollPosition}px)`;
   const top = scrollPosition + "px";
-
-  let from = (location.state?.from as string) || "/";
 
   const onValid: SubmitHandler<FieldValues> = async (data) => {
     if (loggedIn) {
@@ -78,6 +89,7 @@ const LoginModal = () => {
               toast.success("로그인 성공");
               onClose();
               reset();
+              navigate(fixPage.redirect);
             } else if (!ok) {
               toast.error(error);
             }
@@ -220,7 +232,7 @@ const LoginModal = () => {
           exit={modalContainerVariants.exit}
           style={{ top }}
           onClick={onClose}
-          className="absolute top-0 left-0 w-screen h-screen z-10 bg-black/50 flex items-center justify-center overflow-hidden"
+          className="absolute top-0 left-0 w-screen h-screen z-50 bg-black/50 flex items-center justify-center overflow-hidden"
         >
           {/* modal body */}
           <motion.div
@@ -234,12 +246,14 @@ const LoginModal = () => {
           >
             {/* modal head */}
             <div className="relative h-16 font-bold text-xl flex justify-end items-center px-4">
-              <div
-                className="bg-slate-200 p-2 rounded-full absolute items-center justify-center  hover:opacity-50 cursor-pointer"
-                onClick={onClose}
-              >
-                <AiOutlineClose />
-              </div>
+              {!fixPage.ok && (
+                <div
+                  className="bg-slate-200 p-2 rounded-full absolute items-center justify-center  hover:opacity-50 cursor-pointer"
+                  onClick={onClose}
+                >
+                  <AiOutlineClose />
+                </div>
+              )}
             </div>
             {/* modal body */}
             {/* <div className="flex-1 px-6">{body}</div> */}

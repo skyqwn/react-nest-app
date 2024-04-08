@@ -51,7 +51,7 @@ export class AuthController {
       refreshToken: newToken,
     };
   }
-  //
+
   @Post('token/access')
   @IsPublic()
   @UseGuards(RefreshTokenGuard)
@@ -63,16 +63,13 @@ export class AuthController {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
+      console.log('서버');
       throw new UnauthorizedException('리프레시 토큰이 만료되었습니다.');
     }
 
-    const rawToken = await this.authService.checkedTokenFromHeader(
-      refreshToken,
-      true,
-    );
+    await this.authService.checkedTokenFromHeader(refreshToken, true);
 
     const newAccessToken = this.authService.rotateToken(refreshToken, false);
-    // const newRefreshToken = this.authService.rotateToken(refreshToken, true);
 
     res.cookie('accessToken', newAccessToken, {
       secure: process.env.NODE_ENV === 'prod',
@@ -80,13 +77,6 @@ export class AuthController {
       sameSite: 'strict',
       maxAge: 1000 * 60 * 20,
     });
-
-    // res.cookie('refreshToken', newRefreshToken, {
-    //   secure: process.env.NODE_ENV === 'prod',
-    //   httpOnly: process.env.NODE_ENV === 'prod',
-    //   sameSite: 'strict',
-    //   maxAge: 1000 * 60 * 60 * 24 * 7,
-    // });
 
     return {
       accessToken: newAccessToken,

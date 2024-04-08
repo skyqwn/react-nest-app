@@ -31,8 +31,6 @@ const FollowingModal = ({ profileId }: { profileId: string }) => {
     queryFn: () => followerFetch(profileId),
   });
 
-  console.log(myFollowees);
-
   const myFollowerDelete = async (followerId: number) => {
     if (window.confirm("정말 팔로워를 삭제하시겠습니까?")) {
       return await instance.delete(`/users/following/me/${followerId}`);

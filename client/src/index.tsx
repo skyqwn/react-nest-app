@@ -8,7 +8,6 @@ import { BrowserRouter } from "react-router-dom";
 import { CookiesProvider } from "react-cookie";
 import { HelmetProvider } from "react-helmet-async";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { UserContextProvider } from "./context/UserContext";
 import { AuthProvider } from "./context/AuthContext";
 
 export const queryClient = new QueryClient({
@@ -30,7 +29,6 @@ root.render(
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        {/* <UserContextProvider> */}
         <CookiesProvider>
           <BrowserRouter>
             <App />
@@ -39,7 +37,6 @@ root.render(
             />
           </BrowserRouter>
         </CookiesProvider>
-        {/* </UserContextProvider> */}
       </AuthProvider>
     </QueryClientProvider>
   </HelmetProvider>

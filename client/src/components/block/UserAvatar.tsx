@@ -7,7 +7,9 @@ interface UserAvatarProps {
 }
 
 const UserAvatar = ({ big }: UserAvatarProps) => {
-  const { user, loading, authenticated } = useAuthState();
+  const { user } = useAuthState();
+
+  console.log(user);
   if (!user) return null;
   return (
     <img

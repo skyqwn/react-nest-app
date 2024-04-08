@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useReducer } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { instance } from "../api/apiconfig";
 import { getCookie } from "../libs/cookie";
 
@@ -24,12 +30,13 @@ interface Action {
   payload: any;
 }
 
-const StateContext = createContext<State>({
+const initialState = {
   authenticated: false,
   user: undefined,
   loading: true,
-});
-const acceesToken = getCookie("refreshToken");
+};
+
+const StateContext = createContext<State>(initialState);
 
 const DispatchContext = createContext<any>(null);
 const reducer = (state: State, { type, payload }: Action) => {
@@ -51,12 +58,18 @@ const reducer = (state: State, { type, payload }: Action) => {
         ...state,
         loading: false,
       };
+    case "INIT":
+      return {
+        ...initialState,
+        loading: false,
+      };
     default:
       throw new Error(`Unknown action type: ${type}`);
   }
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [accessToken, setAccessToken] = useState(getCookie("accessToken"));
   const [state, defaultDispatch] = useReducer(reducer, {
     user: null,
     authenticated: false,
@@ -67,15 +80,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     defaultDispatch({ type, payload });
   };
 
+  //access토큰이 만료되거나 없을때 refresh토큰이 존재하면 최초로 실행되는곳에서 AuthState에 User정보 저장
   useEffect(() => {
-    instance.post("/auth/token/access");
+    async function loadRefresh() {
+      try {
+        const res = await instance.post("/auth/token/access");
+        setAccessToken(res.data.accessToken);
+        return;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    if (getCookie("refreshToken")) {
+      loadRefresh();
+    }
   }, []);
 
   useEffect(() => {
     async function loadUser() {
       try {
-        const res = await instance.get("/auth/me");
-        dispatch("LOGIN", res.data);
+        if (getCookie("accessToken")) {
+          const res = await instance.get("/auth/me");
+          dispatch("LOGIN", res.data);
+          return;
+        }
+        return dispatch("INIT");
       } catch (error) {
         console.log(error);
       } finally {
@@ -83,7 +112,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     }
     loadUser();
-  }, [acceesToken]);
+  }, [accessToken]);
 
   return (
     <DispatchContext.Provider value={dispatch}>

@@ -1,13 +1,13 @@
 import { useParams } from "react-router-dom";
-import Layout from "../components/Layout";
+import { IoCalendarOutline } from "react-icons/io5";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { instance } from "../api/apiconfig";
+import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useAuthState } from "../context/AuthContext";
 
-import { IoCalendarOutline } from "react-icons/io5";
-import toast from "react-hot-toast";
+import Layout from "../components/Layout";
+import { instance } from "../api/apiconfig";
+import { useAuthState } from "../context/AuthContext";
 import { useEditProfile } from "../store/ProfilStore";
 import { useFollowerModal, useFollowingModal } from "../store/FollowStore";
 import FollowingModal from "../components/modals/FollowingModal";
@@ -29,11 +29,10 @@ interface IProfile {
 
 const Profile = () => {
   const { id } = useParams();
-  const { user: loggedInUser, authenticated } = useAuthState();
+  const { user: loggedInUser } = useAuthState();
   const { onOpen: onFolloweModalOpen } = useFollowerModal();
   const { onOpen: onFollowingModalOpen } = useFollowingModal();
   const { onOpen } = useEditProfile();
-
   const fetchUserProfile = async () => {
     const res = await instance.get(`/users/${id}`);
 
@@ -69,7 +68,6 @@ const Profile = () => {
   });
 
   if (!user) return null;
-  if (!authenticated) return null;
 
   return (
     <Layout>
@@ -91,7 +89,7 @@ const Profile = () => {
               </div>
             ) : (
               <div
-                onClick={() => mutate(user.id)}
+                onClick={() => mutate(user?.id)}
                 className="border rounded-xl  p-2 font-bold hover:bg-neutral-300 cursor-pointer transition"
               >
                 {/* {followee.status === "default" ? "팔로잉" :followee.status === "pending" ? "요청됨" : "친구됨"} */}
