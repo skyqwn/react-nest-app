@@ -231,7 +231,7 @@ const LoginModal = () => {
           animate={modalContainerVariants.end}
           exit={modalContainerVariants.exit}
           style={{ top }}
-          onClick={onClose}
+          // onClick={onClose}
           className="absolute top-0 left-0 w-screen h-screen z-50 bg-black/50 flex items-center justify-center overflow-hidden"
         >
           {/* modal body */}

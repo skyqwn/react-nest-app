@@ -1,13 +1,11 @@
+import React, { Fragment, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useInView } from "react-intersection-observer";
 import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
 
 import { instance } from "../api/apiconfig";
 import PostBlock from "../components/block/PostBlock";
-import { useInView } from "react-intersection-observer";
-import { Fragment, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { IPost } from "../types/PostsTypes";
-import PostActionBlock from "../components/block/PostActionBlock";
-import React from "react";
 
 type Props = { pageParam?: number };
 const fetchPosts = async ({ pageParam }: Props) => {

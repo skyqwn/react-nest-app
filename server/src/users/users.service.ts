@@ -5,6 +5,7 @@ import { QueryRunner, Repository } from 'typeorm';
 import { CreateUserInput } from './dtos/creat-user.dto';
 import { UserFollowersModel } from './entities/user-followers.entity';
 import { EditUserInput } from './dtos/edit-user.dto';
+import { PostsService } from 'src/posts/posts.service';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +14,7 @@ export class UsersService {
     private readonly usersRepository: Repository<UsersModel>,
     @InjectRepository(UserFollowersModel)
     private readonly userFollowersRepository: Repository<UserFollowersModel>,
+    private readonly postsService: PostsService,
   ) {}
 
   getUsersRepository(qr?: QueryRunner) {
@@ -372,6 +374,23 @@ export class UsersService {
         1,
       );
       return true;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async postByUser(userId: number) {
+    try {
+      const result = await this.postsService.getPostByUserId(userId);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async postByLikeUser(userId: number) {
+    try {
+      const result = await this.postsService.getPostLikeByUserId(userId);
+      return result;
     } catch (error) {
       console.log(error);
     }

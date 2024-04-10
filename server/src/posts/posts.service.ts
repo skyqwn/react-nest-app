@@ -1,8 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostsModel } from './entities/posts.entity';
 import {
+  ArrayContains,
   FindOptionsWhere,
+  In,
   LessThan,
   MoreThan,
   QueryRunner,
@@ -30,15 +36,6 @@ export class PostsService {
       },
     });
   }
-
-  // async generatePosts(userId: number) {
-  //   for (let i = 0; i < 100; i++) {
-  //     await this.createPost(userId, {
-  //       title: `임의로 생성된 포스트 제목 ${i}`,
-  //       content: `임의로 생성된 포스트${i}`,
-  //     });
-  //   }
-  // }
 
   async paginatePosts(dto: PaginatePostsDto) {
     return this.commonService.paginate(
@@ -150,6 +147,33 @@ export class PostsService {
         ok: false,
         error,
       };
+    }
+  }
+
+  async getPostByUserId(id: number) {
+    try {
+      const post = await this.postsRepository.find({
+        where: {
+          author: {
+            id,
+          },
+        },
+      });
+      return post;
+    } catch (error) {
+      throw new BadRequestException(`서버에러 발생`);
+    }
+  }
+
+  async getPostLikeByUserId(id: number) {
+    try {
+      const post = await this.postsRepository.find({
+        where: { likeUsers: ArrayContains([id]) },
+        select: { id: true, content: true, createdAt: true },
+      });
+      return post;
+    } catch (error) {
+      console.log(error);
     }
   }
 

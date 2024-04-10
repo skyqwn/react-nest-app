@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { IoCalendarOutline } from "react-icons/io5";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -25,6 +25,12 @@ interface IProfile {
   avatar: string;
   followerCount: number;
   followeeCount: number;
+}
+
+interface ILikePost {
+  id: number;
+  createdAt: string;
+  content: string;
 }
 
 const Profile = () => {
@@ -67,6 +73,27 @@ const Profile = () => {
     queryFn: fetchFollowee,
   });
 
+  const fetchPostByUser = async (id: number) => {
+    const res = await instance.get(`/users/postbyuser/${id}`);
+    return res.data;
+  };
+
+  const { data: postByUser } = useQuery({
+    queryKey: ["user", "postByUser", id],
+    queryFn: () => fetchPostByUser(+id!),
+  });
+  // console.log(postByUser);
+
+  const fetchPostByLikeUser = async (id: number) => {
+    const res = await instance.get(`/users/postlikebyuser/${id}`);
+    return res.data;
+  };
+
+  const { data: postByLikeUser } = useQuery({
+    queryKey: ["user", "postByLikeUser", id],
+    queryFn: () => fetchPostByLikeUser(+id!),
+  });
+
   if (!user) return null;
 
   return (
@@ -106,6 +133,7 @@ const Profile = () => {
           <IoCalendarOutline /> joined{" "}
           {dayjs(user?.createdAt).format("MMMM YYYY")}
         </div>
+        {/* 팔로잉 팔로워 */}
         <div className="flex gap-2 mt-1">
           <div
             className="flex gap-1 hover:cursor-pointer hover:underline"
@@ -121,6 +149,47 @@ const Profile = () => {
             <p className="text-neutral-900 font-bold">{user?.followeeCount}</p>{" "}
             <p className="text-neutral-500">Following</p>
           </div>
+        </div>
+        {/* 글쓴이가 쓴 포스트들 */}
+        <div className="flex flex-col gap-3 mt-6">
+          <div>
+            <span className="font-bold">{user.nickname}</span> 님이 쓴 포스터
+          </div>
+          <div>
+            {postByUser?.map((post: any) => (
+              <Link to={`/posts/${post.id}`}>
+                <div
+                  key={post.id}
+                  className="flex gap-6 items-center justify-between cursor-pointer"
+                >
+                  <h2 className="text-2xl font-semibold">{post.content}</h2>
+                  <span className="text-neutral-400 text-sm">
+                    {dayjs(post.createdAt).fromNow()}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+        {/* 글쓴이가 좋아요 한 글들 */}
+        <div className="flex flex-col gap-3 mt-6">
+          <div>
+            <span className="font-bold">{user.nickname}</span> 님이 좋아하는
+            포스터
+          </div>
+          {postByLikeUser?.map((likepost: ILikePost) => (
+            <Link to={`/posts/${likepost.id}`}>
+              <div
+                key={likepost.id}
+                className="flex gap-6 items-center justify-between cursor-pointer "
+              >
+                <h2 className="text-2xl font-semibold">{likepost.content}</h2>
+                <span className="text-neutral-400 text-sm">
+                  {dayjs(likepost.createdAt).fromNow()}
+                </span>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </Layout>

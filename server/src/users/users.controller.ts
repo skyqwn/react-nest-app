@@ -182,4 +182,14 @@ export class UsersController {
     await this.usersService.decrementFolloweeCount(followeeId, qr);
     return true;
   }
+
+  @Get('/postbyuser/:id')
+  async postByUser(@Param('id', ParseIntPipe) userId: number) {
+    return await this.usersService.postByUser(userId);
+  }
+
+  @Get('postlikebyuser/:id')
+  async postLikeByUser(@Param('id', ParseIntPipe) userId: number) {
+    return await this.usersService.postByLikeUser(userId);
+  }
 }

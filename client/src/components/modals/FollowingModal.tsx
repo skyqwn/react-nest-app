@@ -7,6 +7,8 @@ import { queryClient } from "../..";
 import { IoMdClose } from "react-icons/io";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
 import { AnimatePresence, motion } from "framer-motion";
+import { useAuthState } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
 interface IFollower {
   email: string;
   id: number;
@@ -19,6 +21,7 @@ interface IFollower {
 
 const FollowingModal = ({ profileId }: { profileId: string }) => {
   const { isOpen, onClose } = useFollowingModal();
+  const { user } = useAuthState();
 
   const followerFetch = async (profileId: string) => {
     const res = await instance.get(`/users/followee/me/${profileId}`);
@@ -57,25 +60,28 @@ const FollowingModal = ({ profileId }: { profileId: string }) => {
             <div key={f.id}>
               <div className="flex gap-2 items-center justify-between ">
                 <div className=" flex items-center justify-center gap-4">
-                  <img
-                    className="size-10 rounded-full"
-                    src={
-                      f.follower?.avatar
-                        ? f.follower?.avatar
-                        : "/client/public/imgs/user.png"
-                    }
-                  />
+                  <Link to={`/profile/${f.follower.id}`}>
+                    <img
+                      className="size-10 rounded-full"
+                      src={
+                        f.follower?.avatar
+                          ? f.follower?.avatar
+                          : "/client/public/imgs/user.png"
+                      }
+                    />
+                  </Link>
                   <div>{f.follower?.nickname}</div>
                 </div>
-                <div
-                  className="bg-neutral-300  p-2 rounded-2xl justify-end cursor-pointer hover:bg-neutral-400 transition"
-                  onClick={() => {
-                    myFollowerDeleteMutation(f.id);
-                    ///f.id를 넘겨줘서  팔로워 모델 삭제하고 내 팔로워 카운트 하나 -1  f.follwee.id도 넘겨줘서 상대방 팔로잉 -1
-                  }}
-                >
-                  팔로잉
-                </div>
+                {user?.id === +profileId && (
+                  <div
+                    className="bg-neutral-300  p-2 rounded-2xl justify-end cursor-pointer hover:bg-neutral-400 transition"
+                    onClick={() => {
+                      myFollowerDeleteMutation(f.id);
+                    }}
+                  >
+                    팔로잉
+                  </div>
+                )}
               </div>
             </div>
           ))

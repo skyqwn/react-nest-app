@@ -6,6 +6,8 @@ import { IFollowUser } from "../../routes/Alter";
 import { IoMdClose } from "react-icons/io";
 import { queryClient } from "../..";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
+import { useAuthState } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
 
 interface IFollower {
   email: string;
@@ -18,6 +20,7 @@ interface IFollower {
 }
 
 const FollowerModal = ({ profileId }: { profileId: string }) => {
+  const { user } = useAuthState();
   const { isOpen, onClose } = useFollowerModal();
 
   const followerFetch = async (profileId: string) => {
@@ -56,25 +59,29 @@ const FollowerModal = ({ profileId }: { profileId: string }) => {
         <div key={f.id}>
           <div className="flex gap-2 items-center justify-between ">
             <div className=" flex items-center justify-center gap-4">
-              <img
-                className="size-10 rounded-full"
-                src={
-                  f.followee?.avatar
-                    ? f.followee?.avatar
-                    : "/client/public/imgs/user.png"
-                }
-              />
+              <Link to={`/profile/${f.followee.id}`}>
+                <img
+                  className="size-10 rounded-full"
+                  src={
+                    f.followee?.avatar
+                      ? f.followee?.avatar
+                      : "/client/public/imgs/user.png"
+                  }
+                />
+              </Link>
               <div>{f.followee?.nickname}</div>
             </div>
-            <div
-              className="bg-neutral-300  p-2 rounded-2xl justify-end cursor-pointer hover:bg-neutral-400 transition"
-              onClick={() => {
-                myFollowerDeleteMutation(f.id);
-                ///f.id를 넘겨줘서  팔로워 모델 삭제하고 내 팔로워 카운트 하나 -1  f.follwer .id도 넘겨줘서 상대방 팔로잉 -1
-              }}
-            >
-              삭제
-            </div>
+            {user?.id === +profileId && (
+              <div
+                className="bg-neutral-300  p-2 rounded-2xl justify-end cursor-pointer hover:bg-neutral-400 transition"
+                onClick={() => {
+                  myFollowerDeleteMutation(f.id);
+                  ///f.id를 넘겨줘서  팔로워 모델 삭제하고 내 팔로워 카운트 하나 -1  f.follwer .id도 넘겨줘서 상대방 팔로잉 -1
+                }}
+              >
+                삭제
+              </div>
+            )}
           </div>
         </div>
       ))}

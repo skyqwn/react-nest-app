@@ -1,7 +1,6 @@
 import axios from "axios";
 import { getCookie } from "../libs/cookie";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 export const instance = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,

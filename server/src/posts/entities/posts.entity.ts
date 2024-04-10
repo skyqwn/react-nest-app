@@ -34,6 +34,7 @@ export class PostsModel extends BaseModel {
   @IsNumber()
   commentCount: number;
 
+  // @Column('jsonb', { nullable: true, default: [] })
   @Column('text', { nullable: true, array: true, default: [] })
   @IsString()
   likeUsers: string[];
