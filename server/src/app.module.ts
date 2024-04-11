@@ -25,6 +25,9 @@ import { CommentsModel } from './posts/comments/entities/comments.entity';
 import { UserFollowersModel } from './users/entities/user-followers.entity';
 import { LikesModule } from './posts/likes/likes.module';
 import { LikesModel } from './posts/likes/entities/likes.entity';
+import { ChatsModule } from './chats/chats.module';
+import { ChatsModel } from './chats/entity/chats.entity';
+import { MessagesModel } from './chats/messages/entity/messages.entity';
 
 @Module({
   imports: [
@@ -65,6 +68,8 @@ import { LikesModel } from './posts/likes/entities/likes.entity';
         CommentsModel,
         UserFollowersModel,
         LikesModel,
+        ChatsModel,
+        MessagesModel,
       ],
       synchronize: process.env.NODE_ENV !== 'prod',
     }),
@@ -74,6 +79,7 @@ import { LikesModel } from './posts/likes/entities/likes.entity';
     AuthModule,
     CommentsModule,
     LikesModule,
+    ChatsModule,
   ],
   controllers: [AppController],
   providers: [
