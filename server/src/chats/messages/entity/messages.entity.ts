@@ -6,10 +6,10 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity()
 export class MessagesModel extends BaseModel {
-  @ManyToOne(() => ChatsModel, (chat) => chat.messages)
+  @ManyToOne(() => ChatsModel, (chat) => chat.messages, { onDelete: 'CASCADE' })
   chat: ChatsModel;
 
-  @ManyToOne(() => UsersModel, (user) => user.messages)
+  @ManyToOne(() => UsersModel, (user) => user.messages, { onDelete: 'CASCADE' })
   author: UsersModel;
 
   @Column()

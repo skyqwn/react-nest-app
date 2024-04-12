@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { IoCalendarOutline } from "react-icons/io5";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -12,6 +12,8 @@ import { useEditProfile } from "../store/ProfilStore";
 import { useFollowerModal, useFollowingModal } from "../store/FollowStore";
 import FollowingModal from "../components/modals/FollowingModal";
 import FollowerModal from "../components/modals/FollowerModal";
+import { useEffect, useState } from "react";
+import { socket } from "../libs/socket";
 
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
@@ -39,6 +41,22 @@ const Profile = () => {
   const { onOpen: onFolloweModalOpen } = useFollowerModal();
   const { onOpen: onFollowingModalOpen } = useFollowingModal();
   const { onOpen } = useEditProfile();
+  const navigate = useNavigate();
+
+  console.log(socket.connected);
+
+  const data = [loggedInUser?.id, +id!];
+  const handleRequestSocket = () => {
+    console.log(data);
+    socket.emit("create_chat", { userIds: [loggedInUser?.id, +id!] });
+    navigate("/");
+
+    // socket.emit("send_message", {
+    //   message: "test socket on client",
+    //   chatId: user?.id,
+    // });
+  };
+
   const fetchUserProfile = async () => {
     const res = await instance.get(`/users/${id}`);
 
@@ -82,7 +100,6 @@ const Profile = () => {
     queryKey: ["user", "postByUser", id],
     queryFn: () => fetchPostByUser(+id!),
   });
-  // console.log(postByUser);
 
   const fetchPostByLikeUser = async (id: number) => {
     const res = await instance.get(`/users/postlikebyuser/${id}`);
@@ -115,16 +132,27 @@ const Profile = () => {
                 Edit profile
               </div>
             ) : (
-              <div
-                onClick={() => mutate(user?.id)}
-                className="border rounded-xl  p-2 font-bold hover:bg-neutral-300 cursor-pointer transition"
-              >
-                {/* {followee.status === "default" ? "팔로잉" :followee.status === "pending" ? "요청됨" : "친구됨"} */}
-                {!fetchFollow
-                  ? "팔로잉"
-                  : fetchFollow.status === "PENDING"
-                  ? "요청됨"
-                  : "친구됨"}
+              <div className="flex gap-2 items-center ">
+                <div
+                  onClick={() => mutate(user?.id)}
+                  className="border rounded-xl  p-2 font-bold hover:bg-neutral-300 cursor-pointer transition"
+                >
+                  {/* {followee.status === "default" ? "팔로잉" :followee.status === "pending" ? "요청됨" : "친구됨"} */}
+                  {!fetchFollow
+                    ? "팔로잉"
+                    : fetchFollow.status === "PENDING"
+                    ? "요청됨"
+                    : "친구됨"}
+                </div>
+                {/* 누르면은 createChat 채팅 방을 생성해서 입장해야함 */}
+                {/* <Link to={`/chat`}> */}
+                <div
+                  onClick={handleRequestSocket}
+                  className="border rounded-xl p-2 font-bold hover:bg-neutral-300 cursor-pointer transition"
+                >
+                  메세지 보내기
+                </div>
+                {/* </Link> */}
               </div>
             )}
           </div>

@@ -29,7 +29,7 @@ export class UsersModel extends BaseModel {
 
   @Column({ nullable: true })
   @IsString()
-  @Exclude({ toPlainOnly: true })
+  @Exclude({ toPlainOnly: true }) // 응답으로 보낼때만 제거하고 보낸다
   password?: string;
 
   @Column({ default: null })
@@ -76,11 +76,13 @@ export class UsersModel extends BaseModel {
   @OneToMany(() => LikesModel, (like) => like.author)
   likePosts: LikesModel[];
 
-  @ManyToMany(() => ChatsModel, (chat) => chat.users)
+  @ManyToMany(() => ChatsModel, (chat) => chat.users, { onDelete: 'CASCADE' })
   @JoinTable()
   chats: ChatsModel[];
 
-  @OneToMany(() => MessagesModel, (message) => message.author)
+  @OneToMany(() => MessagesModel, (message) => message.author, {
+    onDelete: 'CASCADE',
+  })
   messages: MessagesModel;
   //
   // @ManyToMany(() => UsersModel, (user) => user.follwees)

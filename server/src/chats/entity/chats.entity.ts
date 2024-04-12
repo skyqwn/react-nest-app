@@ -5,7 +5,7 @@ import { MessagesModel } from '../messages/entity/messages.entity';
 
 @Entity()
 export class ChatsModel extends BaseModel {
-  @ManyToMany(() => UsersModel, (user) => user.chats)
+  @ManyToMany(() => UsersModel, (user) => user.chats, { onDelete: 'CASCADE' })
   users: UsersModel[];
 
   @OneToMany(() => MessagesModel, (message) => message.chat)

@@ -1,10 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
   Headers,
-  HttpStatus,
   Post,
   Req,
   Res,
@@ -20,7 +18,6 @@ import { RefreshTokenGuard } from './guard/bearer-token.guard';
 import { IsPublic } from 'src/common/decorator/is-public.decorator';
 import { UsersService } from 'src/users/users.service';
 import { GoogleOauthGuard } from './guard/google-oauth.guard';
-import { AuthUser } from 'src/users/decorator/auth-user.decorator';
 import { UsersModel } from 'src/users/entities/users.entity';
 import { ProviderEnum } from 'src/users/constant/roles.constant';
 
@@ -75,7 +72,7 @@ export class AuthController {
       secure: process.env.NODE_ENV === 'prod',
       httpOnly: process.env.NODE_ENV === 'prod',
       sameSite: 'strict',
-      maxAge: 1000 * 60 * 20,
+      maxAge: 1000 * 60 * 120,
     });
 
     return {
@@ -107,7 +104,7 @@ export class AuthController {
       secure: process.env.NODE_ENV === 'prod',
       httpOnly: process.env.NODE_ENV === 'prod',
       sameSite: 'strict',
-      maxAge: 1000 * 60 * 20,
+      maxAge: 1000 * 60 * 120,
     });
 
     res.cookie('refreshToken', refreshToken, {
@@ -159,7 +156,7 @@ export class AuthController {
       secure: process.env.NODE_ENV === 'prod',
       httpOnly: process.env.NODE_ENV === 'prod',
       sameSite: 'strict',
-      maxAge: 1000 * 60 * 20,
+      maxAge: 1000 * 60 * 120,
     });
     res.cookie('refreshToken', refreshToken, {
       secure: process.env.NODE_ENV === 'prod',
