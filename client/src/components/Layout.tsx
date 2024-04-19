@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
 import { TbFriends } from "react-icons/tb";
-
 import { SlMagnifier } from "react-icons/sl";
 import { IoPerson } from "react-icons/io5";
+import { FaRegMessage } from "react-icons/fa6";
 
 import { useAuthDispatch, useAuthState } from "../context/AuthContext";
 
@@ -22,6 +22,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </Link>
           <Link to={"/explore"} className="nav-pill">
             <SlMagnifier /> <span>EXPLORE</span>
+          </Link>
+          <Link to={"/chat"} className="nav-pill">
+            <FaRegMessage /> <span>CHAT</span>
           </Link>
           <Link to={"/alter"} className="nav-pill">
             <TbFriends /> <span>Alter</span>

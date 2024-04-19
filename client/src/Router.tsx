@@ -10,6 +10,8 @@ import Explore from "./routes/Explore";
 import { Home } from "./routes/Home";
 import PostDetail from "./routes/PostDetail";
 import UnAuth from "./routes/UnAuth";
+import Chat from "./routes/Chat";
+import ChatDetail from "./routes/ChatDetail";
 
 const Router = () => {
   return (
@@ -25,6 +27,8 @@ const Router = () => {
           </ProtectRouter>
         }
       />
+      <Route path="/chat" element={<Chat />} />
+      <Route path="/chat/:cid" element={<ChatDetail />} />
       <Route path="/alter" element={<Alter />} />
       <Route path="/unauthorize" element={<UnAuth />} />
       <Route path="/explore" element={<Explore />} />

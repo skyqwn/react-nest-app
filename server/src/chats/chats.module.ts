@@ -10,10 +10,11 @@ import { MessagesModel } from './messages/entity/messages.entity';
 import { MessagesController } from './messages/messages.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
+import { UsersModel } from 'src/users/entities/users.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ChatsModel, MessagesModel]),
+    TypeOrmModule.forFeature([ChatsModel, MessagesModel, UsersModel]),
     CommonModule,
     AuthModule,
     UsersModule,

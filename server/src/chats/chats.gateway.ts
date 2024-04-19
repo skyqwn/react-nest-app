@@ -34,9 +34,9 @@ import { AuthService } from 'src/auth/auth.service';
 @UseFilters(SocketCatchHttpExceptionFilter)
 @WebSocketGateway({
   cors: {
-    credentials: true,
-    methods: ['GET', 'POST'],
     origin: ['http://localhost:3000'],
+    methods: ['GET', 'POST'],
+    credentials: true,
   },
   // ws://localhost:4000/chats
   namespace: 'chats',
@@ -54,6 +54,12 @@ export class ChatsGateWay
   @WebSocketServer()
   server: Server;
 
+  private connectedClients = new Map();
+
+  // addClient(client: any) {
+  //   this.connectedClients.set
+  // }
+
   afterInit(server: any) {
     console.log(`after gateway init`);
   }
@@ -67,6 +73,7 @@ export class ChatsGateWay
 
     const headers = socket.handshake.headers;
 
+    const referer = headers.referer;
     const rawToken = headers['authorization'];
 
     if (!rawToken) {
@@ -91,67 +98,83 @@ export class ChatsGateWay
       socket.disconnect();
     }
   }
-  //test
-  // socker.on('send_message', (message) => {console.log(message)});
-  @SubscribeMessage('test')
-  async test(
-    @MessageBody() body: string,
-    @ConnectedSocket() socket: Socket & { user: UsersModel },
-  ) {
-    console.log(body);
-  }
 
   @SubscribeMessage('create_chat')
   async createChat(
     @MessageBody() data: CreateChatDto,
     @ConnectedSocket() socket: Socket & { user: UsersModel },
   ) {
-    console.log(data);
-    const chat = await this.chatsService.createChat(data);
+    const chatId = await this.chatsService.createChat(data);
+    socket.emit('create_chat_recive', chatId);
   }
 
   @SubscribeMessage('enter_chat')
   async enterChat(
-    // 방의 chat ID들을 리스트로 받는다.
     @MessageBody() data: EnterChatDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    for (const chatId of data.chatIds) {
-      const exist = await this.chatsService.checkIfChatExists(chatId);
-
-      if (!exist) {
-        throw new WsException({
-          code: 100,
-          message: `존재하지 않는 chat 입니다. chatId: ${chatId}`,
-        });
-      }
-    }
-
-    socket.join(data.chatIds.map((x) => x.toString()));
+    // const existChatRoom = await this.chatsService.checkIfChatExists(
+    //   data.chatId,
+    // );
+    // if (!existChatRoom) {
+    //   throw new WsException(`잘못된 경로입니다.`);
+    // }
+    // const existUser = await this.chatsService.checkInChatUser(data.userId);
+    // console.log(existUser);
+    // if (!existUser) {
+    //   throw new WsException(`권한이 없습니다.`);
+    // }
+    socket.join(data.chatId);
+    // this.connectedClients.set(data, socketId);
   }
+
+  // @SubscribeMessage('enter_chat1')
+  // async enterChat1(
+  //   // 방의 chat ID들을 리스트로 받는다.
+  //   @MessageBody() data: EnterChatDto,
+  //   @ConnectedSocket() socket: Socket,
+  // ) {
+  //   for (const chatId of data.chatIds) {
+  //     const exist = await this.chatsService.checkIfChatExists(chatId);
+
+  //     if (!exist) {
+  //       throw new WsException({
+  //         code: 100,
+  //         message: `존재하지 않는 chat 입니다. chatId: ${chatId}`,
+  //       });
+  //     }
+  //   }
+
+  //   socket.join(data.chatIds.map((x) => x.toString()));
+  // }
 
   // socker.on('send_message', (message) => {console.log(message)});
   @SubscribeMessage('send_message')
   async sendMessage(
-    @MessageBody() dto: CreateMessagesDto,
+    @MessageBody() dto: any,
     @ConnectedSocket() socket: Socket & { user: UsersModel },
   ) {
-    const chatExist = await this.chatsService.checkIfChatExists(dto.chatId);
+    console.log(dto);
+    // const chatExist = await this.chatsService.checkIfChatExists(dto.chatId);
+    //
 
-    if (!chatExist) {
-      throw new WsException(
-        `존재하지 않는 채팅방입니다. Chat ID: ${dto.chatId}`,
-      );
-    }
+    // if (!chatExist) {
+    //   throw new WsException(
+    //     `존재하지 않는 채팅방입니다. Chat ID: ${dto.chatId}`,
+    //   );
+    // }
 
-    const message = await this.messageSerivce.createMessage(
-      dto,
-      socket.user.id,
-    );
+    const message = await this.messageSerivce.createMessage(dto, dto.senderId);
 
-    socket
-      .to(message.chat.id.toString())
-      .emit('receive_message', message.message);
+    // const otherSocketId = this.connectedClients.get(+dto.reciverId);
+
+    socket.to(dto.chatId).emit('receive_message', message);
+
+    // console.log(message.chat.id);
+    // this.server
+    //   // .to(socket.id)
+    //   .to(otherSocketId)
+    //   .emit('receive_message', message);
     // this.server
     //   .in(message.chatId.toString())
     //   .emit('receive_message', message.message);

@@ -14,7 +14,7 @@ export class ChatMessagesService {
     private readonly commonService: CommonService,
   ) {}
 
-  async createMessage(dto: CreateMessagesDto, authorId: number) {
+  async createMessage(dto: any, authorId: number) {
     const message = await this.messagesRepository.save({
       chat: {
         id: dto.chatId,
@@ -25,12 +25,26 @@ export class ChatMessagesService {
       message: dto.message,
     });
 
-    return this.messagesRepository.findOne({
+    return await this.messagesRepository.findOne({
       where: {
         id: message.id,
       },
       relations: {
         chat: true,
+        author: true,
+      },
+    });
+  }
+
+  async fetchMessage(id: number) {
+    return await this.messagesRepository.find({
+      where: {
+        chat: {
+          id,
+        },
+      },
+      relations: {
+        author: true,
       },
     });
   }

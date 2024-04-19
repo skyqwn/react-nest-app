@@ -43,18 +43,17 @@ const Profile = () => {
   const { onOpen } = useEditProfile();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    socket.on("create_chat_recive", (chatId: any) => {
+      console.log(chatId);
+      navigate(`/chat/${chatId}`);
+    });
+  }, []);
+
   console.log(socket.connected);
 
-  const data = [loggedInUser?.id, +id!];
   const handleRequestSocket = () => {
-    console.log(data);
     socket.emit("create_chat", { userIds: [loggedInUser?.id, +id!] });
-    navigate("/");
-
-    // socket.emit("send_message", {
-    //   message: "test socket on client",
-    //   chatId: user?.id,
-    // });
   };
 
   const fetchUserProfile = async () => {

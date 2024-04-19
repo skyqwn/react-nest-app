@@ -1,6 +1,6 @@
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class EnterChatDto {
-  @IsNumber({}, { each: true })
-  chatIds: number[];
+  @IsString()
+  chatId: string;
 }

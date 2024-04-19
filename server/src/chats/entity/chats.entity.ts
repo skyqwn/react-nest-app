@@ -1,7 +1,8 @@
 import { BaseModel } from 'src/common/entities/base.entity';
 import { UsersModel } from 'src/users/entities/users.entity';
-import { Entity, ManyToMany, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 import { MessagesModel } from '../messages/entity/messages.entity';
+import { IsNumber } from 'class-validator';
 
 @Entity()
 export class ChatsModel extends BaseModel {
@@ -10,4 +11,7 @@ export class ChatsModel extends BaseModel {
 
   @OneToMany(() => MessagesModel, (message) => message.chat)
   messages: MessagesModel;
+
+  @Column('text', { array: true, default: [] })
+  connectUser: number[];
 }

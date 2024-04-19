@@ -79,7 +79,9 @@ export class AuthService {
 
       return token;
     } catch (error) {
-      console.log(error);
+      throw new UnauthorizedException(
+        `헤더에 있는 토큰값이 일치하지 않습니다.`,
+      );
     }
   }
   //
@@ -303,7 +305,7 @@ export class AuthService {
 
     return this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_SECRET'),
-      expiresIn: isRefreshToken ? 3600 : 300,
+      expiresIn: isRefreshToken ? 36000 : 3000,
     });
   }
 
@@ -322,6 +324,10 @@ export class AuthService {
   }
 
   me(user: UsersModel) {
-    return user;
+    try {
+      return user;
+    } catch (error) {
+      throw new UnauthorizedException(`user정보가 존재하지 않습니다.`);
+    }
   }
 }

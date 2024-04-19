@@ -6,21 +6,25 @@ import { BasePaginationDto } from 'src/common/dtos/base-pagination.dto';
 export class MessagesController {
   constructor(private readonly messagesService: ChatMessagesService) {}
 
+  // @Get()
+  // async PaginateMessage(
+  //   @Param('cid', ParseIntPipe) id: number,
+  //   @Query() dto: BasePaginationDto,
+  // ) {
+  //   return this.messagesService.paginateMessages(dto, {
+  //     where: {
+  //       chat: {
+  //         id,
+  //       },
+  //     },
+  //     relations: {
+  //       author: true,
+  //       chat: true,
+  //     },
+  //   });
+  // }
   @Get()
-  async PaginateMessage(
-    @Param('cid', ParseIntPipe) id: number,
-    @Query() dto: BasePaginationDto,
-  ) {
-    return this.messagesService.paginateMessages(dto, {
-      where: {
-        chat: {
-          id,
-        },
-      },
-      relations: {
-        author: true,
-        chat: true,
-      },
-    });
+  async fetchMessage(@Param('cid', ParseIntPipe) id: number) {
+    return await this.messagesService.fetchMessage(id);
   }
 }
