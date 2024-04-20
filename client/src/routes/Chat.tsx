@@ -27,6 +27,7 @@ interface IChat {
 const Chat = () => {
   const fetchChats = async () => {
     const res = await instance.get(`chats/inbox`);
+    console.log(res);
     return res.data;
   };
   const { data, isLoading } = useQuery({
@@ -38,29 +39,26 @@ const Chat = () => {
 
   return (
     <Layout>
-      <meta name="referrer" content="no-referrer" />
-
       <div className="mt-10">
         {data?.map((chat: IChat) => (
           <Link key={chat.id} to={`/chat/${chat.id}`}>
             <div className="flex gap-10">
               <div>
-                {chat.users.map((user) => (
-                  <div key={user.id} className="flex items-center gap-6">
+                {chat.users.map((user, index: number) => (
+                  <div key={index} className="flex items-center gap-6 ">
                     <img
                       className="size-20 rounded-full"
                       src={user.avatar}
                       alt={user.nickname}
                     />
                     <div>{user.nickname}</div>
+                    {/* 마지막 메세지 */}
                     {chat.messages?.slice(-1).map((m) => (
-                      <span className="text-sm text-neutral-500">
-                        {m.message}
-                      </span>
+                      <div className="text-sm text-neutral-500 ">
+                        <span className="mr-48">{m.message}</span>
+                        <span>{dayjs(m.createdAt).fromNow()}</span>
+                      </div>
                     ))}
-                    <span className="text-sm text-neutral-500">
-                      {dayjs(chat.createdAt).fromNow()}
-                    </span>
                   </div>
                 ))}
               </div>

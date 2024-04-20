@@ -3,11 +3,11 @@ import { MessagesModel } from '../entity/messages.entity';
 import { IsNumber, IsString } from 'class-validator';
 
 export class CreateMessagesDto extends PickType(MessagesModel, ['message']) {
-  @IsString()
-  chatId: string;
+  @IsNumber()
+  chatId: number;
 
-  @IsString()
-  senderId: string;
+  @IsNumber()
+  senderId: number;
 
   @IsString()
   reciverId: string;

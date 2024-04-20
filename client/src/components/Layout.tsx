@@ -6,15 +6,14 @@ import { SlMagnifier } from "react-icons/sl";
 import { IoPerson } from "react-icons/io5";
 import { FaRegMessage } from "react-icons/fa6";
 
-import { useAuthDispatch, useAuthState } from "../context/AuthContext";
+import { useAuthState } from "../context/AuthContext";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const { user, authenticated } = useAuthState();
-  const dispatch = useAuthDispatch();
+  const { user } = useAuthState();
 
   return (
     <div className="w-dvw h-dvh mt-14 px-8 max-w-screen-xl mx-auto">
-      <div className="md:flex ">
+      <div className="md:flex h-full ">
         {/* Left */}
         <div className="hidden lg:flex lg:flex-col lg:items-center lg:justify-start lg:gap-5 w-[220px] lg:py-2 lg:border-r-2">
           <Link to={"/"} className="nav-pill">

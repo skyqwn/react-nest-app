@@ -46,6 +46,8 @@ export class ChatsService {
           messages: true,
         },
       });
+      console.log(result);
+
       return result;
       // where: {
       //   users: {
@@ -63,7 +65,7 @@ export class ChatsService {
       // });
       // console.log(result);
     } catch (error) {
-      console.log(error);
+      throw new BadRequestException('서버 오류발생');
     }
   }
   //
@@ -75,6 +77,11 @@ export class ChatsService {
         },
         relations: ['users', 'messages', 'messages.author'],
       });
+
+      if (!chat) {
+        throw new BadRequestException(`잘못된 주소입니다.`);
+      }
+      console.log(chat);
       return chat;
     } catch (error) {
       console.log(error);
@@ -83,6 +90,7 @@ export class ChatsService {
   //
   async createChat(dto: CreateChatDto) {
     try {
+      console.log(dto);
       const exist = await this.chatsRepository.findOne({
         where: {
           connectUser: ArrayContains(dto.userIds),

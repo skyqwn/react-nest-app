@@ -56,10 +56,6 @@ export class ChatsGateWay
 
   private connectedClients = new Map();
 
-  // addClient(client: any) {
-  //   this.connectedClients.set
-  // }
-
   afterInit(server: any) {
     console.log(`after gateway init`);
   }
@@ -104,6 +100,7 @@ export class ChatsGateWay
     @MessageBody() data: CreateChatDto,
     @ConnectedSocket() socket: Socket & { user: UsersModel },
   ) {
+    console.log(data);
     const chatId = await this.chatsService.createChat(data);
     socket.emit('create_chat_recive', chatId);
   }
@@ -113,12 +110,13 @@ export class ChatsGateWay
     @MessageBody() data: EnterChatDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    // const existChatRoom = await this.chatsService.checkIfChatExists(
-    //   data.chatId,
-    // );
-    // if (!existChatRoom) {
-    //   throw new WsException(`잘못된 경로입니다.`);
-    // }
+    console.log(1);
+    const existChatRoom = await this.chatsService.checkIfChatExists(
+      +data.chatId,
+    );
+    if (!existChatRoom) {
+      throw new WsException(`잘못된 경로입니다.`);
+    }
     // const existUser = await this.chatsService.checkInChatUser(data.userId);
     // console.log(existUser);
     // if (!existUser) {
@@ -151,7 +149,7 @@ export class ChatsGateWay
   // socker.on('send_message', (message) => {console.log(message)});
   @SubscribeMessage('send_message')
   async sendMessage(
-    @MessageBody() dto: any,
+    @MessageBody() dto: CreateMessagesDto,
     @ConnectedSocket() socket: Socket & { user: UsersModel },
   ) {
     console.log(dto);
@@ -164,12 +162,13 @@ export class ChatsGateWay
     //   );
     // }
 
-    const message = await this.messageSerivce.createMessage(dto, dto.senderId);
+    const message = await this.messageSerivce.createMessage(dto);
 
     // const otherSocketId = this.connectedClients.get(+dto.reciverId);
 
-    socket.to(dto.chatId).emit('receive_message', message);
+    socket.to(dto.chatId.toString()).emit('receive_message', message);
 
+    return message;
     // console.log(message.chat.id);
     // this.server
     //   // .to(socket.id)
