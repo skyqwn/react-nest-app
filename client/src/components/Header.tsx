@@ -27,7 +27,7 @@ const Header = () => {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const query = { term };
-    const url = qs.stringifyUrl({ url: "/search", query });
+    const url = qs.stringifyUrl({ url: "/", query }, { skipNull: true });
     navigate(url);
   };
 

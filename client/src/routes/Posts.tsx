@@ -1,7 +1,8 @@
 import React, { Fragment, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
+import qs from "query-string";
 
 import { instance } from "../api/apiconfig";
 import PostBlock from "../components/block/PostBlock";
@@ -11,10 +12,21 @@ const Posts = () => {
   const navigate = useNavigate();
 
   type Props = { pageParam?: number };
+
+  const { search } = useLocation();
+  const { term } = qs.parse(search);
+
   const fetchPosts = async ({ pageParam }: Props) => {
-    const res = await instance.get(
-      `/posts?order__createdAt=DESC&take=10&where__id__more_than=${pageParam}`
-    );
+    const parseSerch = qs.parse(search);
+    const query = {
+      ...parseSerch,
+      order__createdAt: "DESC",
+      take: 10,
+      where__id__more_than: pageParam,
+    };
+    const url = qs.stringifyUrl({ url: "/posts", query }, { skipNull: true });
+    console.log(url);
+    const res = await instance.get(url);
     return res.data;
   };
 
@@ -31,17 +43,18 @@ const Posts = () => {
     any,
     Object,
     InfiniteData<any>,
-    [_1: string],
+    [_1: string, _2: any],
     number
     //@ts-ignore
   >({
-    queryKey: ["posts"],
+    queryKey: ["posts", term],
+
     queryFn: fetchPosts,
     initialPageParam: 0,
     staleTime: 60 * 1000,
     gcTime: 300 * 1000,
     getNextPageParam: (lastPage) => {
-      return lastPage.cursor.after || undefined;
+      return lastPage?.cursor?.after || undefined;
     },
   });
   const { ref, inView } = useInView({
@@ -60,12 +73,13 @@ const Posts = () => {
   };
 
   if (!posts) return null;
+  console.log(posts);
 
   return (
     <>
-      {posts?.pages.map((page, i) => (
+      {posts?.pages?.map((page, i) => (
         <Fragment key={i}>
-          {page?.data.map((p: IPost) => (
+          {page?.data?.map((p: IPost) => (
             // <Link to={`/posts/${p.id}`}>
             <div
               key={p.id}
