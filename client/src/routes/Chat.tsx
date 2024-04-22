@@ -27,7 +27,6 @@ interface IChat {
 const Chat = () => {
   const fetchChats = async () => {
     const res = await instance.get(`chats/inbox`);
-    console.log(res);
     return res.data;
   };
   const { data, isLoading } = useQuery({

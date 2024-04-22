@@ -1,6 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { useMutation } from "@tanstack/react-query";
+import qs from "query-string";
 
 import { useAuthDispatch, useAuthState } from "../context/AuthContext";
 import { authStore } from "../store/AuthStore";
@@ -9,11 +11,25 @@ import UserAvatar from "./block/UserAvatar";
 
 import { SiNestjs } from "react-icons/si";
 import { TbBrandReact } from "react-icons/tb";
+import { useState } from "react";
 
 const Header = () => {
   const { onOpen } = authStore();
   const { authenticated, loading } = useAuthState();
+  const [term, setTerm] = useState("");
   const dispatch = useAuthDispatch();
+  const navigate = useNavigate();
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTerm(e.target.value);
+  };
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const query = { term };
+    const url = qs.stringifyUrl({ url: "/search", query });
+    navigate(url);
+  };
 
   const handleLogOut = () => {
     instance
@@ -27,9 +43,7 @@ const Header = () => {
       });
   };
 
-  if (loading) {
-    return <>Loading...</>;
-  }
+  if (loading) return <>Loading...</>;
 
   return (
     <div className="border-b-[1px] h-14 w-full fixed inset-x-0 top-0 p-2 bg-white z-10">
@@ -43,14 +57,21 @@ const Header = () => {
           </Link>
 
           <div className="max-w-full px-4">
-            <div className="relative flex items-center bg-gray-100 border rounded hover:bg-white focus:outline-none">
-              <FaSearch className="ml-4 text-gray-400" />
+            <form
+              onSubmit={onSubmit}
+              className="relative flex items-center bg-gray-100 border rounded hover:bg-white focus:outline-none"
+            >
+              <button type="submit">
+                <FaSearch className="ml-4 text-gray-400" />
+              </button>
               <input
+                value={term}
+                onChange={onChange}
                 type="text"
-                placeholder="Search."
+                placeholder="Search..."
                 className="px-3 py-1 bg-transparent rounded h-7 focus:outline-none"
               />
-            </div>
+            </form>
           </div>
 
           <div className=" flex gap-5 items-center">

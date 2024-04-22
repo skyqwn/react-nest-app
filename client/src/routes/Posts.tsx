@@ -7,15 +7,17 @@ import { instance } from "../api/apiconfig";
 import PostBlock from "../components/block/PostBlock";
 import { IPost } from "../types/PostsTypes";
 
-type Props = { pageParam?: number };
-const fetchPosts = async ({ pageParam }: Props) => {
-  const res = await instance.get(
-    `/posts?order__createdAt=ASC&take=10&where__id__more_than=${pageParam}`
-  );
-  return res.data;
-};
-
 const Posts = () => {
+  const navigate = useNavigate();
+
+  type Props = { pageParam?: number };
+  const fetchPosts = async ({ pageParam }: Props) => {
+    const res = await instance.get(
+      `/posts?order__createdAt=DESC&take=10&where__id__more_than=${pageParam}`
+    );
+    return res.data;
+  };
+
   const {
     data: posts,
     hasNextPage,
@@ -52,7 +54,6 @@ const Posts = () => {
       !isFetching && hasNextPage && fetchNextPage();
     }
   }, [inView, isFetching, hasNextPage, fetchNextPage]);
-  const navigate = useNavigate();
 
   const handlePostClick = (postId: number) => {
     navigate(`/posts/${postId}`);

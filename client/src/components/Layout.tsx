@@ -12,15 +12,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuthState();
 
   return (
-    <div className="w-dvw h-dvh mt-14 px-8 max-w-screen-xl mx-auto">
+    <div className="w-dvw h-dvh pt-14 px-8 max-w-screen-xl mx-auto">
       <div className="md:flex h-full ">
         {/* Left */}
         <div className="hidden lg:flex lg:flex-col lg:items-center lg:justify-start lg:gap-5 w-[220px] lg:py-2 lg:border-r-2">
           <Link to={"/"} className="nav-pill">
             <FaHome /> <span>HOME</span>
-          </Link>
-          <Link to={"/explore"} className="nav-pill">
-            <SlMagnifier /> <span>EXPLORE</span>
           </Link>
           <Link to={"/chat"} className="nav-pill">
             <FaRegMessage /> <span>CHAT</span>
@@ -33,7 +30,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </Link>
         </div>
         {/* Center */}
-        <div className="flex flex-col p-2 max-w-screen-sm mx-auto md:w-[900px] ">
+        <div className="flex flex-col h-full p-2 max-w-screen-sm mx-auto md:w-[900px] ">
           {children}
         </div>
         {/* Right */}
