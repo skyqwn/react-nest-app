@@ -69,7 +69,6 @@ export class ChatsGateWay
 
     const headers = socket.handshake.headers;
 
-    const referer = headers.referer;
     const rawToken = headers['authorization'];
 
     if (!rawToken) {

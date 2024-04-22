@@ -46,24 +46,7 @@ export class ChatsService {
           messages: true,
         },
       });
-      console.log(result);
-
       return result;
-      // where: {
-      //   users: {
-      //     id: userId,
-      //   },`
-      // },
-      // });
-      // console.log(result);
-      // return result;
-      // const result = await this.usersRepository.findOne({
-      //   where: {
-      //     id: userId,
-      //   },
-      //   relations: ['chats', 'chats.users'],
-      // });
-      // console.log(result);
     } catch (error) {
       throw new BadRequestException('서버 오류발생');
     }
@@ -90,7 +73,6 @@ export class ChatsService {
   //
   async createChat(dto: CreateChatDto) {
     try {
-      console.log(dto);
       const exist = await this.chatsRepository.findOne({
         where: {
           connectUser: ArrayContains(dto.userIds),

@@ -7,9 +7,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PostsModel } from './entities/posts.entity';
 import {
   ArrayContains,
+  FindOptions,
   FindOptionsWhere,
-  In,
+  ILike,
   LessThan,
+  Like,
   MoreThan,
   QueryRunner,
   Repository,
@@ -44,11 +46,6 @@ export class PostsService {
       { relations: ['author'] },
       'posts',
     );
-    // if (dto.page) {
-    //   return this.pagePaginatePosts(dto);
-    // } else {
-    //   return this.cursorPaginatePosts(dto);
-    // }
   }
 
   async pagePaginatePosts(dto: PaginatePostsDto) {
@@ -66,18 +63,25 @@ export class PostsService {
   }
 
   async cursorPaginatePosts(dto: PaginatePostsDto) {
-    const where: FindOptionsWhere<PostsModel> = {};
+    const where: any[] = [];
 
     if (dto.where__id__less_than) {
-      where.id = LessThan(dto.where__id__less_than);
+      where.push({ id: LessThan(dto.where__id__less_than) });
     } else if (dto.where__id__more_than) {
-      where.id = MoreThan(dto.where__id__more_than);
+      where.push({ id: MoreThan(dto.where__id__less_than) });
+    }
+    if (dto.term) {
+      where.push({ author: { nickname: ILike(`%${dto.term}%`) } });
+      where.push({ content: ILike(`%${dto.term}%`) });
     }
 
     const posts = await this.postsRepository.find({
       where,
       order: {
         createdAt: dto.order__createdAt,
+      },
+      relations: {
+        author: true,
       },
       take: dto.take,
     });

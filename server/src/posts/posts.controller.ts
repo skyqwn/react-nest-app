@@ -36,7 +36,7 @@ export class PostsController {
   @Get()
   @IsPublic()
   getPosts(@Query() query: PaginatePostsDto) {
-    return this.postsService.paginatePosts(query);
+    return this.postsService.cursorPaginatePosts(query);
   }
 
   @Get(':id')
@@ -84,4 +84,9 @@ export class PostsController {
   deletePost(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.deletePost(id);
   }
+
+  // @Post()
+  // serchTerm(@Query('term') term: string) {
+  //   return this.postsService.serchTerm(term);
+  // }
 }

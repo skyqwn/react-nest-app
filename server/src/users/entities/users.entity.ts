@@ -84,11 +84,4 @@ export class UsersModel extends BaseModel {
     onDelete: 'CASCADE',
   })
   messages: MessagesModel;
-  //
-  // @ManyToMany(() => UsersModel, (user) => user.follwees)
-  // @JoinTable()
-  // followers: UsersModel[];
-
-  // @ManyToMany(() => UsersModel, (user) => user.followers)
-  // follwees: UsersModel[];
 }
