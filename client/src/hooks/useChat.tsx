@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
 import { instance } from "../api/apiconfig";
-import { IFollowUser } from "../routes/Alter";
 import { IMessage } from "../components/block/ChatMessageBlock";
+import { IFollowUser } from "./useFollowers";
 
 interface IChat {
   connectUser: string[];

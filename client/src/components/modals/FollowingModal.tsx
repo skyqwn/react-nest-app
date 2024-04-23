@@ -2,13 +2,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useFollowerModal, useFollowingModal } from "../../store/FollowStore";
 import Modal from "./Modal";
 import { instance } from "../../api/apiconfig";
-import { IFollowUser } from "../../routes/Alter";
 import { queryClient } from "../..";
 import { IoMdClose } from "react-icons/io";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAuthState } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
+import { IFollowUser } from "../../hooks/useFollowers";
 interface IFollower {
   email: string;
   id: number;
@@ -50,8 +50,6 @@ const FollowingModal = ({ profileId }: { profileId: string }) => {
   });
 
   if (!myFollowees) return null;
-
-  // 팔로워중리스트를 불러올때도 status 조건이  "CONFIRMED인사라만 리스트로 뿌려줘야함"
 
   const body = (
     <div className="space-y-5 px-20 flex flex-col">

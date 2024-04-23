@@ -8,7 +8,6 @@ import TextArea from "../components/Inputs/TextArea";
 import PostCommentBlock from "../components/block/PostCommentBlock";
 import { queryClient } from "..";
 import { instance } from "../api/apiconfig";
-import { IPost } from "../types/PostsTypes";
 
 import { IoIosArrowBack } from "react-icons/io";
 
@@ -18,7 +17,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import UserAvatar from "../components/block/UserAvatar";
 import { useMemo } from "react";
 import { useAuthState } from "../context/AuthContext";
-import useIncludes from "../hooks/useIncludes";
+import usePostDetail, { IPost } from "../hooks/usePostDetail";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 
@@ -67,28 +66,20 @@ const PostDetail = () => {
     createCommentMutate(data);
   };
 
-  const fetchPostsDetail = async () => {
-    const res = await instance.get(`/posts/${postId}`);
-    return res.data;
-  };
-
-  const { data: post, refetch } = useQuery<IPost>({
-    queryKey: ["posts", postId],
-    queryFn: fetchPostsDetail,
-  });
+  const { postDetail, refetch } = usePostDetail(+postId!);
 
   const isLike = useMemo(() => {
-    if (post) {
-      return post?.likeUsers?.includes(user?.id! + "") ? true : false;
+    if (postDetail) {
+      return postDetail?.likeUsers?.includes(user?.id! + "") ? true : false;
     }
     return false;
-  }, [post]);
+  }, [postDetail]);
 
   const backButton = () => {
     navigate(-1);
   };
 
-  if (!post) return null;
+  if (!postDetail) return null;
 
   return (
     <div className="h-dvh w-dvw relative bg-white z-20 flex flex-col overflow-y-auto md:flex md:flex-row">
@@ -97,13 +88,16 @@ const PostDetail = () => {
       <div className="flex flex-col h-full w-full lg:w-4/5 p-2">
         <div className="flex flex-1 items-center justify-center h-2/4 w-full">
           <div className="w-full max-h-[80dvh] aspect-video">
-            <img className="object-fit w-full h-full" src={post?.images[0]} />
+            <img
+              className="object-fit w-full h-full"
+              src={postDetail?.images[0]}
+            />
           </div>
         </div>
         <PostActionBlock
-          postCommentCount={+post.commentCount}
-          postLikeCount={+post.likeCount}
-          postId={post.id}
+          postCommentCount={+postDetail.commentCount}
+          postLikeCount={+postDetail.likeCount}
+          postId={postDetail.id}
           isLike={isLike}
           refetch={refetch}
         />
@@ -115,19 +109,22 @@ const PostDetail = () => {
       <div className="h-full w-full md:w-[530px] p-3  lg:border-l-[1px] overflow-y-auto">
         <div className=" h-1/6 flex flex-col  ">
           <div className="flex items-center gap-1">
-            <Link to={`/profile/${post.author.id}`}>
-              <img className="size-10 rounded-full" src={post?.author.avatar} />
+            <Link to={`/profile/${postDetail.author.id}`}>
+              <img
+                className="size-10 rounded-full"
+                src={postDetail?.author.avatar}
+              />
             </Link>
             <div className="flex flex-col justify-center">
-              <div>{post?.author.nickname}</div>
+              <div>{postDetail?.author.nickname}</div>
               <div className="text-neutral-400 text-sm">
-                @{post?.author.nickname}
+                @{postDetail?.author.nickname}
               </div>
             </div>
           </div>
-          <div className="mt-2">{post?.content}</div>
+          <div className="mt-2">{postDetail?.content}</div>
           <div className="text-neutral-400 ">
-            {dayjs(post?.createdAt).format("HH:mm MMM DD, YYYY")}
+            {dayjs(postDetail?.createdAt).format("HH:mm MMM DD, YYYY")}
           </div>
           <div className="h-[450px] flex  gap-3 items-center justify-between border-t-2 mt-1  ">
             <UserAvatar />

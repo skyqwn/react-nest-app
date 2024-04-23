@@ -12,28 +12,16 @@ import { useEditProfile } from "../store/ProfilStore";
 import { useFollowerModal, useFollowingModal } from "../store/FollowStore";
 import FollowingModal from "../components/modals/FollowingModal";
 import FollowerModal from "../components/modals/FollowerModal";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { socket } from "../libs/socket";
+import usePostByUser from "../hooks/usePostByUser";
+import useUser from "../hooks/useUser";
+import usePostLikeByUser from "../hooks/usePostLikeByUser";
+import ProfilPostLikeByUser from "../components/block/ProfilPostLikeByUser";
+import PostByUserBlock from "../components/block/PostByUserBlock";
 
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
-
-interface IProfile {
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  nickname: string;
-  email: string;
-  avatar: string;
-  followerCount: number;
-  followeeCount: number;
-}
-
-interface ILikePost {
-  id: number;
-  createdAt: string;
-  content: string;
-}
 
 const Profile = () => {
   const { id } = useParams();
@@ -45,12 +33,9 @@ const Profile = () => {
 
   useEffect(() => {
     socket.on("create_chat_recive", (chatId: any) => {
-      console.log(chatId);
       navigate(`/chat/${chatId}`);
     });
   }, []);
-
-  console.log(socket.connected);
 
   const handleRequestSocket = () => {
     socket.emit("create_chat", {
@@ -58,16 +43,11 @@ const Profile = () => {
     });
   };
 
-  const fetchUserProfile = async () => {
-    const res = await instance.get(`/users/${id}`);
+  const { user } = useUser(+id!);
 
-    return res.data;
-  };
+  const { postByUser } = usePostByUser(+id!);
 
-  const { data: user } = useQuery<IProfile>({
-    queryKey: ["user", id],
-    queryFn: fetchUserProfile,
-  });
+  const { postByLikeUser } = usePostLikeByUser(+id!);
 
   const handleFollowing = async (id: number) => {
     const res = await instance.post(`/users/follow/${id}`);
@@ -90,26 +70,6 @@ const Profile = () => {
   const { data: fetchFollow, refetch } = useQuery({
     queryKey: ["user", "followee"],
     queryFn: fetchFollowee,
-  });
-
-  const fetchPostByUser = async (id: number) => {
-    const res = await instance.get(`/users/postbyuser/${id}`);
-    return res.data;
-  };
-
-  const { data: postByUser } = useQuery({
-    queryKey: ["user", "postByUser", id],
-    queryFn: () => fetchPostByUser(+id!),
-  });
-
-  const fetchPostByLikeUser = async (id: number) => {
-    const res = await instance.get(`/users/postlikebyuser/${id}`);
-    return res.data;
-  };
-
-  const { data: postByLikeUser } = useQuery({
-    queryKey: ["user", "postByLikeUser", id],
-    queryFn: () => fetchPostByLikeUser(+id!),
   });
 
   if (!user) return null;
@@ -185,18 +145,8 @@ const Profile = () => {
             <span className="font-bold">{user.nickname}</span> 님이 쓴 포스터
           </div>
           <div>
-            {postByUser?.map((post: any) => (
-              <Link to={`/posts/${post.id}`}>
-                <div
-                  key={post.id}
-                  className="flex gap-6 items-center justify-between cursor-pointer"
-                >
-                  <h2 className="text-2xl font-semibold">{post.content}</h2>
-                  <span className="text-neutral-400 text-sm">
-                    {dayjs(post.createdAt).fromNow()}
-                  </span>
-                </div>
-              </Link>
+            {postByUser?.map((post) => (
+              <PostByUserBlock post={post} />
             ))}
           </div>
         </div>
@@ -206,18 +156,8 @@ const Profile = () => {
             <span className="font-bold">{user.nickname}</span> 님이 좋아하는
             포스터
           </div>
-          {postByLikeUser?.map((likepost: ILikePost) => (
-            <Link to={`/posts/${likepost.id}`}>
-              <div
-                key={likepost.id}
-                className="flex gap-6 items-center justify-between cursor-pointer "
-              >
-                <h2 className="text-2xl font-semibold">{likepost.content}</h2>
-                <span className="text-neutral-400 text-sm">
-                  {dayjs(likepost.createdAt).fromNow()}
-                </span>
-              </div>
-            </Link>
+          {postByLikeUser?.map((likepost) => (
+            <ProfilPostLikeByUser likepost={likepost} />
           ))}
         </div>
       </div>

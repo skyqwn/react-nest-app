@@ -2,12 +2,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useFollowerModal } from "../../store/FollowStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { instance } from "../../api/apiconfig";
-import { IFollowUser } from "../../routes/Alter";
 import { IoMdClose } from "react-icons/io";
 import { queryClient } from "../..";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
 import { useAuthState } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
+import { IFollowUser } from "../../hooks/useFollowers";
 
 interface IFollower {
   email: string;

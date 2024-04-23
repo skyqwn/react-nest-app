@@ -6,7 +6,7 @@ import qs from "query-string";
 
 import { instance } from "../api/apiconfig";
 import PostBlock from "../components/block/PostBlock";
-import { IPost } from "../types/PostsTypes";
+import { IPost } from "../hooks/usePostDetail";
 
 const Posts = () => {
   const navigate = useNavigate();
@@ -73,7 +73,6 @@ const Posts = () => {
   };
 
   if (!posts) return null;
-  console.log(posts);
 
   return (
     <>

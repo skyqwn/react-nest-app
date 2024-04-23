@@ -12,9 +12,9 @@ import toast from "react-hot-toast";
 import { queryClient } from "../..";
 import { useMutation } from "@tanstack/react-query";
 import { instance } from "../../api/apiconfig";
-import { IPost } from "../../types/PostsTypes";
 import PostActionBlock from "./PostActionBlock";
 import { useAuthState } from "../../context/AuthContext";
+import { IPost } from "../../hooks/usePostDetail";
 
 dayjs.locale("ko");
 dayjs.extend(relativeTime);

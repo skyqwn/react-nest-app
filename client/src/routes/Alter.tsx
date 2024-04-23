@@ -1,47 +1,13 @@
 import React from "react";
 import Layout from "../components/Layout";
 import { instance } from "../api/apiconfig";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { queryClient } from "..";
-import { useAuthState } from "../context/AuthContext";
-
-export interface IFollowUser {
-  avatar: string;
-  createdAt: string;
-  email: string;
-  followeeCount: number;
-  followerCount: number;
-  id: number;
-  nickname: string;
-  provider: string;
-  role: string;
-  updatedAt: string;
-}
-
-interface IFollow {
-  email: string;
-  id: number;
-  isConfirmed: boolean;
-  nickname: string;
-  avatar: string;
-  status: "PENDING" | "CONFIRMED";
-  followee: IFollowUser;
-  follower: IFollowUser;
-}
+import useFollowers from "../hooks/useFollowers";
 
 const Alter = () => {
-  const queryClient = useQueryClient();
-
-  const fetchFollowers = async () => {
-    const res = await instance.get(`users/requestFollow/me`);
-    return res.data;
-  };
-
-  const { data: requsetFollower, refetch } = useQuery({
-    queryKey: ["follower", "me"],
-    queryFn: fetchFollowers,
-  });
+  const { refetch, requsetFollower } = useFollowers();
 
   const confirmFollower = async (id: number) => {
     await instance.patch(`/users/follow/${id}`);
@@ -74,7 +40,7 @@ const Alter = () => {
     <Layout>
       <div className="flex flex-col gap-6 p-3">
         <h2>팔로우 요청</h2>
-        {requsetFollower?.map((follow: IFollow, i: number) => (
+        {requsetFollower?.map((follow, i: number) => (
           <div key={i} className="flex gap-4 mt-2 justify-between">
             <>
               <div className="flex items-center gap-2">
