@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
 import Layout from "../components/Layout";
+import useChatInbox from "../hooks/useChatInbox";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import useChatInbox from "../hooks/useChatInbox";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 

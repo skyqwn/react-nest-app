@@ -326,4 +326,22 @@ export class PostsService {
     );
     return true;
   }
+
+  async popularPost() {
+    try {
+      return await this.postsRepository.find({
+        order: {
+          likeCount: 'DESC',
+        },
+        take: 5,
+        select: {
+          content: true,
+          id: true,
+          createdAt: true,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

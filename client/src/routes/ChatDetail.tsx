@@ -25,7 +25,7 @@ const ChatDetail = () => {
 
   return (
     <Layout>
-      <div className="h-[calc(100vh-110px)] w-full flex flex-col relative ">
+      <div className="h-[calc(100dvh-110px)] w-full flex flex-col relative ">
         <div className="h-full overflow-y-auto">
           {chat?.messages.map((message) => (
             <ChatMessageBlock message={message} userId={+userId!} />

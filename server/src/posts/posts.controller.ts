@@ -39,6 +39,12 @@ export class PostsController {
     return this.postsService.cursorPaginatePosts(query);
   }
 
+  @Get('popular')
+  @IsPublic()
+  async popularPost() {
+    return await this.postsService.popularPost();
+  }
+
   @Get(':id')
   @IsPublic()
   getPostById(@Param('id', ParseIntPipe) id: number) {
@@ -81,8 +87,8 @@ export class PostsController {
 
   @Delete(':id')
   // @UseGuards(IsPostMindOrAdminGuard)
-  deletePost(@Param('id', ParseIntPipe) id: number) {
-    return this.postsService.deletePost(id);
+  async deletePost(@Param('id', ParseIntPipe) id: number) {
+    return await this.postsService.deletePost(id);
   }
 
   // @Post()

@@ -109,7 +109,6 @@ export class ChatsGateWay
     @MessageBody() data: EnterChatDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    console.log(1);
     const existChatRoom = await this.chatsService.checkIfChatExists(
       +data.chatId,
     );
@@ -151,7 +150,6 @@ export class ChatsGateWay
     @MessageBody() dto: CreateMessagesDto,
     @ConnectedSocket() socket: Socket & { user: UsersModel },
   ) {
-    console.log(dto);
     // const chatExist = await this.chatsService.checkIfChatExists(dto.chatId);
     //
 
