@@ -19,8 +19,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   const { isPopularPostLoading, popularPosts } = usePopularPosts();
 
-  const { isRecommendationLoading, recommendationUsers } =
-    useRecommendationUser();
+  const { recommendationUsers } = useRecommendationUser();
 
   if (isPopularPostLoading) return <div>Loading..</div>;
 
@@ -71,12 +70,20 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 새로운 친구를 만들어보세요
               </div>
               {recommendationUsers?.map((user) => (
-                <Link to={`/profile/${user.id}`} key={user.id}>
-                  <div className="flex gap-5 items-center justify-between ">
-                    <div className="flex items-center">
-                      <img className="size-10 rounded-full" src={user.avatar} />
-                      <h1>{user.nickname}</h1>
-                    </div>
+                <div
+                  className="flex items-center justify-between mb-10 "
+                  key={user.id}
+                >
+                  <>
+                    <Link to={`/profile/${user.id}`}>
+                      <div className="flex items-center gap-2">
+                        <img
+                          className="size-10 rounded-full"
+                          src={user.avatar}
+                        />
+                        <h1>{user.nickname}</h1>
+                      </div>
+                    </Link>
                     <button
                       onClick={() => {
                         console.log(1);
@@ -84,8 +91,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     >
                       Follow
                     </button>
-                  </div>
-                </Link>
+                  </>
+                </div>
               ))}
             </div>
           )}

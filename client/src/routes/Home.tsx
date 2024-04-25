@@ -1,7 +1,6 @@
 import Posts from "./Posts";
 import Layout from "../components/Layout";
 import CreatePosts from "../components/CreatePosts";
-import PostDetail from "./PostDetail";
 
 export const Home = () => {
   return (

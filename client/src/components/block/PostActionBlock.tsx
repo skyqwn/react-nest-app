@@ -1,10 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { FaRegComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
 import { FaHeart } from "react-icons/fa";
 
-import { instance } from "../../api/apiconfig";
+import useLikePost from "../../hooks/useLikePost";
+import { useDisLikePosts } from "../../hooks/useDisLikePosts";
 
 interface PostActionBlockProps {
   postCommentCount: number | undefined;
@@ -21,81 +21,9 @@ const PostActionBlock = ({
   postId,
   refetch,
 }: PostActionBlockProps) => {
-  const likeMutate = async (postId: number) => {
-    await instance.post(`/likes/posts/${postId}`);
-  };
+  const { likePostMutation } = useLikePost(refetch);
+  const { disLikePostMutation } = useDisLikePosts(refetch);
 
-  const { mutate: likeMutation } = useMutation({
-    mutationFn: likeMutate,
-    onSuccess: () => refetch(),
-    // onMutate: () => {
-    //   const prev: IPost | undefined = queryClient.getQueryData([
-    //     "posts",
-    //     postId,
-    //   ]);
-
-    //   console.log(prev);
-    //   const prevIsLike: boolean | undefined = queryClient.getQueryData([
-    //     "likes",
-    //     "posts",
-    //     postId,
-    //   ]);
-    //   const shallow = { ...prev, likeCount: +prev?.likeCount! + 1 };
-    //   queryClient.setQueryData(["posts", postId], shallow);
-    //   queryClient.setQueryData(["likes", "posts", postId], !prevIsLike);
-    // },
-    // onError: () => {
-    //   const prev: IPost | undefined = queryClient.getQueryData([
-    //     "posts",
-    //     postId,
-    //   ]);
-    //   const prevIsLike: boolean | undefined = queryClient.getQueryData([
-    //     "likes",
-    //     "posts",
-    //     postId,
-    //   ]);
-    //   const shallow = { ...prev, likeCount: +prev?.likeCount! - 1 };
-    //   queryClient.setQueryData(["posts", postId], shallow);
-    //   queryClient.setQueryData(["likes", "posts", postId], !prevIsLike);
-    // },
-  });
-
-  const disLikeMutate = async (postId: number) => {
-    await instance.delete(`likes/posts/${postId}`);
-  };
-
-  const { mutate: disLikeMutation } = useMutation({
-    mutationFn: disLikeMutate,
-    onSuccess: () => refetch(),
-    // onMutate: () => {
-    //   const prev: IPost | undefined = queryClient.getQueryData([
-    //     "posts",
-    //     postId,
-    //   ]);
-    //   const prevIsLike: boolean | undefined = queryClient.getQueryData([
-    //     "likes",
-    //     "posts",
-    //     postId,
-    //   ]);
-    //   const shallow = { ...prev, likeCount: +prev?.likeCount! - 1 };
-    //   queryClient.setQueryData(["posts", postId], shallow);
-    //   queryClient.setQueryData(["likes", "posts", postId], !prevIsLike);
-    // },
-    // onError: () => {
-    //   const prev: IPost | undefined = queryClient.getQueryData([
-    //     "posts",
-    //     postId,
-    //   ]);
-    //   const prevIsLike: boolean | undefined = queryClient.getQueryData([
-    //     "likes",
-    //     "posts",
-    //     postId,
-    //   ]);
-    //   const shallow = { ...prev, likeCount: +prev?.likeCount! + 1 };
-    //   queryClient.setQueryData(["posts", postId], shallow);
-    //   queryClient.setQueryData(["likes", "posts", postId], !prevIsLike);
-    // },
-  });
   return (
     <div className="flex justify-around mt-2 mb-2 ">
       <div className="flex items-center justify-center gap-2 hover:text-blue-500 cursor-pointer transition">
@@ -107,11 +35,11 @@ const PostActionBlock = ({
           isLike
             ? (e: React.MouseEvent<HTMLElement>) => {
                 e.stopPropagation();
-                disLikeMutation(+postId!);
+                disLikePostMutation(+postId!);
               }
             : (e: React.MouseEvent<HTMLElement>) => {
                 e.stopPropagation();
-                likeMutation(+postId!);
+                likePostMutation(+postId!);
               }
         }
         className="flex items-center  justify-center gap-2 hover:text-red-500 cursor-pointer transition active:scale-150"

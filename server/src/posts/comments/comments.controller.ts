@@ -78,13 +78,13 @@ export class CommentsController {
 
   @Delete(':commentId')
   // @UseGuards(IsCommentMineOrAdminGuard)
-  @IsPublic()
   @UseInterceptors(TransactionInterceptor)
   async deleteComment(
     @Param('commentId', ParseIntPipe) commentId: number,
     @Param('postId', ParseIntPipe) postId: number,
     @QueryRunnerDecorator() qr: QueryRunner,
   ) {
+    console.log(commentId);
     const result = await this.commentsService.deleteComment(commentId, qr);
     await this.postService.decrementCommentCount(postId);
 

@@ -1,12 +1,7 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IoCalendarOutline } from "react-icons/io5";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 
 import Layout from "../components/Layout";
-import { instance } from "../api/apiconfig";
 import { useAuthState } from "../context/AuthContext";
 import { useEditProfile } from "../store/ProfilStore";
 import { useFollowerModal, useFollowingModal } from "../store/FollowStore";
@@ -19,7 +14,11 @@ import useUser from "../hooks/useUser";
 import usePostLikeByUser from "../hooks/usePostLikeByUser";
 import ProfilPostLikeByUser from "../components/block/ProfilPostLikeByUser";
 import PostByUserBlock from "../components/block/PostByUserBlock";
+import useFetchFollow from "../hooks/useFetchFollow";
+import useFollowMutation from "../hooks/useFollowMutation";
 
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 
@@ -30,6 +29,16 @@ const Profile = () => {
   const { onOpen: onFollowingModalOpen } = useFollowingModal();
   const { onOpen } = useEditProfile();
   const navigate = useNavigate();
+
+  const { user } = useUser(+id!);
+
+  const { postByUser } = usePostByUser(+id!);
+
+  const { postByLikeUser } = usePostLikeByUser(+id!);
+
+  const { fetchFollow, refetch } = useFetchFollow({ id });
+
+  const { followMutation } = useFollowMutation({ id, refetch });
 
   useEffect(() => {
     socket.on("create_chat_recive", (chatId: any) => {
@@ -42,35 +51,6 @@ const Profile = () => {
       userIds: [loggedInUser?.id, +id!],
     });
   };
-
-  const { user } = useUser(+id!);
-
-  const { postByUser } = usePostByUser(+id!);
-
-  const { postByLikeUser } = usePostLikeByUser(+id!);
-
-  const handleFollowing = async (id: number) => {
-    const res = await instance.post(`/users/follow/${id}`);
-    return res.data;
-  };
-
-  const { mutate } = useMutation({
-    mutationFn: handleFollowing,
-    onSuccess: () => {
-      toast.success("팔로우 요청을 하였습니다.");
-      refetch();
-    },
-  });
-
-  const fetchFollowee = async () => {
-    const res = await instance.get(`/users/followee/${id}`);
-    return res.data;
-  };
-
-  const { data: fetchFollow, refetch } = useQuery({
-    queryKey: ["user", "followee"],
-    queryFn: fetchFollowee,
-  });
 
   if (!user) return null;
 
@@ -95,7 +75,7 @@ const Profile = () => {
             ) : (
               <div className="flex gap-2 items-center ">
                 <div
-                  onClick={() => mutate(user?.id)}
+                  onClick={() => followMutation(user?.id + "")}
                   className="border rounded-xl  p-2 font-bold hover:bg-neutral-300 cursor-pointer transition"
                 >
                   {/* {followee.status === "default" ? "팔로잉" :followee.status === "pending" ? "요청됨" : "친구됨"} */}
@@ -105,8 +85,6 @@ const Profile = () => {
                     ? "요청됨"
                     : "친구됨"}
                 </div>
-                {/* 누르면은 createChat 채팅 방을 생성해서 입장해야함 */}
-                {/* <Link to={`/chat`}> */}
                 <div
                   onClick={handleRequestSocket}
                   className="border rounded-xl p-2 font-bold hover:bg-neutral-300 cursor-pointer transition"
@@ -146,7 +124,7 @@ const Profile = () => {
           </div>
           <div>
             {postByUser?.map((post) => (
-              <PostByUserBlock post={post} />
+              <PostByUserBlock key={post.id} post={post} />
             ))}
           </div>
         </div>
@@ -157,7 +135,7 @@ const Profile = () => {
             포스터
           </div>
           {postByLikeUser?.map((likepost) => (
-            <ProfilPostLikeByUser likepost={likepost} />
+            <ProfilPostLikeByUser key={likepost.id} likepost={likepost} />
           ))}
         </div>
       </div>

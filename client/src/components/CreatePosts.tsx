@@ -5,10 +5,7 @@ import { authStore } from "../store/AuthStore";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import ImageFileInput from "./Inputs/ImageFileInput";
 import TextArea from "./Inputs/TextArea";
-import { instance } from "../api/apiconfig";
-import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import { queryClient } from "..";
+import useCreatePosts from "../hooks/useCreatePosts";
 
 const CreatePosts = () => {
   const { isOpen } = authStore();
@@ -27,18 +24,7 @@ const CreatePosts = () => {
     },
   });
 
-  const createPost = async (data: FieldValues) => {
-    await instance.post("/posts", data);
-  };
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: createPost,
-    onSuccess: () => {
-      toast.success("생성성공");
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-      //   onClose();
-    },
-  });
+  const { createPostMutate } = useCreatePosts();
 
   const watchFiles = watch("images");
   const watchPreviews = watch("previews");
@@ -80,8 +66,7 @@ const CreatePosts = () => {
     data.images.map((image: File) => {
       fd.append("images", image);
     });
-
-    mutate(fd);
+    createPostMutate(fd);
   };
 
   return (

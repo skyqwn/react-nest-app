@@ -1,19 +1,17 @@
-import React from "react";
-import { IPostComments } from "./PostCommentBlock";
-
+import { Link } from "react-router-dom";
 import { FaRegHeart } from "react-icons/fa6";
 import { IoCloseOutline } from "react-icons/io5";
 import { MdOutlineEdit } from "react-icons/md";
 import { FaHeart } from "react-icons/fa";
 
+import { useAuthState } from "../../context/AuthContext";
+import { IPostComments } from "../../hooks/useFetchPostComments";
+import useCommentLike from "../../hooks/useCommentLike";
+import useDisLikeComment from "../../hooks/useDisLikeComment";
+import useDeleteComment from "../../hooks/useDeleteComment";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useAuthState } from "../../context/AuthContext";
-import { queryClient } from "../..";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { instance } from "../../api/apiconfig";
-import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 
@@ -24,96 +22,15 @@ interface CommentProps {
 
 const CommentBlock = ({ comment, postId }: CommentProps) => {
   const { user } = useAuthState();
+  const commentId = comment?.id;
 
   const isLike = comment.commentLikeUsers.includes(user?.id + "");
 
-  const commentLikeFunction = async (commentId: number) => {
-    return await instance.post(`likes/comments/${commentId}`);
-  };
+  const { commentLikeMutation } = useCommentLike({ commentId, postId });
 
-  const { mutate: commentLikeMutation } = useMutation({
-    mutationFn: commentLikeFunction,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["posts", postId, "comments"],
-      });
-    },
-    onMutate: (variables) => {
-      const prev: IPostComments[] | undefined = queryClient.getQueryData([
-        "posts",
-        postId,
-        "comments",
-      ]);
-      const index = prev?.findIndex((v) => v.id === variables) as number;
-      if (prev) {
-        const shallow = [...prev];
-        shallow[index] = {
-          ...shallow[index],
-          likeCount: shallow[index].likeCount + 1,
-        };
+  const { commentUnLikeMutation } = useDisLikeComment({ commentId, postId });
 
-        queryClient.setQueryData(["posts", postId, "comments"], shallow);
-      }
-    },
-    onError: (variables) => {
-      const prev: IPostComments[] | undefined = queryClient.getQueryData([
-        "posts",
-        postId,
-        "comments",
-      ]);
-      //@ts-ignore
-      const index = prev?.findIndex((v) => v.id === variables) as number;
-      if (prev) {
-        const shallow = [...prev];
-        shallow[index] = {
-          ...shallow[index],
-          likeCount: shallow[index].likeCount - 1,
-        };
-
-        queryClient.setQueryData(["posts", postId, "comments"], shallow);
-      }
-    },
-  });
-
-  const commentUnLikeFunction = async (commentId: number) => {
-    return await instance.delete(`likes/comments/${commentId}`);
-  };
-
-  const { mutate: commentUnLikeMutation } = useMutation({
-    mutationFn: commentUnLikeFunction,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["posts", postId, "comments"],
-      });
-    },
-  });
-
-  const deleteComment = async (commentId: number) => {
-    if (window.confirm("정말 댓글을 삭제하시겠습니까?")) {
-      await instance.delete(`/posts/${postId}/comments/${commentId}`);
-      toast.success("삭제성공!");
-    }
-  };
-
-  const { mutate: deleteCommentMutate } = useMutation({
-    mutationFn: (commentId: number) => deleteComment(commentId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["posts", postId, "comments"],
-      });
-    },
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["posts", postId] });
-      const prev: any = queryClient.getQueryData(["posts", postId]);
-      const shallow = { ...prev, commentCount: prev.commentCount - 1 };
-      queryClient.setQueryData(["posts", postId], shallow);
-    },
-    onError(error) {
-      const prev: any = queryClient.getQueryData(["posts", postId]);
-      const shallow = { ...prev, commentCount: prev.commentCount + 1 };
-      queryClient.setQueryData(["posts", postId], shallow);
-    },
-  });
+  const { deleteCommentMutation } = useDeleteComment({ commentId, postId });
 
   return (
     <div className=" flex flex-col mt-2" key={comment.id}>
@@ -139,7 +56,7 @@ const CommentBlock = ({ comment, postId }: CommentProps) => {
               <div className=" flex items-center p-1 justify-center gap-2 ">
                 <IoCloseOutline
                   className=" ml-10 hover:text-red-500 hover:bg-neutral-300 text-lg  rounded-full cursor-pointer "
-                  onClick={() => deleteCommentMutate(comment.id)}
+                  onClick={() => deleteCommentMutation(comment.id)}
                 />
                 <MdOutlineEdit className="hover:text-blue-500 hover:bg-neutral-300  rounded-full cursor-pointer" />
               </div>

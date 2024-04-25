@@ -1,0 +1,73 @@
+import toast from "react-hot-toast";
+
+import Modal from "./Modal";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { Input } from "../Input";
+import { useEditPost } from "../../store/PostStroe";
+import TextArea from "../Inputs/TextArea";
+import { instance } from "../../api/apiconfig";
+import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "../..";
+
+const defaultValues = {
+  title: "",
+  content: "",
+};
+
+interface CreatePostProps {
+  title: string;
+  content: string;
+}
+
+const EditPostModal = () => {
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FieldValues>({
+    defaultValues,
+  });
+  const { isOpen, onClose } = useEditPost();
+
+  const createPost = async (post: CreatePostProps) =>
+    await instance.post("/posts", post);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: createPost,
+    onSuccess: () => {
+      toast.success("생성성공");
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      onClose();
+    },
+  });
+
+  const onValid: SubmitHandler<FieldValues> = async (data) => {
+    const { title, content } = data;
+    mutate({ title, content });
+  };
+
+  const body = (
+    <div className="space-y-5">
+      <Input name="title" control={control} label="제목" />
+      <TextArea name="content" control={control} errors={errors} label="본문" />
+    </div>
+  );
+
+  return (
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        label="포스트 수정"
+        actionLabel="제출"
+        onAction={handleSubmit(onValid)}
+        body={body}
+        secondActionLabel="취소"
+        secondAction={onClose}
+        disabled={isPending}
+      />
+    </>
+  );
+};
+
+export default EditPostModal;

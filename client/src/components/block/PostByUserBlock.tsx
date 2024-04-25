@@ -1,8 +1,8 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import { IPostByUser } from "../../hooks/usePostByUser";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { IPostByUser } from "../../hooks/usePostByUser";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 

@@ -178,9 +178,6 @@ export class UsersController {
     @QueryRunnerDecorator() qr: QueryRunner,
     @Param('id', ParseIntPipe) followeeId: number,
   ) {
-    console.log('followeeID' + followeeId);
-    console.log('userID' + user.id);
-
     await this.usersService.deleteFollow(user.id, followeeId, qr);
 
     await this.usersService.decrementFollowerCount(user.id, qr);

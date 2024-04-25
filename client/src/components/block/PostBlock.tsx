@@ -1,20 +1,15 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
-import { IoCloseOutline } from "react-icons/io5";
+
+import PostActionBlock from "./PostActionBlock";
+import { useAuthState } from "../../context/AuthContext";
+import { IPost } from "../../hooks/usePostDetail";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
-import toast from "react-hot-toast";
-import { queryClient } from "../..";
-import { useMutation } from "@tanstack/react-query";
-import { instance } from "../../api/apiconfig";
-import PostActionBlock from "./PostActionBlock";
-import { useAuthState } from "../../context/AuthContext";
-import { IPost } from "../../hooks/usePostDetail";
 
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
@@ -47,22 +42,6 @@ const PostBlock = ({ post, refetch }: { post: IPost; refetch: () => void }) => {
     );
   };
 
-  const deletePost = async (postId: number) => {
-    if (window.confirm("정말 이 게시물을 삭제하시겠습니까?")) {
-      await instance.delete(`/posts/${post.id}`);
-      toast.success("삭제성공!");
-    }
-  };
-
-  const { mutate } = useMutation({
-    mutationFn: (postId: number) => deletePost(postId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["posts"],
-      });
-    },
-  });
-
   const clickProfile = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     navigate(`/profile/${post.author.id}`);
@@ -87,15 +66,6 @@ const PostBlock = ({ post, refetch }: { post: IPost; refetch: () => void }) => {
               <div className="text-neutral-400">
                 {dayjs(post.createdAt).fromNow()}
               </div>
-            </div>
-            <div
-              onClick={(e: React.MouseEvent<HTMLElement>) => {
-                e.stopPropagation();
-                mutate(post.id);
-              }}
-              className="flex items-center justify-center size-8 hover:text-red-500 hover:bg-neutral-300 text-lg  rounded-full cursor-pointer"
-            >
-              <IoCloseOutline />
             </div>
           </div>
           {/* 게시글 Content */}

@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
+import { ILikePost } from "../../hooks/usePostLikeByUser";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { ILikePost } from "../../hooks/usePostLikeByUser";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 

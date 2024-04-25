@@ -1,29 +1,28 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { IoIosArrowBack } from "react-icons/io";
 
 import PostActionBlock from "../components/block/PostActionBlock";
 import TextArea from "../components/Inputs/TextArea";
 import PostCommentBlock from "../components/block/PostCommentBlock";
-import { queryClient } from "..";
-import { instance } from "../api/apiconfig";
-
-import { IoIosArrowBack } from "react-icons/io";
-
-import dayjs from "dayjs";
-import "dayjs/locale/ko";
-import relativeTime from "dayjs/plugin/relativeTime";
 import UserAvatar from "../components/block/UserAvatar";
 import { useMemo } from "react";
 import { useAuthState } from "../context/AuthContext";
-import usePostDetail, { IPost } from "../hooks/usePostDetail";
+import usePostDetail from "../hooks/usePostDetail";
+import useCreateComment from "../hooks/useCreateComment";
+
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import useDeletePost from "../hooks/useDeletePost";
+import { useEditPost } from "../store/PostStroe";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 
 const PostDetail = () => {
+  const { user } = useAuthState();
   const { postId } = useParams();
   const navigate = useNavigate();
+  const { onOpen } = useEditPost();
 
   const {
     control,
@@ -31,42 +30,16 @@ const PostDetail = () => {
     formState: { errors },
     reset,
   } = useForm<FieldValues>({});
-  const { user } = useAuthState();
 
-  const createComment = async (data: FieldValues) => {
-    await instance.post(`/posts/${postId}/comments`, data);
-  };
-
-  const { mutate: createCommentMutate, isPending } = useMutation({
-    mutationFn: createComment,
-    onSuccess: () => {
-      toast.success("댓글 생성 성공");
-      queryClient.invalidateQueries({
-        queryKey: ["posts", postId, "comments"],
-      });
-      reset({ comment: "" });
-    },
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["posts", postId] });
-      const prev: IPost | undefined = queryClient.getQueryData([
-        "posts",
-        postId,
-      ]);
-      const shallow = { ...prev, commentCount: prev?.commentCount! + 1 };
-      queryClient.setQueryData(["posts", postId], shallow);
-    },
-    onError(error) {
-      const prev: any = queryClient.getQueryData(["posts", postId]);
-      const shallow = { ...prev, commentCount: prev.commentCount - 1 };
-      queryClient.setQueryData(["posts", postId], shallow);
-    },
-  });
+  const { createCommentMutate } = useCreateComment({ postId, reset });
 
   const onValid: SubmitHandler<FieldValues> = (data) => {
     createCommentMutate(data);
   };
 
   const { postDetail, refetch } = usePostDetail(+postId!);
+
+  const { deletePostMutation } = useDeletePost(+postId!);
 
   const isLike = useMemo(() => {
     if (postDetail) {
@@ -83,7 +56,6 @@ const PostDetail = () => {
 
   return (
     <div className="h-dvh w-dvw relative bg-white z-20 flex flex-col overflow-y-auto md:flex md:flex-row">
-      {/* <div className="h-dvh w-dvw relative bg-white z-20 flex "> */}
       {/* 왼쪽섹션 */}
       <div className="flex flex-col h-full w-full lg:w-4/5 p-2">
         <div className="flex flex-1 items-center justify-center h-2/4 w-full">
@@ -109,16 +81,44 @@ const PostDetail = () => {
       <div className="h-full w-full md:w-[530px] p-3  lg:border-l-[1px] overflow-y-auto">
         <div className=" h-1/6 flex flex-col  ">
           <div className="flex items-center gap-1">
-            <Link to={`/profile/${postDetail.author.id}`}>
-              <img
-                className="size-10 rounded-full"
-                src={postDetail?.author.avatar}
-              />
-            </Link>
-            <div className="flex flex-col justify-center">
-              <div>{postDetail?.author.nickname}</div>
-              <div className="text-neutral-400 text-sm">
-                @{postDetail?.author.nickname}
+            <div className="flex justify-between gap-2 w-full">
+              <div className="flex gap-2">
+                <Link to={`/profile/${postDetail.author.id}`}>
+                  <img
+                    className="size-10 rounded-full"
+                    src={postDetail?.author.avatar}
+                  />
+                </Link>
+                <div className="flex flex-col justify-center">
+                  <div>{postDetail?.author.nickname}</div>
+                  <div className="text-neutral-400 text-sm">
+                    @{postDetail?.author.nickname}
+                  </div>
+                </div>
+              </div>
+              <div>
+                {postDetail.author.id === user?.id && (
+                  <div className="flex gap-2">
+                    <div
+                      onClick={(e: React.MouseEvent<HTMLElement>) => {
+                        e.stopPropagation();
+                        deletePostMutation(+postId!);
+                      }}
+                      className="flex items-center justify-center size-8 text-red-500 hover:bg-neutral-200 rounded-full cursor-pointer text-sm"
+                    >
+                      삭제
+                    </div>
+                    <div
+                      onClick={(e: React.MouseEvent<HTMLElement>) => {
+                        e.stopPropagation();
+                        onOpen();
+                      }}
+                      className="flex items-center justify-center size-8 text-blue-500 hover:bg-neutral-200 rounded-full cursor-pointer text-sm"
+                    >
+                      수정
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -126,6 +126,7 @@ const PostDetail = () => {
           <div className="text-neutral-400 ">
             {dayjs(postDetail?.createdAt).format("HH:mm MMM DD, YYYY")}
           </div>
+          {/* 댓글 파트 */}
           <div className="h-[450px] flex  gap-3 items-center justify-between border-t-2 mt-1  ">
             <UserAvatar />
             <div>
