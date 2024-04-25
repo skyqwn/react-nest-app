@@ -395,4 +395,26 @@ export class UsersService {
       console.log(error);
     }
   }
+  //
+
+  async recommendationUser(userId: number) {
+    console.log(userId);
+    try {
+      const result = await this.usersRepository
+        .createQueryBuilder()
+        .select(['id', 'nickname', 'avatar'])
+        .where('id != :userId', { userId })
+        .orderBy('RANDOM()')
+        .take(3)
+        .getRawMany();
+      return result;
+
+      // const filteredResult = result.filter((user) => user.id !== userId);
+
+      // console.log(filteredResult);
+      // return filteredResult;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

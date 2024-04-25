@@ -23,6 +23,7 @@ import { QueryRunner } from 'typeorm';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CommonService } from 'src/common/common.service';
 import { EditUserInput } from './dtos/edit-user.dto';
+import { IsPublic } from 'src/common/decorator/is-public.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -36,6 +37,10 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
+  @Get('recommendation')
+  async recommendationUser(@AuthUser() user: UsersModel) {
+    return this.usersService.recommendationUser(user.id);
+  }
   @Get(':id')
   getFindById(@Param('id', ParseIntPipe) userId: number) {
     return this.usersService.getUserById(userId);
