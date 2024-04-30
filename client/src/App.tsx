@@ -12,7 +12,6 @@ function App() {
       <Header />
       <LoginModal />
       <EditProfileModal />
-      <EditPostModal />
       <Toaster position="top-center" />
       <Router />
     </div>

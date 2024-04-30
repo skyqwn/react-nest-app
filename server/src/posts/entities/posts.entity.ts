@@ -13,10 +13,6 @@ export class PostsModel extends BaseModel {
   })
   author: UsersModel;
 
-  @Column({ default: 'asdasd' })
-  @IsString()
-  title: string;
-
   @Column()
   @IsString()
   content: string;

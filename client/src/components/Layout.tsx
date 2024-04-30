@@ -24,7 +24,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   if (isPopularPostLoading) return <div>Loading..</div>;
 
   return (
-    <div className="w-dvw h-dvh pt-14 px-8 max-w-screen-xl mx-auto">
+    <div className="w-dvw h-dvh pt-14  max-w-screen-xl mx-auto">
       <div className="md:flex h-full ">
         {/* Left */}
         <div className="hidden lg:flex lg:flex-col lg:items-center lg:justify-start lg:gap-5 w-[220px] lg:py-2 lg:border-r-2">
@@ -42,12 +42,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </Link>
         </div>
         {/* Center */}
-        <div className="flex flex-col h-full p-2 max-w-screen-sm mx-auto md:w-[900px] ">
+        <div className="flex flex-col h-full p-2 max-w-screen-sm mx-auto md:w-[900px]   ">
           {children}
         </div>
         {/* Right */}
-        <div className="felx felx-col">
-          <div className="hidden md:block md:max-w-72 md:border-l-2 md:p-2  ">
+        <div className="felx h-full felx-col md:border-l-2 ">
+          <div className="hidden md:block md:max-w-72 md:p-2  ">
             {/* 인기있는 게시물 */}
             <div className="mb-2 font-semibold text-xl">
               가장 인기있는 게시글
@@ -65,7 +65,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
           {/* 유저 추천 */}
           {user && (
-            <div className="hidden md:block md:max-w-72 md:border-l-2 md:p-2 space-y-2 ">
+            <div className="hidden md:block md:max-w-72  md:p-2 space-y-2 ">
               <div className="mb-2 font-semibold text-xl">
                 새로운 친구를 만들어보세요
               </div>

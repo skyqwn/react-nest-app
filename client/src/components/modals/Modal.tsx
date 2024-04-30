@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Button from "../buttons/Button";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
 import { IoMdClose } from "react-icons/io";
+import { cls } from "../../libs/util";
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,6 +15,8 @@ interface ModalProps {
   secondAction?: () => void;
   disabled?: boolean;
   body: React.ReactElement;
+  big?: boolean;
+  images?: string[];
 }
 
 const Modal = ({
@@ -26,6 +29,7 @@ const Modal = ({
   secondActionLabel,
   secondAction,
   disabled,
+  big = false,
 }: ModalProps) => {
   return (
     <AnimatePresence>
@@ -45,7 +49,13 @@ const Modal = ({
             initial={modalItemVariants.start}
             animate={modalItemVariants.end}
             exit={modalItemVariants.exit}
-            className="h-full  sm:h-2/4 w-full sm:w-2/3 lg:w-1/3 bg-white rounded flex flex-col "
+            className={cls(
+              `h-full w-full bg-white rounded flex flex-col ${
+                big
+                  ? "max-w-5xl sm:h-4/5"
+                  : "max-w-xl  sm:h-2/4  sm:w-2/3 lg:w-1/3"
+              }`
+            )}
           >
             {/* modal head */}
             <div className="relative h-16 font-bold text-xl flex items-center justify-center">

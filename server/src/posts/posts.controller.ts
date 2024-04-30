@@ -77,12 +77,23 @@ export class PostsController {
   }
 
   @Patch(':postId')
-  @UseGuards(IsPostMindOrAdminGuard)
-  patchPost(
+  // @UseGuards(IsPostMindOrAdminGuard)
+  @UseInterceptors(TransactionInterceptor)
+  @UseInterceptors(FilesInterceptor('files', 10))
+  async patchPost(
     @Param('postId', ParseIntPipe) id: number,
     @Body() updatePostInput: UpdatePostInput,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
-    return this.postsService.updatePost(updatePostInput, id);
+    const newImageUrl: string[] = [];
+    await Promise.all(
+      files.map(async (file) => {
+        const url = await this.commonService.fileUpload(file);
+        newImageUrl.push(url);
+      }),
+    );
+    console.log(updatePostInput);
+    return this.postsService.updatePost(updatePostInput, id, newImageUrl);
   }
 
   @Delete(':id')

@@ -1,8 +1,8 @@
-import React, { Fragment, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useInView } from "react-intersection-observer";
 import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
 import qs from "query-string";
+import React, { Fragment, useEffect } from "react";
+import { useInView } from "react-intersection-observer";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { instance } from "../api/apiconfig";
 import PostBlock from "../components/block/PostBlock";
@@ -25,7 +25,6 @@ const Posts = () => {
       where__id__more_than: pageParam,
     };
     const url = qs.stringifyUrl({ url: "/posts", query }, { skipNull: true });
-    console.log(url);
     const res = await instance.get(url);
     return res.data;
   };
@@ -83,7 +82,7 @@ const Posts = () => {
             <div
               key={p.id}
               onClick={() => handlePostClick(p.id)}
-              className="cursor-pointer"
+              className="cursor-pointer border-b-2  last:border-b-0 py-4 "
             >
               <PostBlock key={p.id} post={p} refetch={refetch} />
             </div>

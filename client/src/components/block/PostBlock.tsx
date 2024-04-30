@@ -14,7 +14,12 @@ import "dayjs/locale/ko";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 
-const PostBlock = ({ post, refetch }: { post: IPost; refetch: () => void }) => {
+interface PostBlockProps {
+  post: IPost;
+  refetch: () => void;
+}
+
+const PostBlock = ({ post, refetch }: PostBlockProps) => {
   const { user } = useAuthState();
 
   const isLike = useMemo(() => {
@@ -48,73 +53,76 @@ const PostBlock = ({ post, refetch }: { post: IPost; refetch: () => void }) => {
   };
 
   return (
-    <div className="h-[516px] border-b-2  last:border-b-0 py-4">
-      <div className="flex gap-3 h-full ">
-        <div>
-          {/* 유저 이미지 */}
-          <img
-            src={post.author.avatar}
-            className="size-10  rounded-full"
-            onClick={(e) => clickProfile(e)}
-          />
-        </div>
-        <div className="flex-1 h-full">
-          {/* 유지 닉네임 하고 글쓴시간 dayjs */}
-          <div className="flex justify-between">
-            <div className="flex gap-2">
-              <div>{post.author.nickname}</div>
-              <div className="text-neutral-400">
-                {dayjs(post.createdAt).fromNow()}
-              </div>
+    <div className="flex gap-3 h-full ">
+      {/* 왼쪽 유저 이미지 */}
+      <img
+        src={post.author.avatar}
+        className="size-10  rounded-full"
+        onClick={(e) => clickProfile(e)}
+      />
+      {/* 오른쪽 유저정보 유저가 쓴 글 */}
+      <div className="flex-1 h-full">
+        {/* 유지 닉네임 하고 글쓴시간 dayjs */}
+        <div className="flex flex-col">
+          <div className="flex gap-2">
+            <div>{post.author.nickname}</div>
+            <div className="text-neutral-400">
+              {dayjs(post.createdAt).fromNow()}
             </div>
           </div>
           {/* 게시글 Content */}
           <div className="mb-2">{post.content}</div>
           {/* 게시글하고 사진들 */}
-          {post.images && (
-            <div className="relative h-5/6 flex overflow-hidden bg-red-500 items-center">
-              {currentIndex !== 0 && (
-                <div
-                  onClick={prevSlide}
-                  className="absolute text-white text-4xl left-3 bg-neutral-400 flex items-center justify-center hover:bg-neutral-400 rounded-full cursor-pointer z-10"
-                >
-                  <IoIosArrowBack />
-                </div>
-              )}
-              <div
-                className="w-full h-full flex transition-transform duration-300"
-                style={{
-                  transform: `translateX(-${currentIndex * 100}%)`,
-                }}
-              >
+          <div className="relative w-full ">
+            {post.images.length > 0 && (
+              <div className="relative flex aspect-square w-full overflow-x-hidden">
+                {currentIndex !== 0 && (
+                  <div
+                    onClick={prevSlide}
+                    className="absolute h-full text-white text-4xl left-3  flex items-center justify-center  z-10"
+                  >
+                    <div className="bg-neutral-400  hover:bg-neutral-500 rounded-full cursor-pointer">
+                      <IoIosArrowBack />
+                    </div>
+                  </div>
+                )}
                 {post.images.map((image, index) => (
-                  <img
+                  <div
                     key={index}
-                    className="object-fill border w-full h-full border-neutral-300"
-                    src={image}
-                    alt={`Image ${index}`}
-                  />
+                    className=" w-full aspect-square transition-transform duration-300"
+                    style={{
+                      transform: `translateX(-${currentIndex * 100}%)`,
+                    }}
+                  >
+                    <img
+                      className=" w-full h-full object-contain"
+                      src={image}
+                      alt={`Image ${index}`}
+                    />
+                  </div>
                 ))}
+                {currentIndex !== post.images.length - 1 && (
+                  <div
+                    onClick={nextSlide}
+                    className="absolute text-white text-4xl right-3 h-full flex items-center justify-center "
+                  >
+                    <div className="bg-neutral-400 rounded-full hover:bg-neutral-500 cursor-pointer ">
+                      <IoIosArrowForward />
+                    </div>
+                  </div>
+                )}
               </div>
-              {currentIndex !== post.images.length - 1 && (
-                <div
-                  onClick={nextSlide}
-                  className="absolute text-white text-4xl right-3 bg-neutral-400 flex items-center justify-center hover:bg-neutral-500 rounded-full cursor-pointer"
-                >
-                  <IoIosArrowForward />
-                </div>
-              )}
-            </div>
-          )}
-          {/* 좋아요 버튼 댓글버튼 */}
-          <PostActionBlock
-            postCommentCount={+post.commentCount}
-            postLikeCount={+post.likeCount}
-            postId={post.id}
-            isLike={isLike}
-            refetch={refetch}
-          />
+            )}
+          </div>
         </div>
+        {/* 좋아요 버튼 댓글버튼 */}
+        <PostActionBlock
+          postCommentCount={+post.commentCount}
+          postLikeCount={+post.likeCount}
+          postId={post.id}
+          isLike={isLike}
+          refetch={refetch}
+        />
       </div>
     </div>
   );

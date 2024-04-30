@@ -4,7 +4,7 @@
 
 @layer components {
   .nav-pill {
-    @apply flex items-center justify-start gap-3 p-2 text-xl bg-transparent hover:bg-neutral-300 rounded-full w-52 transition;
+    @apply flex items-center justify-start gap-3  text-xl bg-transparent hover:bg-neutral-300 rounded-full w-52 transition;
   }
   .inset-center {
     position: absolute;

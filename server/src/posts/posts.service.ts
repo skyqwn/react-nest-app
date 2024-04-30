@@ -214,7 +214,11 @@ export class PostsService {
     }
   }
 
-  async updatePost({ content, title }: UpdatePostInput, postId: number) {
+  async updatePost(
+    { content, images }: UpdatePostInput,
+    postId: number,
+    newImageUrl?: string[],
+  ) {
     // save의 기능
     // 1) 만약에 데이터가 존재하지 않는다면 (id 기준으로) 새로 생성한다.
     // 2) 만약에 데이터가 존재한다면 (같은 id의 값이 존재한다면) 존재하던 값을 업데이트한다.
@@ -229,13 +233,16 @@ export class PostsService {
       throw new NotFoundException('포스트가 존재하지 않습니다.');
     }
 
-    if (title) {
-      post.title = title;
-    }
-
     if (content) {
       post.content = content;
     }
+    if (newImageUrl) {
+      post.images.push(...newImageUrl);
+    }
+
+    // if(images){
+    //   post.images = images
+    // }
 
     const newPost = await this.postsRepository.save(post);
 

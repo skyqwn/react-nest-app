@@ -5,9 +5,8 @@ import { CreatePostInput } from './create-posts.dto';
 export class UpdatePostInput extends PartialType(CreatePostInput) {
   @IsString()
   @IsOptional()
-  title?: string;
-
-  @IsString()
-  @IsOptional()
   content?: string;
+
+  @IsOptional()
+  images?: string[];
 }

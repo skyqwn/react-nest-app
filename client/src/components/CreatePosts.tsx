@@ -60,8 +60,6 @@ const CreatePosts = () => {
 
   const onValid: SubmitHandler<FieldValues> = (data) => {
     const fd = new FormData();
-    // TODO title없애야함!
-    fd.append("title", "1");
     fd.append("content", data.content);
     data.images.map((image: File) => {
       fd.append("images", image);
