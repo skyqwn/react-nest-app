@@ -93,7 +93,7 @@ const PostDetail = () => {
             {/* <div className="relative flex flex-col w-full lg:w-4/5 p-2"> */}
             {/* 이미지사진 */}
             <div className="relative flex-1 h-full w-full overflow-x-hidden">
-              <div className="relative flex h-full ">
+              <div className="relative flex h-full">
                 {currentIndex !== 0 && (
                   <div
                     onClick={prevSlide}
@@ -107,13 +107,13 @@ const PostDetail = () => {
                 {postDetail.images?.map((image, index: number) => (
                   <div
                     key={index}
-                    className="w-full h-full flex-shrink-0 transition-transform duration-300"
+                    className="w-full h-full flex flex-shrink-0 transition-transform duration-300"
                     style={{
                       transform: `translateX(-${currentIndex * 100}%)`,
                     }}
                   >
                     <img
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-contain md:w-full "
                       src={image}
                       alt={`Image ${index}`}
                     />
@@ -122,7 +122,7 @@ const PostDetail = () => {
                 {currentIndex !== postDetail!.images.length - 1 && (
                   <div
                     onClick={nextSlide}
-                    className="absolute text-white text-4xl right-3 h-full flex items-center justify-center "
+                    className="absolute text-white text-4xl right-3 h-full flex items-center justify-center z-10"
                   >
                     <div className="bg-neutral-400 rounded-full hover:bg-neutral-500 cursor-pointer ">
                       <IoIosArrowForward />
@@ -141,7 +141,7 @@ const PostDetail = () => {
             />
           </div>
           {/* 오른쪽섹션 */}
-          <div className="h-full w-full md:w-[530px] p-3  lg:border-l-[1px] overflow-y-auto">
+          <div className="h-full w-full md:w-[530px] p-3  lg:border-l-[1px]">
             <div className=" h-1/6 flex flex-col  ">
               <div className="flex items-center gap-1">
                 <div className="flex justify-between gap-2 w-full">

@@ -8,5 +8,5 @@ export class UpdatePostInput extends PartialType(CreatePostInput) {
   content?: string;
 
   @IsOptional()
-  images?: string[];
+  images?: string | string[];
 }

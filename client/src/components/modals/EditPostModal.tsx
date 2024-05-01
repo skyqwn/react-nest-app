@@ -13,16 +13,6 @@ import { useEffect, useMemo, useState } from "react";
 import Modal from "./Modal";
 import ImageFileInput from "../Inputs/ImageFileInput";
 
-const defaultValues = {
-  title: "",
-  content: "",
-};
-
-interface EditPostProps {
-  title: string;
-  content: string;
-}
-
 const EditPostModal = ({ postDetail }: { postDetail: IPost }) => {
   const {
     handleSubmit,
@@ -31,7 +21,6 @@ const EditPostModal = ({ postDetail }: { postDetail: IPost }) => {
     setValue,
     formState: { errors },
   } = useForm<FieldValues>({
-    defaultValues,
     values: useMemo(() => {
       return {
         ...postDetail,
@@ -47,10 +36,6 @@ const EditPostModal = ({ postDetail }: { postDetail: IPost }) => {
 
   const { isOpen, onClose } = useEditPost();
   const { postId } = useParams();
-
-  const [scrollPosition, setScrollPosition] = useState(0);
-
-  const top = scrollPosition + "px";
 
   const deleteOldPreview = (targetIndex: number) => {
     const filterOldImages = oldImages.filter(
@@ -87,7 +72,10 @@ const EditPostModal = ({ postDetail }: { postDetail: IPost }) => {
     mutationFn: patchPost,
     onSuccess: () => {
       toast.success("수정성공");
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["posts"] }),
+        queryClient.invalidateQueries({ queryKey: ["posts", postId] }),
+      ]);
       onClose();
     },
   });
@@ -102,8 +90,12 @@ const EditPostModal = ({ postDetail }: { postDetail: IPost }) => {
     data.images.map((image: string) => {
       imageLocations.push(image);
     });
+    console.log(imageLocations);
     // @ts-ignore
     fd.append("images", imageLocations);
+    for (const [key, value] of fd.entries()) {
+      console.log(key, value);
+    }
 
     patchPostMutation(fd);
   };
@@ -133,7 +125,7 @@ const EditPostModal = ({ postDetail }: { postDetail: IPost }) => {
           })}
           {watchPreviewFiles.map((preview: string, targetIndex: number) => {
             return (
-              <div key={targetIndex} className="relative  w-20">
+              <div key={targetIndex} className="relative w-20">
                 <img src={preview} className="w-20 h-20 rounded" />
                 <div
                   onClick={(e) => {

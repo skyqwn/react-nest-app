@@ -85,6 +85,7 @@ export class PostsController {
     @Body() updatePostInput: UpdatePostInput,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
+    console.log(updatePostInput.images);
     const newImageUrl: string[] = [];
     await Promise.all(
       files.map(async (file) => {
@@ -92,7 +93,6 @@ export class PostsController {
         newImageUrl.push(url);
       }),
     );
-    console.log(updatePostInput);
     return this.postsService.updatePost(updatePostInput, id, newImageUrl);
   }
 

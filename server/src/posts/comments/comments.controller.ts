@@ -72,7 +72,9 @@ export class CommentsController {
   patchComment(
     @Param('commentId', ParseIntPipe) commentId: number,
     @Body() body: UpdateCommentsDto,
+    // @Body() body: any,
   ) {
+    console.log(body);
     return this.commentsService.patchComment(body, commentId);
   }
 
