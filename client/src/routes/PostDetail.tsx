@@ -159,6 +159,7 @@ const PostDetail = () => {
                       </div>
                     </div>
                   </div>
+                  {/* 글의 주인일경우 수정 삭제버튼 */}
                   <div>
                     {postDetail.author.id === user?.id && (
                       <div className="flex gap-2">
@@ -190,7 +191,7 @@ const PostDetail = () => {
                 {dayjs(postDetail?.createdAt).format("HH:mm MMM DD, YYYY")}
               </div>
               {/* 댓글 파트 */}
-              <div className="h-[450px] flex  gap-3 items-center justify-between border-t-2 mt-1  ">
+              <div className="h-[450px] flex  gap-3 items-center justify-between border-y-2 mt-1  ">
                 <UserAvatar />
                 <div>
                   <TextArea
@@ -209,7 +210,7 @@ const PostDetail = () => {
                 </div>
               </div>
               {/* 포스트 댓글 */}
-              <div className="h-[90px]  md:w-[450px] flex gap-4 flex-col divide-y-[1px]">
+              <div className="h-[90px]  md:w-[450px] flex gap-4 flex-col border-t-2">
                 <PostCommentBlock />
               </div>
             </div>
@@ -222,7 +223,7 @@ const PostDetail = () => {
       ) : (
         // 이미지없고 글만있을때 보여주는 화면
         <Layout>
-          <div className="h-full w-full md:w-[530px] p-3  lg:border-l-[1px] overflow-y-auto">
+          <div className="h-full w-full p-3 border-x-2 overflow-y-auto">
             <div className=" h-1/6 flex flex-col  ">
               <div className="flex items-center gap-1">
                 <div className="flex justify-between gap-2 w-full">
