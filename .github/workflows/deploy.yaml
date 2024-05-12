@@ -11,13 +11,13 @@ jobs:
       - uses: actions/checkout@v3
       - run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - run: docker build -t keemba/docker-frontend ./frontend
+      - run: docker build -t keemba/docker-client ./client
       - run: docker build -t keemba/docker-nginx ./nginx
-      - run: docker build -t keemba/docker-backend ./backend
+      - run: docker build -t keemba/docker-server ./server
 
-      - run: docker push keemba/docker-frontend
+      - run: docker push keemba/docker-client
       - run: docker push keemba/docker-nginx
-      - run: docker push keemba/docker-backend
+      - run: docker push keemba/docker-server
 
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
