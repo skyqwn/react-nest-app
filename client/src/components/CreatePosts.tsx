@@ -6,6 +6,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import ImageFileInput from "./Inputs/ImageFileInput";
 import TextArea from "./Inputs/TextArea";
 import useCreatePosts from "../hooks/useCreatePosts";
+import Button from "./buttons/Button";
 
 const CreatePosts = () => {
   const { isOpen } = authStore();
@@ -15,6 +16,7 @@ const CreatePosts = () => {
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
@@ -24,7 +26,7 @@ const CreatePosts = () => {
     },
   });
 
-  const { createPostMutate } = useCreatePosts();
+  const { createPostMutate } = useCreatePosts({ reset });
 
   const watchFiles = watch("images");
   const watchPreviews = watch("previews");
@@ -59,6 +61,7 @@ const CreatePosts = () => {
   }, [isOpen]);
 
   const onValid: SubmitHandler<FieldValues> = (data) => {
+    if (!data.content) return;
     const fd = new FormData();
     fd.append("content", data.content);
     data.images.map((image: File) => {
@@ -66,7 +69,6 @@ const CreatePosts = () => {
     });
     createPostMutate(fd);
   };
-
   return (
     <div className="flex mb-6 pb-4  border-b-[1px]">
       <div className="mr-3 items-start flex h-full">
@@ -81,38 +83,45 @@ const CreatePosts = () => {
             name="content"
             small
           />
-          <div className="flex gap-3 w-full overflow-x-auto p-3">
-            {watchPreviews.map((preview: string, targetIndex: number) => {
-              return (
-                <div key={targetIndex} className="relative flex-shrink-0 ">
-                  <img
-                    src={preview}
-                    className="size-24 sm:size-32 rounded object-cover"
-                    alt={`Preview ${targetIndex}`}
-                  />
-                  <div
-                    onClick={(e) => {
-                      deletePreview(targetIndex);
-                      URL.revokeObjectURL(preview);
-                    }}
-                    className="absolute top-0 right-0 cursor-pointer text-xs"
-                  >
-                    ❌
+          {watchPreviews.length > 0 && (
+            <div className="flex gap-3 w-full overflow-x-auto p-3">
+              {watchPreviews.map((preview: string, targetIndex: number) => {
+                return (
+                  <div key={targetIndex} className="relative flex-shrink-0 ">
+                    <img
+                      src={preview}
+                      className="size-24 sm:size-32 rounded object-cover"
+                      alt={`Preview ${targetIndex}`}
+                    />
+                    <div
+                      onClick={(e) => {
+                        deletePreview(targetIndex);
+                        URL.revokeObjectURL(preview);
+                      }}
+                      className="absolute top-0 right-0 cursor-pointer text-xs"
+                    >
+                      ❌
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
           <div className="flex justify-between">
             <div className="cursor-pointer text-2xl">
               <ImageFileInput control={control} name="images" error={errors} />
             </div>
-            <button
+            {/* <button
               onClick={handleSubmit(onValid)}
               className="bg-orange-500 p-2 rounded-full text-white font-semibold"
             >
               게시하기
-            </button>
+            </button> */}
+            <Button
+              actionText="게시하기"
+              onAction={handleSubmit(onValid)}
+              canClick={true}
+            />
           </div>
         </div>
       </div>

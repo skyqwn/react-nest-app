@@ -87,13 +87,12 @@ const PostDetail = () => {
     <>
       <EditPostModal postDetail={postDetail} />
       {isImage ? (
-        <div className="flex flex-col h-dvh w-dvw relative bg-white z-20 overflow-y-auto md:flex md:flex-row">
+        <div className="flex flex-col h-full md:h-dvh w-dvw relative bg-white z-20 overflow-y-auto md:flex md:flex-row">
           {/* 왼쪽섹션 */}
           <div className="relative flex flex-col w-full p-2">
-            {/* <div className="relative flex flex-col w-full lg:w-4/5 p-2"> */}
             {/* 이미지사진 */}
             <div className="relative flex-1 h-full w-full overflow-x-hidden">
-              <div className="relative flex h-full">
+              <div className="relative flex h-full items-center">
                 {currentIndex !== 0 && (
                   <div
                     onClick={prevSlide}
@@ -191,7 +190,7 @@ const PostDetail = () => {
                 {dayjs(postDetail?.createdAt).format("HH:mm MMM DD, YYYY")}
               </div>
               {/* 댓글 파트 */}
-              <div className="h-[450px] flex  gap-3 items-center justify-between border-y-2 mt-1  ">
+              <div className="flex  gap-3 items-center justify-between border-y mt-1 py-2 ">
                 <UserAvatar />
                 <div>
                   <TextArea
@@ -210,7 +209,7 @@ const PostDetail = () => {
                 </div>
               </div>
               {/* 포스트 댓글 */}
-              <div className="h-[90px]  md:w-[450px] flex gap-4 flex-col border-t-2">
+              <div className="h-[90px]  md:w-[450px] flex gap-4 flex-col ">
                 <PostCommentBlock />
               </div>
             </div>
@@ -223,8 +222,9 @@ const PostDetail = () => {
       ) : (
         // 이미지없고 글만있을때 보여주는 화면
         <Layout>
-          <div className="h-full w-full p-3 border-x-2 overflow-y-auto">
+          <div className="h-full w-full p-3 lg:border-x-2 overflow-y-auto">
             <div className=" h-1/6 flex flex-col  ">
+              {/* 유저 정보 */}
               <div className="flex items-center gap-1">
                 <div className="flex justify-between gap-2 w-full">
                   <div className="flex gap-2">
@@ -272,7 +272,7 @@ const PostDetail = () => {
                 {dayjs(postDetail?.createdAt).format("HH:mm MMM DD, YYYY")}
               </div>
               {/* 댓글 파트 */}
-              <div className="h-[450px] flex  gap-3 items-center justify-between border-t-2 mt-1  ">
+              <div className="h-[450px]  w-full flex gap-3 items-center justify-between border-y-[1px] mt-1 py-2  ">
                 <UserAvatar />
                 <div>
                   <TextArea

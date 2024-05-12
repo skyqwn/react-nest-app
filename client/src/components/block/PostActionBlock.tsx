@@ -25,7 +25,7 @@ const PostActionBlock = ({
   const { disLikePostMutation } = useDisLikePosts(refetch);
 
   return (
-    <div className="flex justify-around mt-2 mb-2 ">
+    <div className="flex justify-around my-2">
       <div className="flex items-center justify-center gap-2 hover:text-blue-500 cursor-pointer transition">
         <FaRegComment />
         <span>{postCommentCount}</span>

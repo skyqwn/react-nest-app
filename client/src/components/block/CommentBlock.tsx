@@ -69,7 +69,7 @@ const CommentBlock = ({ comment, postId }: CommentProps) => {
   };
 
   return (
-    <div className=" flex flex-col mt-2" key={comment.id}>
+    <div className=" flex flex-col mt-2 border-b-[1px]" key={comment.id}>
       <div className="flex gap-3 w-full h-full  ">
         <Link to={`/profile/${comment.author.id}`}>
           <div className="size-10 ">

@@ -4,12 +4,6 @@
 
 @layer components {
   .nav-pill {
-    @apply flex items-center justify-start gap-3  text-xl bg-transparent hover:bg-neutral-300 rounded-full w-52 transition;
-  }
-  .inset-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    @apply flex items-center justify-start gap-3 py-2 text-2xl bg-transparent hover:bg-neutral-300 rounded-full w-52 transition;
   }
 }

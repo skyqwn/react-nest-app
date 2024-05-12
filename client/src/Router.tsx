@@ -1,4 +1,4 @@
-import { Route, Routes, useParams } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import NotFound from "./routes/NotFound";
 import ProtectRouter from "./components/ProtectRouter";
@@ -25,9 +25,23 @@ const Router = () => {
           </ProtectRouter>
         }
       />
-      <Route path="/chat" element={<Chat />} />
+      <Route
+        path="/chat"
+        element={
+          <ProtectRouter>
+            <Chat />
+          </ProtectRouter>
+        }
+      />
       <Route path="/chat/:cid" element={<ChatDetail />} />
-      <Route path="/alter" element={<Alter />} />
+      <Route
+        path="/alter"
+        element={
+          <ProtectRouter>
+            <Alter />
+          </ProtectRouter>
+        }
+      />
       <Route path="/unauthorize" element={<UnAuth />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

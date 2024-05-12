@@ -23,6 +23,7 @@ async function bootstrap() {
     exposedHeaders: ['Authorization'], // * 사용할 헤더 추가.
   });
   app.use(cookieParser());
+  app.setGlobalPrefix('/api');
   await app.listen(4000);
 }
 

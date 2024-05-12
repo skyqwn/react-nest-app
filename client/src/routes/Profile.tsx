@@ -28,6 +28,7 @@ const Profile = () => {
   const { onOpen: onFolloweModalOpen } = useFollowerModal();
   const { onOpen: onFollowingModalOpen } = useFollowingModal();
   const { onOpen } = useEditProfile();
+
   const navigate = useNavigate();
 
   const { user } = useUser(+id!);

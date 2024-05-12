@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { AiOutlineClose } from "react-icons/ai";
@@ -10,7 +11,6 @@ import { instance } from "../../api/apiconfig";
 import { authStore } from "../../store/AuthStore";
 import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
 import Button from "../buttons/Button";
-import { useEffect, useMemo, useState } from "react";
 import {
   Link,
   useLocation,
@@ -135,7 +135,7 @@ const LoginModal = () => {
         정책을 이해했음을 인정합니다.
       </span>
 
-      <Link to={"http://localhost:4000/auth/google"}>
+      <Link to={"http://localhost:4000/api/auth/google"}>
         <div className="w-full h-10 flex items-center justify-center border-2 rounded-2xl gap-2">
           <FcGoogle className="text-3xl" />
           <span className="font-semibold">구글로그인</span>

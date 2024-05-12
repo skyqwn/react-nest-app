@@ -8,13 +8,13 @@ import EditPostModal from "./components/modals/EditPostModal";
 
 function App() {
   return (
-    <div>
+    <>
       <Header />
       <LoginModal />
       <EditProfileModal />
       <Toaster position="top-center" />
       <Router />
-    </div>
+    </>
   );
 }
 
