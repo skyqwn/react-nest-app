@@ -1,12 +1,12 @@
 version: "3"
 services:
-  frontend:
+  client:
     build:
       dockerfile: Dockerfile.dev
-      context: ./frontend
+      context: ./client
     volumes:
       - /app/node_modules
-      - ./frontend:/app
+      - ./client:/app
     stdin_open: true
 
   nginx:
@@ -17,14 +17,14 @@ services:
     ports:
       - "3000:80"
 
-  backend:
+  server:
     build:
       dockerfile: Dockerfile.dev
-      context: ./backend
-    container_name: app_backend
+      context: ./server
+    container_name: app_server
     volumes:
       - /app/node_modules
-      - ./backend:/app
+      - ./server:/app
 
   postgres:
     image: postgres:15
