@@ -1,4 +1,6 @@
-FROM node:18-alpine
+FROM node:18-alpine as builder
+
+ENV NODE_ENV prod
 
 WORKDIR /app
 
@@ -8,4 +10,8 @@ RUN npm install
 
 COPY . .
 
-CMD ["npm", "run", "start"]
+RUN npm run build
+
+EXPOSE 4000
+
+ENTRYPOINT npm run start:prod
