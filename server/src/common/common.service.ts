@@ -21,8 +21,8 @@ export class CommonService {
     this.s3Config = new S3Client({
       region: process.env.AWS_S3_REGION,
       credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        accessKeyId: process.env.AWS_BUCKET_ACCESS_KEY,
+        secretAccessKey: process.env.AWS_BUCKET_SECRET_ACCESS_KEY,
       },
     });
   }
