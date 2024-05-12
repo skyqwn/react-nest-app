@@ -10,16 +10,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      - run: docker build -t smileajw1004/react-test-app -f ./frontend/Dockerfile.dev ./frontend
-      - run: docker run -e CI=true smileajw1004/react-test-app npm test
+      - run: docker build -t keemba/react-test-app -f ./frontend/Dockerfile.dev ./frontend
 
-      - run: docker build -t smileajw1004/docker-frontend ./frontend
-      - run: docker build -t smileajw1004/docker-nginx ./nginx
-      - run: docker build -t smileajw1004/docker-backend ./backend
+      - run: docker build -t keemba/docker-frontend ./frontend
+      - run: docker build -t keemba/docker-nginx ./nginx
+      - run: docker build -t keemba/docker-backend ./backend
 
-      - run: docker push smileajw1004/docker-frontend
-      - run: docker push smileajw1004/docker-nginx
-      - run: docker push smileajw1004/docker-backend
+      - run: docker push keemba/docker-frontend
+      - run: docker push keemba/docker-nginx
+      - run: docker push keemba/docker-backend
 
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
