@@ -1,7 +1,7 @@
 version: "3"
 services:
   client:
-    image: keemba/react-nest-app-client
+    image: keemba/docker-client
     volumes:
       - /app/node_modules
       - ./client:/app
@@ -10,12 +10,12 @@ services:
 
   nginx:
     restart: always
-    image: keemba/react-nest-app-nginx
+    image: keemba/docker-nginx
     ports:
       - "80:80"
 
   server:
-    image: keemba/react-nest-app-server
+    image: keemba/docker-server
     container_name: app_backend
     volumes:
       - /app/node_modules
