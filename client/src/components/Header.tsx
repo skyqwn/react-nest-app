@@ -36,7 +36,7 @@ const Header = () => {
       .post("/auth/logout")
       .then(() => {
         dispatch("LOGOUT");
-        toast.success("로그아웃");
+        toast.success("로그아웃!");
       })
       .catch((error) => {
         console.log(error);
