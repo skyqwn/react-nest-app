@@ -11,6 +11,11 @@ jobs:
       - uses: actions/checkout@v3
       - run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
+      - name: Setting .env
+        run: |
+          echo "REACT_APP_GOOGLE_CLIENTID=${{ secrets.REACT_APP_BASE_URL }}" >> .env
+          echo "REACT_APP_GOOGLE_CLIENTID=${{ secrets.REACT_APP_SOCKET_URL }}" >> .env
+
       - run: docker build -t keemba/docker-client ./client
       - run: docker build -t keemba/docker-nginx ./nginx
       - run: docker build -t keemba/docker-server ./server
