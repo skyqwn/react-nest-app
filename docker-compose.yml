@@ -1,10 +1,10 @@
 version: "3"
 services:
-  frontend:
-    image: keemba/react-nest-app-frontend
+  client:
+    image: keemba/react-nest-app-client
     volumes:
       - /app/node_modules
-      - ./frontend:/app
+      - ./client:/app
     stdin_open: true
     mem_limit: 128m
 
@@ -14,12 +14,12 @@ services:
     ports:
       - "80:80"
 
-  backend:
-    image: keemba/react-nest-app-backend
+  server:
+    image: keemba/react-nest-app-server
     container_name: app_backend
     volumes:
       - /app/node_modules
-      - ./backend:/app
+      - ./server:/app
     mem_limit: 128m
     environment:
       POSTGRES_HOST: $MYSQL_HOST
