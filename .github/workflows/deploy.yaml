@@ -28,13 +28,13 @@ jobs:
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
           echo "PROTOCOL=${{ secrets.PROTOCOL }}" >> .env
 
-      - run: docker build -t keemba/docker-client ./client
+      - run: docker build -t keemba/docker-client ./frontend
       - run: docker build -t keemba/docker-nginx ./nginx
-      - run: docker build -t keemba/docker-server ./server
+      - run: docker build -t keemba/docker-server ./backend
 
-      - run: docker push keemba/docker-client
+      - run: docker push keemba/docker-frontend
       - run: docker push keemba/docker-nginx
-      - run: docker push keemba/docker-server
+      - run: docker push keemba/docker-backend
 
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'

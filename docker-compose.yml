@@ -4,7 +4,7 @@ services:
     image: keemba/docker-client
     volumes:
       - /app/node_modules
-      - ./client:/app
+      - ./frontend:/app
     stdin_open: true
     mem_limit: 128m
 

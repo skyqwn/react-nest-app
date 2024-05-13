@@ -3,10 +3,10 @@ services:
   frontend:
     build:
       dockerfile: Dockerfile.dev
-      context: ./client
+      context: ./frontend
     volumes:
       - /app/node_modules
-      - ./client:/app
+      - ./frontend:/app
     stdin_open: true
 
   nginx:
