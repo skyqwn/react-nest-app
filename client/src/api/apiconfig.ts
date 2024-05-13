@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 
 export const instance = axios.create({
   // baseURL: process.env.REACT_APP_BASE_URL,
-  baseURL: "/api",
+  baseURL: "http://localhost:4000/api",
   withCredentials: true,
 });
 
