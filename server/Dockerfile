@@ -1,10 +1,8 @@
 FROM node:18-alpine as builder
 
-ENV NODE_ENV prod
-
 WORKDIR /app
 
-COPY ./package.json ./
+COPY package*.json ./
 
 RUN npm install
 
@@ -14,4 +12,4 @@ RUN npm run build
 
 EXPOSE 4000
 
-CMD [ "npm", "run", "start:prod" ]
+CMD [ "node", "dist/main.js" ]
