@@ -16,14 +16,7 @@ services:
 
   server:
     image: keemba/docker-server
-    container_name: app_backend
     volumes:
       - /app/node_modules
       - ./server:/app
     mem_limit: 128m
-    environment:
-      POSTGRES_HOST: $MYSQL_HOST
-      POSTGRES_USER: $MYSQL_USER
-      POSTGRES_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
-      POSTGRES_DATABASE: $MYSQL_DATABASE
-      POSTGRES_PORT: $MYSQL_PORT

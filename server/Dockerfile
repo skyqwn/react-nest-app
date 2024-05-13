@@ -14,4 +14,4 @@ RUN npm run build
 
 EXPOSE 4000
 
-ENTRYPOINT npm run start:prod
+CMD [ "npm", "run", "prod" ]
