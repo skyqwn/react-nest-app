@@ -14,7 +14,7 @@ services:
     ports:
       - "80:80"
 
-  server:
+  backend:
     image: keemba/docker-server
     volumes:
       - /app/node_modules

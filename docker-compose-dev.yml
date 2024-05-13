@@ -17,7 +17,7 @@ services:
     ports:
       - "3000:80"
 
-  server:
+  backend:
     build:
       dockerfile: Dockerfile.dev
       context: ./server
