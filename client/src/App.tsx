@@ -4,9 +4,9 @@ import Header from "./components/Header";
 import Router from "./Router";
 import LoginModal from "./components/modals/LoginModal";
 import EditProfileModal from "./components/modals/EditProfileModal";
-import EditPostModal from "./components/modals/EditPostModal";
 
 function App() {
+  console.log(process.env.REACT_APP_BASE_URL);
   return (
     <>
       <Header />
