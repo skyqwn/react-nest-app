@@ -6,7 +6,6 @@ import LoginModal from "./components/modals/LoginModal";
 import EditProfileModal from "./components/modals/EditProfileModal";
 
 function App() {
-  console.log(process.env.REACT_APP_BASE_URL);
   return (
     <>
       <Header />
