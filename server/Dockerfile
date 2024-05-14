@@ -5,10 +5,8 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# prod stage
 FROM node:18-alpine
 WORKDIR /app
-ARG NODE_ENV=production
 COPY --from=builder /app/dist ./dist
 COPY package*.json ./
 RUN npm install
