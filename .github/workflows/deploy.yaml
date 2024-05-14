@@ -14,7 +14,7 @@ jobs:
       - name: Setting .env
         run: |
           echo "REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}" >> .env
-          echo "REACT_APP_SOCKET_URL=${{ secrets.GOOGLE_OAUTH_REDIRECT_URL }}" >> .env
+          echo "REACT_APP_SOCKET_URL=${{ secrets.REACT_APP_SOCKET_URL }}" >> .env
           echo "AWS_BUCKET_ACCESS_KEY=${{ secrets.AWS_BUCKET_ACCESS_KEY }}" >> .env
           echo "AWS_BUCKET_SECRET_KEY=${{ secrets.AWS_BUCKET_SECRET_KEY }}" >> .env
           echo "AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }}" >> .env
