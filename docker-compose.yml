@@ -7,6 +7,10 @@ services:
       - ./client:/app
     stdin_open: true
     mem_limit: 128m
+    environment:
+      REACT_APP_BASE_URL: ${REACT_APP_BASE_URL}
+      REACT_APP_PUBLIC_MODE: ${POREACT_APP_PUBLIC_MODESTGRES_USER}
+      REACT_APP_SOCKET_URL: ${REACT_APP_SOCKET_URL}
 
   nginx:
     restart: always
