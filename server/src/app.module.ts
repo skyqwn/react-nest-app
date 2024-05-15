@@ -35,7 +35,7 @@ import { MessagesModel } from './chats/messages/entity/messages.entity';
       isGlobal: true,
       envFilePath: '.env',
       // envFilePath: process.env.NODE_ENV == 'dev' ? '.env.dev' : '.env.prod',
-      ignoreEnvFile: process.env.NODE_ENV === 'prod',
+      // ignoreEnvFile: process.env.NODE_ENV === 'prod',
       // validationSchema: Joi.object({
       //   NODE_ENV: Joi.string().valid('dev', 'prod', 'test').required(),
       //   DB_HOST: Joi.string().required(),
