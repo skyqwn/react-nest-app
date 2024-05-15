@@ -33,7 +33,8 @@ import { MessagesModel } from './chats/messages/entity/messages.entity';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.NODE_ENV == 'dev' ? '.env.dev' : '.env.prod',
+      envFilePath: '.env',
+      // envFilePath: process.env.NODE_ENV == 'dev' ? '.env.dev' : '.env.prod',
       ignoreEnvFile: process.env.NODE_ENV === 'prod',
       // validationSchema: Joi.object({
       //   NODE_ENV: Joi.string().valid('dev', 'prod', 'test').required(),
@@ -57,11 +58,11 @@ import { MessagesModel } from './chats/messages/entity/messages.entity';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.POSTGRES_HOST,
-      port: +process.env.POSTGRES_HOST,
-      username: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_ROOT_PASSWORD,
-      database: process.env.POSTGRES_DATABASE,
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       entities: [
         PostsModel,
         UsersModel,
