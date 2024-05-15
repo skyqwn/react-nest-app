@@ -18,7 +18,9 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: [
+      'http://react-nest-test-docker-app-env.eba-sfwdaamt.ap-northeast-2.elasticbeanstalk.com/',
+    ],
     // origin: ['*'],
     credentials: true,
     exposedHeaders: ['Authorization'], // * 사용할 헤더 추가.
