@@ -69,8 +69,8 @@ export class AuthController {
     const newAccessToken = this.authService.rotateToken(refreshToken, false);
 
     res.cookie('accessToken', newAccessToken, {
-      secure: process.env.NODE_ENV === 'prod',
-      httpOnly: process.env.NODE_ENV === 'prod',
+      // secure: process.env.NODE_ENV === 'prod',
+      // httpOnly: process.env.NODE_ENV === 'prod',
       sameSite: 'strict',
       maxAge: 1000 * 60 * 120,
     });
@@ -101,15 +101,15 @@ export class AuthController {
     } = result;
 
     res.cookie('accessToken', accessToken, {
-      secure: process.env.NODE_ENV === 'prod',
-      httpOnly: process.env.NODE_ENV === 'prod',
+      // secure: process.env.NODE_ENV === 'prod',
+      // httpOnly: process.env.NODE_ENV === 'prod',
       sameSite: 'strict',
       maxAge: 1000 * 60 * 120,
     });
 
     res.cookie('refreshToken', refreshToken, {
-      secure: process.env.NODE_ENV === 'prod',
-      httpOnly: process.env.NODE_ENV === 'prod',
+      // secure: process.env.NODE_ENV === 'prod',
+      // httpOnly: process.env.NODE_ENV === 'prod',
       sameSite: 'strict',
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
@@ -153,14 +153,14 @@ export class AuthController {
     } = await this.authService.loginWithGoogle(googleUser);
 
     res.cookie('accessToken', accessToken, {
-      secure: process.env.NODE_ENV === 'prod',
-      httpOnly: process.env.NODE_ENV === 'prod',
+      // secure: process.env.NODE_ENV === 'prod',
+      // httpOnly: process.env.NODE_ENV === 'prod',
       sameSite: 'strict',
       maxAge: 1000 * 60 * 120,
     });
     res.cookie('refreshToken', refreshToken, {
-      secure: process.env.NODE_ENV === 'prod',
-      httpOnly: process.env.NODE_ENV === 'prod',
+      // secure: process.env.NODE_ENV === 'prod',
+      // httpOnly: process.env.NODE_ENV === 'prod',
       sameSite: 'strict',
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
