@@ -34,14 +34,7 @@ const Router = () => {
         }
       />
       <Route path="/chat/:cid" element={<ChatDetail />} />
-      <Route
-        path="/alter"
-        element={
-          <ProtectRouter>
-            <Alter />
-          </ProtectRouter>
-        }
-      />
+      <Route path="/alter" element={<Alter />} />
       <Route path="/unauthorize" element={<UnAuth />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
