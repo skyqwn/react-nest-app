@@ -138,7 +138,7 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {}
-  //
+
   @Get('google/callback')
   @IsPublic()
   @UseGuards(GoogleOauthGuard)
