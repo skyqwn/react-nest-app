@@ -23,3 +23,9 @@ services:
       - /app/node_modules
       - ./server:/app
     mem_limit: 128m
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
