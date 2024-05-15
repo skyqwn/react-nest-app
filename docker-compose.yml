@@ -27,5 +27,5 @@ services:
       POSTGRES_HOST: database-1.cn48sgko2q4b.ap-northeast-2.rds.amazonaws.com
       POSTGRES_USER: sub_kimba
       POSTGRES_ROOT_PASSWORD: tntls1!
-      POSTGRES_DATABASE: myapp
+      POSTGRES_DATABASE: database-1
       POSTGRES_PORT: 5432
