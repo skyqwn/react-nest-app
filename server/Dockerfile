@@ -14,11 +14,18 @@
 # EXPOSE 4000
 # CMD ["node", "dist/main.js"]
 
-FROM node:18
-RUN mkdir -p /app
+FROM node:18-alpine
+
 WORKDIR /app
-COPY . .
+
+COPY package*.json ./
+
 RUN npm install
+
+COPY . .
+
 RUN npm run build
-EXPOSE 4000
+
+EXPOSE 5000
+
 CMD ["node", "dist/main.js"]
