@@ -5,7 +5,8 @@ import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  const PORT = process.env.PORT || 4000;
+  console.log('Server running at http://127.0.0.1:' + `${PORT}` + '/');
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -21,6 +22,7 @@ async function bootstrap() {
     // origin: ['http://localhost:3000'],
     origin: [
       'http://react-nest-test-docker-app-env.eba-sfwdaamt.ap-northeast-2.elasticbeanstalk.com',
+      'http://localhost:3000',
     ],
     // origin: ['*'],
     credentials: true,
@@ -28,7 +30,7 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.setGlobalPrefix('/api');
-  await app.listen(5000);
+  await app.listen(PORT);
 }
 
 bootstrap();
