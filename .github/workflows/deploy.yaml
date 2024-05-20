@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-   
+
       - name: Setting .env
         run: |
           echo "REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}" >> .env
@@ -44,7 +44,6 @@ jobs:
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
 
-
       - name: SSH to EC2 and deploy
         uses: appleboy/ssh-action@v0.1.5
         with:
@@ -58,9 +57,9 @@ jobs:
             docker pull keemba/docker-server
             docker-compose down
             docker-compose up -d
-          script: |
-              scp -i /path/to/key.pem docker-compose.yml ec2-user@${{ secrets.EC2_HOST }}:/path/to/project
-              ssh -i /path/to/key.pem ec2-user@${{ secrets.EC2_HOST }} "cd /path/to/project && docker-compose down && docker-compose up -d"
+          # script: |
+          #     scp -i /path/to/key.pem docker-compose.yml ec2-user@${{ secrets.EC2_HOST }}:/path/to/project
+          #     ssh -i /path/to/key.pem ec2-user@${{ secrets.EC2_HOST }} "cd /path/to/project && docker-compose down && docker-compose up -d"
 
       # - name: Deploy to EB
       #   uses: einaregilsson/beanstalk-deploy@v18
