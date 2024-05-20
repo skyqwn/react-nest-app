@@ -31,4 +31,4 @@ COPY --from=builder /app/package*.json ./
 EXPOSE 4000
 
 # Define the command to run the application
-CMD ["npm", "run", "start:prod"]
+CMD ["node", "dist/main.js"]
