@@ -23,10 +23,9 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Copy only the necessary files from the build stage
-# COPY --from=builder /app/package*.json ./
-# COPY --chown=node:node --from=builder /app/dist ./dist
-# COPY --chown=node:node --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app ./
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
 
 # Expose the port the app runs on
 EXPOSE 4000
