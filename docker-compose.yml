@@ -1,8 +1,6 @@
 version: "3"
 services:
   frontend:
-    build:
-      context: ./client
     image: keemba/docker-client
     volumes:
       - ./client:/app
@@ -14,8 +12,6 @@ services:
 
   nginx:
     restart: always
-    build:
-      context: ./nginx
     image: keemba/docker-nginx
     ports:
       - "80:80"
@@ -24,8 +20,6 @@ services:
       - backend
 
   backend:
-    build:
-      context: ./server
     image: keemba/docker-server
     volumes:
       - ./server:/app
