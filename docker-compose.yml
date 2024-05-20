@@ -11,6 +11,9 @@ services:
     mem_limit: 128m
 
   nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     restart: always
     image: keemba/docker-nginx
     ports:
