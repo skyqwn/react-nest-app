@@ -23,8 +23,7 @@ import {
  *  where:{
  *     id: Not(value)
  *  }
- * }
- */
+ * }*/
 export const FILTER_MAPPER = {
   not: Not,
   less_than: LessThan,
