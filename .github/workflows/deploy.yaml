@@ -58,6 +58,9 @@ jobs:
           docker pull keemba/docker-server
           docker-compose down
           docker-compose up -d
+         script: |
+            scp -i /path/to/key.pem docker-compose.yml ec2-user@${{ secrets.EC2_HOST }}:/path/to/project
+            ssh -i /path/to/key.pem ec2-user@${{ secrets.EC2_HOST }} "cd /path/to/project && docker-compose down && docker-compose up -d"
 
       # - name: Deploy to EB
       #   uses: einaregilsson/beanstalk-deploy@v18
