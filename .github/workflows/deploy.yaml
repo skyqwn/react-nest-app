@@ -48,8 +48,8 @@ jobs:
         run: zip -r deploy.zip . -x '*.git*'
 
       - name: SSH to EC2 and deploy
-        # uses: appleboy/ssh-action@v0.1.5
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.5
+        # uses: appleboy/ssh-action@master
         with:
           key: ${{ secrets.EC2_KEY }}
           host: ${{ secrets.EC2_HOST }}
