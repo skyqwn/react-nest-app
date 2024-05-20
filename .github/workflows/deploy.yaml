@@ -55,6 +55,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           script: |
+            sudo docker system prune -af
             docker pull keemba/docker-client
             docker pull keemba/docker-nginx
             docker pull keemba/docker-server
