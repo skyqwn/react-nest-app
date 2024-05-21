@@ -11,6 +11,8 @@ services:
       - "3000:3000"
     stdin_open: true
     mem_limit: 128m
+    networks:
+      - my_network1
 
   nginx:
     restart: always
@@ -19,6 +21,8 @@ services:
     image: keemba/docker-nginx
     ports:
       - "80:80"
+    networks:
+      - my_network1
 
   backend:
     build:
@@ -30,6 +34,8 @@ services:
     ports:
       - "4000:4000"
     mem_limit: 128m
+    networks:
+      - my_network1
     environment:
       POSTGRES_HOST: $POSTGRES_HOST
       POSTGRES_USER: $POSTGRES_USER
