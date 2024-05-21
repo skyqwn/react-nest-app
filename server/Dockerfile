@@ -9,7 +9,6 @@ COPY ./package.json ./package-lock.json ./
 
 # Install dependencies
 RUN npm install
-#
 
 # Copy the rest of the application code
 COPY . .
@@ -32,8 +31,4 @@ COPY --from=builder /app/package*.json ./
 EXPOSE 4000
 
 # Define the command to run the application
-CMD ["node", "dist/main.js"]
-
-
-
-
+CMD ["npm", "run", "prod"]
