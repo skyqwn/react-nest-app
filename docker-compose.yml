@@ -19,9 +19,6 @@ services:
     image: keemba/docker-nginx
     ports:
       - "80:80"
-    depends_on:
-      - backend
-      - frontend
 
   backend:
     build:
