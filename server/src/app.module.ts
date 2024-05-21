@@ -79,14 +79,14 @@ import { MessagesModel } from './chats/messages/entity/messages.entity';
         ChatsModel,
         MessagesModel,
       ],
-      ssl: {
-        // 다운로드한 인증서 파일 경로 추가
-        ca: fs.readFileSync('../key/global-bundle.pem'),
-      },
-      extra: {
-        // SSL 연결을 강제 설정
-        ssl: { rejectUnauthorized: false },
-      },
+      // ssl: {
+      //   // 다운로드한 인증서 파일 경로 추가
+      //   ca: fs.readFileSync('../key/global-bundle.pem'),
+      // },
+      // extra: {
+      //   // SSL 연결을 강제 설정
+      //   ssl: { rejectUnauthorized: false },
+      // },
 
       synchronize: process.env.NODE_ENV !== 'prod',
     }),
