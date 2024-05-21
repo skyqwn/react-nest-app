@@ -20,8 +20,8 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - frontend
       - backend
+      - frontend
 
   backend:
     build:
