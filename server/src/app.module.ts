@@ -12,6 +12,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonModule } from './common/common.module';
 import * as Joi from 'joi';
+import fs from 'fs';
 import { PostsModel } from './posts/entities/posts.entity';
 import { UsersModule } from './users/users.module';
 import { UsersModel } from './users/entities/users.entity';
@@ -63,6 +64,7 @@ import { MessagesModel } from './chats/messages/entity/messages.entity';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_ROOT_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
+
       // host: process.env.DB_HOST,
       // port: +process.env.DB_PORT,
       // username: process.env.DB_USER,
@@ -77,6 +79,15 @@ import { MessagesModel } from './chats/messages/entity/messages.entity';
         ChatsModel,
         MessagesModel,
       ],
+      ssl: {
+        // 다운로드한 인증서 파일 경로 추가
+        ca: fs.readFileSync('../key/global-bundle.pem'),
+      },
+      extra: {
+        // SSL 연결을 강제 설정
+        ssl: { rejectUnauthorized: false },
+      },
+
       synchronize: process.env.NODE_ENV !== 'prod',
     }),
     PostsModule,
