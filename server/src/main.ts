@@ -21,7 +21,7 @@ async function bootstrap() {
   app.enableCors({
     // origin: ['http://localhost:3000'],
     origin: [
-      'http://react-nest-test-docker-app-env.eba-sfwdaamt.ap-northeast-2.elasticbeanstalk.com',
+      'http://ec2-52-79-92-110.ap-northeast-2.compute.amazonaws.com',
       'http://localhost:3000',
     ],
     // origin: ['*'],
@@ -30,7 +30,7 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.setGlobalPrefix('/api');
-  await app.listen(PORT);
+  await app.listen(4000);
 }
 
 bootstrap();
