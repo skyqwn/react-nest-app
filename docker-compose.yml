@@ -2,6 +2,7 @@ version: "3"
 services:
   frontend:
     image: keemba/docker-client
+    container_name: frontend
     volumes:
       - /app/node_modules
       - ./client:/app
@@ -10,13 +11,14 @@ services:
 
   nginx:
     restart: always
+    container_name: nginx
     image: keemba/docker-nginx
     ports:
       - "80:80"
 
   backend:
     image: keemba/docker-server
-    container_name: app_backend
+    container_name: backend
     volumes:
       - /app/node_modules
       - ./server:/app
