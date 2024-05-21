@@ -5,8 +5,8 @@ services:
       context: ./client
     image: keemba/docker-client
     volumes:
-      - ./client:/app
       - /app/node_modules
+      - ./client:/app
     ports:
       - "3000:3000"
     stdin_open: true
@@ -28,8 +28,8 @@ services:
       context: ./server
     image: keemba/docker-server
     volumes:
-      - ./server:/app
       - /app/node_modules
+      - ./server:/app
     ports:
       - "4000:4000"
     mem_limit: 128m
