@@ -1,27 +1,37 @@
 version: "3"
 services:
   frontend:
+    build:
+      context: ./client
     image: keemba/docker-client
-    container_name: frontend
     volumes:
-      - /app/node_modules
       - ./client:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
     stdin_open: true
     mem_limit: 128m
 
   nginx:
     restart: always
-    container_name: nginx
+    build:
+      context: ./nginx
     image: keemba/docker-nginx
     ports:
       - "80:80"
+    depends_on:
+      - frontend
+      - backend
 
   backend:
+    build:
+      context: ./server
     image: keemba/docker-server
-    container_name: backend
     volumes:
-      - /app/node_modules
       - ./server:/app
+      - /app/node_modules
+    ports:
+      - "4000:4000"
     mem_limit: 128m
     environment:
       POSTGRES_HOST: $POSTGRES_HOST
