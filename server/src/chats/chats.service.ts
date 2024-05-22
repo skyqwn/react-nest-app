@@ -5,7 +5,6 @@ import { ArrayContains, In, Repository } from 'typeorm';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { CommonService } from 'src/common/common.service';
 import { PaginateChatDto } from './dto/paginate-chat.dto';
-import { UsersModel } from 'src/users/entities/users.entity';
 import { WsException } from '@nestjs/websockets';
 
 @Injectable()
