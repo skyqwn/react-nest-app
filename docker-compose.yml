@@ -36,6 +36,7 @@ services:
       - ./data/certbot/www:/var/www/certbot
     networks:
       - my_network1
+
   backend:
     build:
       context: ./server
@@ -54,7 +55,3 @@ services:
       POSTGRES_ROOT_PASSWORD: POSTGRES_ROOT_PASSWORD
       POSTGRES_DATABASE: POSTGRES_DATABASE
       POSTGRES_PORT: POSTGRES_PORT
-
-networks:
-  my_network1:
-    driver: bridge
