@@ -1,4 +1,9 @@
 version: "3"
+
+networks:
+  my_network1:
+    driver: bridge
+
 services:
   frontend:
     build:
