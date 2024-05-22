@@ -24,7 +24,7 @@ services:
       - ./data/certbot/www:/var/www/certbot
     ports:
       - "80:80"
-      - "443:443"
+      - "433:433"
     networks:
       - my_network1
 
@@ -34,8 +34,7 @@ services:
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
-    networks:
-      - my_network1
+
   backend:
     build:
       context: ./server
@@ -49,12 +48,8 @@ services:
     networks:
       - my_network1
     environment:
-      POSTGRES_HOST: ${POSTGRES_HOST}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
-      POSTGRES_DATABASE: ${POSTGRES_DATABASE}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-
-networks:
-  my_network1:
-    driver: bridge
+      POSTGRES_HOST: $POSTGRES_HOST
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_ROOT_PASSWORD: $POSTGRES_ROOT_PASSWORD
+      POSTGRES_DATABASE: $POSTGRES_DATABASE
+      POSTGRES_PORT: $POSTGRES_PORT
