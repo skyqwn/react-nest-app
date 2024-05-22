@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const PORT = process.env.PORT || 4000;
-  console.log('Server running at http://127.0.0.1:' + `${PORT}` + '/');
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -19,12 +18,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    // origin: ['http://localhost:3000'],
-    origin: [
-      'http://ec2-52-79-92-110.ap-northeast-2.compute.amazonaws.com',
-      'http://localhost:3000',
-    ],
-    // origin: ['*'],
+    origin: ['modong.site', 'http://localhost:3000'],
     credentials: true,
     exposedHeaders: ['Authorization'], // * 사용할 헤더 추가.
   });
