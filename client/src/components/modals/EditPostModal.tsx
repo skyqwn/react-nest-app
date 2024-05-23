@@ -9,7 +9,7 @@ import TextArea from "../Inputs/TextArea";
 import { instance } from "../../api/apiconfig";
 import { queryClient } from "../..";
 import { IPost } from "../../hooks/usePostDetail";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import Modal from "./Modal";
 import ImageFileInput from "../Inputs/ImageFileInput";
 
