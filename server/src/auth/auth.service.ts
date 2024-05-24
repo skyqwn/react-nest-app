@@ -251,7 +251,8 @@ export class AuthService {
 
       const hashPw = await bcrypt.hash(
         password,
-        this.configService.get('HASH_ROUNDS'),
+        parseInt(process.env.HASH_ROUNDS),
+        // this.configService.get('HASH_ROUNDS'),
       );
 
       const newUser = await this.usersRepository.save(

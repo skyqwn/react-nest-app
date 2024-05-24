@@ -83,7 +83,7 @@ export class AuthController {
 
   @Post('login/email')
   @IsPublic()
-  @UseGuards(BasickTokenGuard)
+  // @UseGuards(BasickTokenGuard)
   async loginEmail(
     @Headers('authorization') rawToken: string,
     @Res({ passthrough: true }) res: Response,
