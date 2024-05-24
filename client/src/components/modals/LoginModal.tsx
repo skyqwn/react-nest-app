@@ -20,12 +20,7 @@ import {
 import { useAuthDispatch } from "../../context/AuthContext";
 
 const LoginModal = () => {
-  const {
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm<FieldValues>({
+  const { handleSubmit, control, reset } = useForm<FieldValues>({
     defaultValues: {
       email: "",
       password: "",
