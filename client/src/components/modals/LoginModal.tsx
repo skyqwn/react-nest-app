@@ -135,8 +135,7 @@ const LoginModal = () => {
         정책을 이해했음을 인정합니다.
       </span>
 
-      <Link to={`https://modong.site`}>
-        {/* <Link to={`https://modong.site:4000/api/auth/google`}> */}
+      <Link to={`${process.env.REACT_APP_GOOGEL_URL}`}>
         {/* <Link to={`http://localhost:4000/api/auth/google`}> */}
         <div className="w-full h-10 flex items-center justify-center border-2 rounded-2xl gap-2">
           <FcGoogle className="text-3xl" />
