@@ -134,12 +134,7 @@ const LoginModal = () => {
         <span className="text-blue-400">개인 정보 보호</span>
         정책을 이해했음을 인정합니다.
       </span>
-      <Link
-        to={
-          `${process.env.REACT_APP_GOOGEL_URL}` ||
-          `https://modong.site:4000/api/auth/google`
-        }
-      >
+      <Link to={`https://modong.site:4000/api/auth/google`}>
         <div className="w-full h-10 flex items-center justify-center border-2 rounded-2xl gap-2">
           <FcGoogle className="text-3xl" />
           <span className="font-semibold">구글로그인</span>

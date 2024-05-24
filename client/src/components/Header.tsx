@@ -92,7 +92,7 @@ const Header = () => {
                   className="bg-orange-600 py-2 px-3 rounded-3xl text-white hover:bg-orange-800 text-md cursor-pointer"
                   onClick={onOpen}
                 >
-                  로그인!!
+                  로그인
                 </span>
               )}
             </div>
