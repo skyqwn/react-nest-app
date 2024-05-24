@@ -34,7 +34,7 @@ import { AuthService } from 'src/auth/auth.service';
 @UseFilters(SocketCatchHttpExceptionFilter)
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:3000'],
+    origin: [`${process.env.CLIENT_URL}`],
     methods: ['GET', 'POST'],
     credentials: true,
   },

@@ -18,7 +18,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: ['modong.site', 'http://localhost:3000'],
+    origin: [`${process.env.CLIENT_URL}`],
     credentials: true,
     exposedHeaders: ['Authorization'], // * 사용할 헤더 추가.
   });
