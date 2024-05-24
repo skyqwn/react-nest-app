@@ -215,7 +215,7 @@ const LoginModal = () => {
           className="text-blue-400 cursor-pointer"
           onClick={() => setLoggedIn(true)}
         >
-          로그인
+          로그인!
         </span>{" "}
         하러 가기
       </span>
