@@ -63,12 +63,6 @@ import { MessagesModel } from './chats/messages/entity/messages.entity';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_ROOT_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-
-      // host: process.env.DB_HOST,
-      // port: +process.env.DB_PORT,
-      // username: process.env.DB_USER,
-      // password: process.env.DB_PASSWORD,
-      // database: process.env.DB_NAME,
       entities: [
         PostsModel,
         UsersModel,
