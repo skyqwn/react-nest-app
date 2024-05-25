@@ -13,6 +13,10 @@ services:
     mem_limit: 128m
     networks:
       - my_network1
+    environment:
+      REACT_APP_GOOGLE_URL: $REACT_APP_GOOGLE_URL
+      REACT_APP_SOCKET_URL: $REACT_APP_SOCKET_URL
+      REACT_APP_BASE_URL: $REACT_APP_BASE_URL
 
   nginx:
     restart: always
@@ -24,8 +28,6 @@ services:
       - "433:433"
     networks:
       - my_network1
-    environment:
-      REACT_APP_GOOGLE_URL: $REACT_APP_GOOGLE_URL
 
   backend:
     build:
