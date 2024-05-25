@@ -303,7 +303,9 @@ export class AuthService {
       sub: userId,
       type: isRefreshToken ? 'refresh' : 'access',
     };
-
+    console.log(1);
+    console.log(process.env.JWT_SECRET);
+    console.log(2);
     return this.jwtService.sign(payload, {
       // secret: this.configService.get('JWT_SECRET'),
       secret: process.env.JWT_SECRET,
