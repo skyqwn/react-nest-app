@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 
 import Modal from "./Modal";
