@@ -13,7 +13,6 @@ import { queryClient } from "../..";
 const defaultValues = {
   title: "",
   content: "",
-  // category: "FREE",
 };
 
 interface CreatePostProps {
