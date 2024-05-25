@@ -9,7 +9,6 @@ import { RegisterUserInput } from './dtos/register-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GoogleUser } from './auth.controller';
-import { ProviderEnum } from 'src/users/constant/roles.constant';
 
 @Injectable()
 export class AuthService {
@@ -291,7 +290,8 @@ export class AuthService {
   verifyToken(token: string) {
     try {
       return this.jwtService.verify(token, {
-        secret: this.configService.get<string>('JWT_SECRET'),
+        // secret: this.configService.get<string>('JWT_SECRET'),
+        secret: process.env.JWT_SECRET,
       });
     } catch (error) {
       throw new UnauthorizedException('토큰이 만료되었거나 잘못된 토큰입니다.');
@@ -305,14 +305,16 @@ export class AuthService {
     };
 
     return this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_SECRET'),
+      // secret: this.configService.get('JWT_SECRET'),
+      secret: process.env.JWT_SECRET,
       expiresIn: isRefreshToken ? 36000 : 3000,
     });
   }
 
   rotateToken(token: string, isRefreshToken: boolean) {
     const decoded = this.jwtService.verify(token, {
-      secret: this.configService.get<string>('JWT_SECRET'),
+      // secret: this.configService.get<string>('JWT_SECRET'),
+      secret: process.env.JWT_SECRET,
     });
 
     if (decoded.type !== 'refresh') {
