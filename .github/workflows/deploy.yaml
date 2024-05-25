@@ -18,7 +18,6 @@ jobs:
           echo "REACT_APP_GOOGLE_URL=${{ secrets.REACT_APP_GOOGLE_URL }}" >> $GITHUB_ENV
           echo "DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}" >> $GITHUB_ENV
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> $GITHUB_ENV
-          cat .env
 
       - run: docker build -t keemba/docker-client ./client
       - run: docker build -t keemba/docker-nginx ./nginx
