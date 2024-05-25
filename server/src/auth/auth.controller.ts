@@ -151,6 +151,8 @@ export class AuthController {
       token: { accessToken, refreshToken },
     } = await this.authService.loginWithGoogle(googleUser);
 
+    console.log(accessToken);
+    console.log(refreshToken);
     res.cookie('accessToken', accessToken, {
       secure: process.env.NODE_ENV === 'prod',
       httpOnly: process.env.NODE_ENV === 'prod',
