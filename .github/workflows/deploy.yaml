@@ -19,9 +19,6 @@ jobs:
           echo "DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}" >> .env
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> .env
           cat .env
-        env: REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
-          REACT_APP_SOCKET_URL=${{ secrets.REACT_APP_SOCKET_URL }}
-          REACT_APP_GOOGLE_URL=${{ secrets.REACT_APP_GOOGLE_URL }}
 
       - run: docker build -t keemba/docker-client ./client
       - run: docker build -t keemba/docker-nginx ./nginx
