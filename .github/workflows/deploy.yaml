@@ -19,14 +19,6 @@ jobs:
           echo "DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}" >> .env
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> .env
 
-      - name: 환경 변수 설정
-        env:
-          REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
-          REACT_APP_GOOGLE_URL: ${{ secrets.REACT_APP_GOOGLE_URL }}
-          REACT_APP_SOCKET_URL: ${{ secrets.REACT_APP_SOCKET_URL }}
-        run: |
-          echo "환경 변수가 설정되었습니다."
-
       - run: docker build -t keemba/docker-client ./client
       - run: docker build -t keemba/docker-nginx ./nginx
       - run: docker build -t keemba/docker-server ./server
