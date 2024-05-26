@@ -10,9 +10,6 @@ export class ResizeImagePipe implements PipeTransform {
   }
 
   async transform(value: any, metadata: ArgumentMetadata) {
-    console.log(2323);
-    console.log(value);
-    console.log(4323);
     // if (!this.isSingleFile(value)) {
     //   const result = { ...value };
     //   const keys = Object.keys(value);

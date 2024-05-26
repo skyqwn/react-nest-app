@@ -99,7 +99,6 @@ export class ChatsGateWay
     @MessageBody() data: CreateChatDto,
     @ConnectedSocket() socket: Socket & { user: UsersModel },
   ) {
-    console.log(data);
     const chatId = await this.chatsService.createChat(data);
     socket.emit('create_chat_recive', chatId);
   }

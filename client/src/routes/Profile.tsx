@@ -74,10 +74,10 @@ const Profile = () => {
                 Edit profile
               </div>
             ) : (
-              <div className="flex gap-2 items-center ">
+              <div className="flex gap-2 items-center *:text-sm *:sm:text-lg">
                 <div
                   onClick={() => followMutation(user?.id + "")}
-                  className="border rounded-xl  p-2 font-bold hover:bg-neutral-300 cursor-pointer transition"
+                  className="border rounded-xl  p-2 font-bold hover:bg-neutral-300 cursor-pointer transition "
                 >
                   {/* {followee.status === "default" ? "팔로잉" :followee.status === "pending" ? "요청됨" : "친구됨"} */}
                   {!fetchFollow

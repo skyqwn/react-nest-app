@@ -18,7 +18,6 @@ export class IsCommentMineOrAdminGuard implements CanActivate {
     const req = context.switchToHttp().getRequest() as Request & {
       user: UsersModel;
     };
-    console.log(req.user);
 
     const { user } = req;
 

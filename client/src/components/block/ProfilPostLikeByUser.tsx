@@ -10,8 +10,10 @@ const ProfilPostLikeByUser = ({ likepost }: { likepost: ILikePost }) => {
   return (
     <Link key={likepost.id} to={`/posts/${likepost.id}`}>
       <div className="flex gap-6 items-center justify-between cursor-pointer ">
-        <h2 className="text-2xl font-semibold">{likepost.content}</h2>
-        <span className="text-neutral-400 text-sm">
+        <h2 className="text-lg sm:text-2xl font-semibold">
+          {likepost.content}
+        </h2>
+        <span className="text-neutral-400 text-xs sm:text-sm">
           {dayjs(likepost.createdAt).fromNow()}
         </span>
       </div>
