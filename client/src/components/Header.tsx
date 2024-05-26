@@ -56,7 +56,7 @@ const Header = () => {
             </div>
           </Link>
 
-          <div className="max-w-full px-1">
+          <div className="max-w-36 md:max-w-full px-1">
             <form
               onSubmit={onSubmit}
               className="relative flex items-center bg-gray-100 border rounded hover:bg-white focus:outline-none"
@@ -75,10 +75,10 @@ const Header = () => {
           </div>
 
           {!loading && authenticated ? (
-            <div className="flex  items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-2 md:gap-4">
               <UserAvatar />
               <div
-                className="bg-orange-600 py-2 px-3 rounded-3xl text-white hover:bg-orange-800 text-md cursor-pointer text-xs "
+                className="bg-orange-600 text-xs sm:text-md lg:text-lg py-1 px-[6px] rounded-3xl text-white hover:bg-orange-800 text-md cursor-pointer"
                 onClick={handleLogOut}
               >
                 로그아웃
