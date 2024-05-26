@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { AiOutlineClose } from "react-icons/ai";
-import { AnimatePresence, motion } from "framer-motion";
 import { Buffer } from "buffer";
 import { FcGoogle } from "react-icons/fc";
 
 import { Input } from "../Input";
 import { instance } from "../../api/apiconfig";
 import { authStore } from "../../store/AuthStore";
-import { modalContainerVariants, modalItemVariants } from "../../libs/framer";
+
 import Button from "../buttons/Button";
 import {
   Link,
@@ -18,6 +16,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { useAuthDispatch } from "../../context/AuthContext";
+import Modal from "./Modal";
 
 const LoginModal = () => {
   const { handleSubmit, control, reset } = useForm<FieldValues>({
@@ -55,8 +54,6 @@ const LoginModal = () => {
     };
   }, []);
 
-  // 모달의 위치 계산
-  // const top = `calc( ${scrollPosition}px)`;
   const top = scrollPosition + "px";
 
   const onValid: SubmitHandler<FieldValues> = async (data) => {
@@ -120,7 +117,6 @@ const LoginModal = () => {
       }
     }
   };
-  console.log(GOOGLE_URL);
 
   const loginBody = (
     <div className="space-y-5 px-20 flex flex-col">
@@ -131,7 +127,7 @@ const LoginModal = () => {
         <span className="text-blue-400">개인 정보 보호</span>
         정책을 이해했음을 인정합니다.
       </span>
-      <Link to={`${GOOGLE_URL}`}>
+      <Link to={`${GOOGLE_URL}` || "https://modong.site/api/auth/google"}>
         <div className="w-full h-10 flex items-center justify-center border-2 rounded-2xl gap-2">
           <FcGoogle className="text-3xl" />
           <span className="font-semibold">구글로그인</span>
@@ -218,47 +214,13 @@ const LoginModal = () => {
   );
 
   return (
-    <AnimatePresence>
-      {isOpen ? ( // modal continaer
-        <motion.div
-          variants={modalContainerVariants}
-          initial={modalContainerVariants.start}
-          animate={modalContainerVariants.end}
-          exit={modalContainerVariants.exit}
-          style={{ top }}
-          // onClick={onClose}
-          className="absolute top-0 left-0 w-screen h-screen z-50 bg-black/50 flex items-center justify-center overflow-hidden"
-        >
-          {/* modal body */}
-          <motion.div
-            variants={modalItemVariants}
-            initial={modalItemVariants.start}
-            animate={modalItemVariants.end}
-            exit={modalItemVariants.exit}
-            className="max-w-xl h-full  sm:h-3/4 bg-white rounded flex flex-col"
-            onClick={(event) => event.stopPropagation()}
-            // className="h-full  w-full sm:h-2/3 sm:w-1/3 md:w-2/3 lg:w-1/3 bg-white rounded flex flex-col "
-          >
-            {/* modal head */}
-            <div className="relative h-16 font-bold text-xl flex justify-end items-center px-4">
-              {!fixPage.ok && (
-                <div
-                  className="bg-slate-200 p-2 rounded-full absolute items-center justify-center  hover:opacity-50 cursor-pointer"
-                  onClick={onClose}
-                >
-                  <AiOutlineClose />
-                </div>
-              )}
-            </div>
-            {/* modal body */}
-            {/* <div className="flex-1 px-6">{body}</div> */}
-            <div className="flex-1 px-6">
-              {loggedIn ? loginBody : signupBody}
-            </div>
-          </motion.div>
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
+    <Modal
+      isOpen={isOpen}
+      body={loggedIn ? loginBody : signupBody}
+      label={""}
+      onAction={() => {}}
+      onClose={onClose}
+    />
   );
 };
 

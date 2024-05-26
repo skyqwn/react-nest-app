@@ -1,6 +1,8 @@
 import React, { ChangeEvent, useRef } from "react";
 import { Control, FieldErrors, useController } from "react-hook-form";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
+import { useAuthState } from "../../context/AuthContext";
+import { authStore } from "../../store/AuthStore";
 
 interface ImageFileInputProps {
   control: Control;
@@ -21,14 +23,14 @@ const ImageFileInput = ({
 }: ImageFileInputProps) => {
   const imageRef = useRef<HTMLInputElement>(null);
   const { field } = useController({ control, name, rules: { required } });
+  const { authenticated } = useAuthState();
+  const { onOpen } = authStore();
+
   const onClickButton = () => {
     imageRef.current?.click();
   };
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const array = [...field.value];
-    console.log(array);
-    const oneArr = [];
-
     if (!e.target.files) return;
 
     for (let i = 0; i < e.target.files.length; i++) {
@@ -54,7 +56,7 @@ const ImageFileInput = ({
         onChange={onChange}
       />
       <MdOutlineAddPhotoAlternate
-        onClick={onClickButton}
+        onClick={authenticated ? onClickButton : onOpen}
         className="text-orange-500 "
       />
     </div>

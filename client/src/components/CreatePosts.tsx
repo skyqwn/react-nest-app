@@ -7,9 +7,10 @@ import ImageFileInput from "./Inputs/ImageFileInput";
 import TextArea from "./Inputs/TextArea";
 import useCreatePosts from "../hooks/useCreatePosts";
 import Button from "./buttons/Button";
+import { useAuthState } from "../context/AuthContext";
 
 const CreatePosts = () => {
-  const { isOpen } = authStore();
+  const { isOpen, onOpen } = authStore();
 
   const {
     control,
@@ -25,6 +26,8 @@ const CreatePosts = () => {
       previews: [],
     },
   });
+
+  const { authenticated } = useAuthState();
 
   const { createPostMutate } = useCreatePosts({ reset });
 
@@ -54,7 +57,6 @@ const CreatePosts = () => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
-      // window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       document.body.style.overflow = "auto";
     }
@@ -111,15 +113,9 @@ const CreatePosts = () => {
             <div className="cursor-pointer text-2xl">
               <ImageFileInput control={control} name="images" error={errors} />
             </div>
-            {/* <button
-              onClick={handleSubmit(onValid)}
-              className="bg-orange-500 p-2 rounded-full text-white font-semibold"
-            >
-              게시하기
-            </button> */}
             <Button
               actionText="게시하기"
-              onAction={handleSubmit(onValid)}
+              onAction={authenticated ? handleSubmit(onValid) : onOpen}
               canClick={true}
             />
           </div>

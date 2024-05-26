@@ -48,15 +48,15 @@ const Header = () => {
   return (
     <div className="border-b-[1px] h-14 w-full fixed inset-x-0 top-0 p-2 bg-white z-10">
       <div className=" max-w-screen-xl mx-auto">
-        <div className="h-full flex items-center justify-between mx-auto">
+        <div className="h-full flex items-center justify-between mx-auto ">
           <Link to={"/"}>
-            <div className="  rounded-full flex items-center justify-center gap-2">
-              <TbBrandReact className="text-2xl" /> &
-              <SiNestjs className="text-2xl" />
+            <div className="rounded-full flex items-center justify-center gap-2 *:text-xl *:sm:text-2xl">
+              <TbBrandReact /> &
+              <SiNestjs />
             </div>
           </Link>
 
-          <div className="max-w-full px-4">
+          <div className="max-w-full px-1">
             <form
               onSubmit={onSubmit}
               className="relative flex items-center bg-gray-100 border rounded hover:bg-white focus:outline-none"
@@ -74,29 +74,24 @@ const Header = () => {
             </form>
           </div>
 
-          <div className=" flex gap-5 items-center">
-            <div>
-              {!loading && authenticated ? (
-                <div className="flex  items-center justify-center gap-4">
-                  <UserAvatar />
-                  {/* <div className="size-10 rounded-full bg-slate-500" /> */}
-                  <div
-                    className="bg-orange-600 py-2 px-3 rounded-3xl text-white hover:bg-orange-800 text-md cursor-pointer text-xs sm:text-base"
-                    onClick={handleLogOut}
-                  >
-                    로그아웃
-                  </div>
-                </div>
-              ) : (
-                <span
-                  className="bg-orange-600 py-2 px-3 rounded-3xl text-white hover:bg-orange-800 text-md cursor-pointer"
-                  onClick={onOpen}
-                >
-                  로그인
-                </span>
-              )}
+          {!loading && authenticated ? (
+            <div className="flex  items-center justify-center gap-4">
+              <UserAvatar />
+              <div
+                className="bg-orange-600 py-2 px-3 rounded-3xl text-white hover:bg-orange-800 text-md cursor-pointer text-xs "
+                onClick={handleLogOut}
+              >
+                로그아웃
+              </div>
             </div>
-          </div>
+          ) : (
+            <div
+              className="bg-orange-600 text-sm sm:text-md lg:text-lg py-1 px-[6px]  rounded-3xl text-white hover:bg-orange-800 text-md cursor-pointer"
+              onClick={onOpen}
+            >
+              로그인
+            </div>
+          )}
         </div>
       </div>
     </div>
