@@ -74,7 +74,6 @@ export class CommentsController {
     @Body() body: UpdateCommentsDto,
     // @Body() body: any,
   ) {
-    console.log(body);
     return this.commentsService.patchComment(body, commentId);
   }
 
@@ -86,7 +85,6 @@ export class CommentsController {
     @Param('postId', ParseIntPipe) postId: number,
     @QueryRunnerDecorator() qr: QueryRunner,
   ) {
-    console.log(commentId);
     const result = await this.commentsService.deleteComment(commentId, qr);
     await this.postService.decrementCommentCount(postId);
 

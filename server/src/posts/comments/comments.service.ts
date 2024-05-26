@@ -212,22 +212,14 @@ export class CommentsService {
         },
       });
 
-      console.log(comment.commentLikeUsers);
-
-      console.log(userId);
-
       const newCommentLikeUsers = comment.commentLikeUsers.filter(
         (v) => v === userId,
       );
-
-      console.log(newCommentLikeUsers);
 
       const result = await this.commentsRepository.update(
         { id: commentId },
         { commentLikeUsers: newCommentLikeUsers },
       );
-
-      console.log(result);
 
       return true;
     } catch (error) {

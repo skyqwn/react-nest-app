@@ -128,7 +128,7 @@ const LoginModal = () => {
       </span>
       <Link
         to={
-          `${process.env.REACT_APP_GOOGLE_URL}` ||
+          // `${process.env.REACT_APP_GOOGLE_URL}` ||
           "https://modong.site/api/auth/google"
         }
       >
