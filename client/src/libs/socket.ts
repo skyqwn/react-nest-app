@@ -14,3 +14,15 @@ export const socket = io(
     },
   }
 );
+
+socket.on("connect", () => {
+  console.log("Connected to the server");
+});
+
+socket.on("connect_error", (error) => {
+  console.log("Connection Error:", error);
+});
+
+socket.on("disconnect", () => {
+  console.log("Disconnected from the server");
+});
