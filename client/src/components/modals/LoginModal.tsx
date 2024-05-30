@@ -130,7 +130,7 @@ const LoginModal = () => {
       <div
         className="cursor-pointer"
         onClick={() => {
-          axios.get(`https://modon.site/api/auth/google`);
+          axios.get(`https://modong.site/api/auth/google`);
         }}
         // to={
         //   // `${process.env.REACT_APP_GOOGLE_URL}` ||
