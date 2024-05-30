@@ -8,21 +8,10 @@ export const socket = io(
   "https://modong.site/api/chats",
   // `${process.env.REACT_APP_SOCKET_URL}` || "https://modong.site/api",
   {
+    path: "/api/chats",
     withCredentials: true,
     extraHeaders: {
       Authorization: `Bearer ${accessToken}`,
     },
   }
 );
-
-socket.on("connect", () => {
-  console.log("Connected to the server");
-});
-
-socket.on("connect_error", (error) => {
-  console.log("Connection Error:", error);
-});
-
-socket.on("disconnect", () => {
-  console.log("Disconnected from the server");
-});

@@ -42,6 +42,7 @@ import { AuthService } from 'src/auth/auth.service';
 
   // ws://localhost:4000/api/chats
   namespace: '/api/chats',
+  path: '/api/chats',
 })
 export class ChatsGateWay
   implements OnGatewayConnection, OnGatewayInit, OnGatewayDisconnect
