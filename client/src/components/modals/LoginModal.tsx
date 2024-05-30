@@ -129,7 +129,7 @@ const LoginModal = () => {
       </span>
       <a
         className="cursor-pointer"
-        href={"http://localhost:4000/api/auth/google"}
+        href={"https://modong.site/api/auth/google"}
       >
         <div className="w-full h-10 flex items-center justify-center border-2 rounded-2xl gap-2">
           <FcGoogle className="text-3xl" />
