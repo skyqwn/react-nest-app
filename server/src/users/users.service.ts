@@ -398,7 +398,6 @@ export class UsersService {
   //
 
   async recommendationUser(userId: number) {
-    console.log(userId);
     try {
       const result = await this.usersRepository
         .createQueryBuilder()

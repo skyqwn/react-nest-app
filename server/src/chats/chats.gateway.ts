@@ -114,36 +114,10 @@ export class ChatsGateWay
     if (!existChatRoom) {
       throw new WsException(`잘못된 경로입니다.`);
     }
-    // const existUser = await this.chatsService.checkInChatUser(data.userId);
-    // console.log(existUser);
-    // if (!existUser) {
-    //   throw new WsException(`권한이 없습니다.`);
-    // }
+
     socket.join(data.chatId);
-    // this.connectedClients.set(data, socketId);
   }
 
-  // @SubscribeMessage('enter_chat1')
-  // async enterChat1(
-  //   // 방의 chat ID들을 리스트로 받는다.
-  //   @MessageBody() data: EnterChatDto,
-  //   @ConnectedSocket() socket: Socket,
-  // ) {
-  //   for (const chatId of data.chatIds) {
-  //     const exist = await this.chatsService.checkIfChatExists(chatId);
-
-  //     if (!exist) {
-  //       throw new WsException({
-  //         code: 100,
-  //         message: `존재하지 않는 chat 입니다. chatId: ${chatId}`,
-  //       });
-  //     }
-  //   }
-
-  //   socket.join(data.chatIds.map((x) => x.toString()));
-  // }
-
-  // socker.on('send_message', (message) => {console.log(message)});
   @SubscribeMessage('send_message')
   async sendMessage(
     @MessageBody() dto: CreateMessagesDto,
@@ -165,13 +139,5 @@ export class ChatsGateWay
     socket.to(dto.chatId.toString()).emit('receive_message', message);
 
     return message;
-    // console.log(message.chat.id);
-    // this.server
-    //   // .to(socket.id)
-    //   .to(otherSocketId)
-    //   .emit('receive_message', message);
-    // this.server
-    //   .in(message.chatId.toString())
-    //   .emit('receive_message', message.message);
   }
 }

@@ -4,7 +4,8 @@ import { getCookie } from "./cookie";
 const accessToken = getCookie("accessToken");
 
 export const socket = io(
-  "https://modong.site/api",
+  "ws://localhost:4000/api/chats",
+  // "https://modong.site/api",
   // `${process.env.REACT_APP_SOCKET_URL}` || "https://modong.site/api",
   {
     withCredentials: true,
