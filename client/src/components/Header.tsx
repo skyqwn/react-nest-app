@@ -69,7 +69,7 @@ const Header = () => {
                 onChange={onChange}
                 type="text"
                 placeholder="Search..."
-                className="px-3 py-1 bg-transparent rounded h-7 focus:outline-none"
+                className="w-full px-3 py-1 bg-transparent rounded h-7 focus:outline-none"
               />
             </form>
           </div>
