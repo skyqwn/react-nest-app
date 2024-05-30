@@ -127,15 +127,15 @@ const LoginModal = () => {
         <span className="text-blue-400">개인 정보 보호</span>
         정책을 이해했음을 인정합니다.
       </span>
-      <Link
+      <a
         className="cursor-pointer"
-        to={"https://modong.site/api/auth/google"}
+        href={"http://localhost:4000/api/auth/google"}
       >
         <div className="w-full h-10 flex items-center justify-center border-2 rounded-2xl gap-2">
           <FcGoogle className="text-3xl" />
           <span className="font-semibold">구글로그인</span>
         </div>
-      </Link>
+      </a>
       <div className="relative">
         <div className="absolute w-full border-t border-gray-300" />
         <div className="relative -top-3 text-center ">
