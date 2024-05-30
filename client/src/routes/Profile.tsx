@@ -92,7 +92,6 @@ const Profile = () => {
                 >
                   메세지 보내기
                 </div>
-                {/* </Link> */}
               </div>
             )}
           </div>
