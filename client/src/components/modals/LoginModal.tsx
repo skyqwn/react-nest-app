@@ -129,10 +129,7 @@ const LoginModal = () => {
       </span>
       <Link
         className="cursor-pointer"
-        to={
-          `${process.env.REACT_APP_GOOGLE_URL}` ||
-          "https://modong.site/api/auth/google"
-        }
+        to={"https://modong.site/api/auth/google"}
       >
         <div className="w-full h-10 flex items-center justify-center border-2 rounded-2xl gap-2">
           <FcGoogle className="text-3xl" />
