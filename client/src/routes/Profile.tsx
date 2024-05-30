@@ -47,6 +47,8 @@ const Profile = () => {
     });
   }, []);
 
+  console.log(socket.connected);
+
   const handleRequestSocket = () => {
     socket.emit("create_chat", {
       userIds: [loggedInUser?.id, +id!],

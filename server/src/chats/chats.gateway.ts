@@ -34,11 +34,13 @@ import { AuthService } from 'src/auth/auth.service';
 @UseFilters(SocketCatchHttpExceptionFilter)
 @WebSocketGateway({
   cors: {
+    // origin: [`http://localhost:3000`],
     origin: [`${process.env.CLIENT_URL}`],
     methods: ['GET', 'POST'],
     credentials: true,
   },
-  // ws://localhost:4000/chats
+
+  // ws://localhost:4000/api/chats
   namespace: 'chats',
 })
 export class ChatsGateWay
@@ -53,8 +55,6 @@ export class ChatsGateWay
 
   @WebSocketServer()
   server: Server;
-
-  private connectedClients = new Map();
 
   afterInit(server: any) {
     console.log(`after gateway init`);
