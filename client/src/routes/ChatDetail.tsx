@@ -35,7 +35,11 @@ const ChatDetail = () => {
             />
           ))}
           {messages?.map((message) => (
-            <ChatMessageBlock message={message} userId={+userId!} />
+            <ChatMessageBlock
+              message={message}
+              userId={+userId!}
+              key={message.id}
+            />
           ))}
         </div>
         <form

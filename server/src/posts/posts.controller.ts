@@ -100,9 +100,4 @@ export class PostsController {
   async deletePost(@Param('id', ParseIntPipe) id: number) {
     return await this.postsService.deletePost(id);
   }
-
-  // @Post()
-  // serchTerm(@Query('term') term: string) {
-  //   return this.postsService.serchTerm(term);
-  // }
 }

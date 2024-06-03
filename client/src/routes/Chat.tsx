@@ -30,7 +30,7 @@ const Chat = () => {
                     <div>{user.nickname}</div>
                     {/* 마지막 메세지 */}
                     {chat.messages?.slice(-1).map((m) => (
-                      <div className="text-sm text-neutral-500 ">
+                      <div className="text-sm text-neutral-500" key={m.id}>
                         <span className="mr-48">{m.message}</span>
                         <span>{dayjs(m.createdAt).fromNow()}</span>
                       </div>

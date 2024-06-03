@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { instance } from "../api/apiconfig";
 import { IFollowUser } from "./useFollowers";
+import axios from "axios";
 
 interface IMessage {
   createdAt: string;
@@ -18,13 +19,18 @@ export interface IChat {
 
 const useChatInbox = () => {
   const fetchChats = async () => {
-    const res = await instance.get(`chats/inbox`);
-    return res.data;
+    try {
+      const res = await instance.get(`message/inbox`);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   };
   const { data: chatInbox, isLoading: chatInboxLoading } = useQuery<IChat[]>({
     queryKey: ["chats"],
     queryFn: fetchChats,
   });
+
   return { chatInbox, chatInboxLoading };
 };
 

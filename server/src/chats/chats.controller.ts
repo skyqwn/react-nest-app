@@ -4,7 +4,7 @@ import { PaginateChatDto } from './dto/paginate-chat.dto';
 import { AuthUser } from 'src/users/decorator/auth-user.decorator';
 import { UsersModel } from 'src/users/entities/users.entity';
 
-@Controller('chats')
+@Controller('message')
 export class ChatsController {
   constructor(private readonly chatsService: ChatsService) {}
 
@@ -15,6 +15,7 @@ export class ChatsController {
 
   @Get('inbox')
   async inboxChats(@AuthUser() user: UsersModel) {
+    console.log(1);
     return await this.chatsService.inBoxChats(user.id);
   }
 

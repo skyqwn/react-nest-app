@@ -14,7 +14,7 @@ interface IChat {
 
 const useChat = (cid: string) => {
   const detilChatsFetch = async (cid: string) => {
-    const res = await instance.get(`chats/${cid}`);
+    const res = await instance.get(`message/${cid}`);
     return res.data;
   };
 

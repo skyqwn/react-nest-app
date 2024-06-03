@@ -86,7 +86,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           {children}
         </div>
         {/* Right */}
-        <div className="md:flex lg:h-fit md:flex-col lg:min-w-[260px] lg:sticky hidden right-0 top-0">
+        <div className="md:flex lg:h-fit md:flex-col lg:min-w-[260px] lg:sticky hidden right-0 top-0 lg:mt-2">
           <div className="hidden lg:block lg:max-w-72 lg:p-2 lg:border-2 lg:ml-10">
             <div className="mb-2 font-semibold text-xl">Popular Posts</div>
             {popularPosts?.map((post) => (
