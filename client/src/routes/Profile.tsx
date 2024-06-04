@@ -19,6 +19,7 @@ import useFollowMutation from "../hooks/useFollowMutation";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Helmet } from "react-helmet-async";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 
@@ -59,6 +60,9 @@ const Profile = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Profile</title>
+      </Helmet>
       <FollowingModal profileId={id!} />
       <FollowerModal profileId={id!} />
       <div className=" flex flex-col">

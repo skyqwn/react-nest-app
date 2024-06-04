@@ -5,6 +5,7 @@ import useChatInbox from "../hooks/useChatInbox";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Helmet } from "react-helmet-async";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 
@@ -15,6 +16,9 @@ const Chat = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Chat</title>
+      </Helmet>
       <div className="mt-10">
         {chatInbox?.map((chat) => (
           <Link key={chat.id} to={`/chat/${chat.id}`}>

@@ -5,6 +5,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { queryClient } from "..";
 import useFollowers from "../hooks/useFollowers";
+import { Helmet } from "react-helmet-async";
 
 const Alter = () => {
   const { refetch, requsetFollower } = useFollowers();
@@ -38,6 +39,9 @@ const Alter = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Alret</title>
+      </Helmet>
       <div className="flex flex-col gap-6 p-3">
         <h2>팔로우 요청</h2>
         {requsetFollower?.map((follow, i: number) => (

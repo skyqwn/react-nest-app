@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { instance } from "../api/apiconfig";
 import PostBlock from "../components/block/PostBlock";
 import { IPost } from "../hooks/usePostDetail";
+import { Helmet } from "react-helmet-async";
 
 const Posts = () => {
   const navigate = useNavigate();
@@ -75,6 +76,9 @@ const Posts = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Post</title>
+      </Helmet>
       {posts?.pages?.map((page, i) => (
         <Fragment key={i}>
           {page?.data?.map((p: IPost) => (

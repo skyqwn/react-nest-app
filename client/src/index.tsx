@@ -30,12 +30,14 @@ root.render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CookiesProvider>
-          <BrowserRouter>
-            <App />
-            <ReactQueryDevtools
-              initialIsOpen={process.env.REACT_APP_PUBLIC_MODE === "local"}
-            />
-          </BrowserRouter>
+          <HelmetProvider>
+            <BrowserRouter>
+              <App />
+              <ReactQueryDevtools
+                initialIsOpen={process.env.REACT_APP_PUBLIC_MODE === "local"}
+              />
+            </BrowserRouter>
+          </HelmetProvider>
         </CookiesProvider>
       </AuthProvider>
     </QueryClientProvider>
