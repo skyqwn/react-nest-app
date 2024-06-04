@@ -52,7 +52,6 @@ instance.interceptors.response.use(
     if (status === 401 && data.message === "Refresh Token이 아닙니다.") {
       // Refresh토큰은 만료되고 AccessToken만 존재할경우
       toast.error("토큰이 유효하지않습니다 다시로그인해주세요");
-      // removeCookie("accessToken");
       return Promise.reject(error);
     }
 

@@ -57,6 +57,9 @@ export class ChatsService {
         where: {
           id,
         },
+        order: {
+          createdAt: 'DESC',
+        },
         relations: ['users', 'messages', 'messages.author'],
       });
 
