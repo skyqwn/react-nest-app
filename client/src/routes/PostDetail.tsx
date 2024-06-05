@@ -18,6 +18,7 @@ import EditPostModal from "../components/modals/EditPostModal";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Layout from "../components/Layout";
+import { useQuery } from "@tanstack/react-query";
 dayjs.locale("ko");
 dayjs.extend(relativeTime);
 
@@ -41,6 +42,8 @@ const PostDetail = () => {
   };
 
   const { postDetail, refetch } = usePostDetail(+postId!);
+
+  console.log(postDetail);
 
   const { deletePostMutation } = useDeletePost(+postId!);
 
@@ -210,7 +213,8 @@ const PostDetail = () => {
               </div>
               {/* 포스트 댓글 */}
               <div className="h-[90px]  md:w-[450px] flex gap-4 flex-col ">
-                <PostCommentBlock />
+                {/* <PostCommentBlock /> */}
+                <PostCommentBlock postIds={[postId] as string[]} />
               </div>
             </div>
           </div>
@@ -292,7 +296,8 @@ const PostDetail = () => {
               </div>
               {/* 포스트 댓글 */}
               <div className="h-[90px]  md:w-[450px] flex gap-4 flex-col divide-y-[1px]">
-                <PostCommentBlock />
+                {/* <PostCommentBlock /> */}
+                <PostCommentBlock postIds={[postId] as string[]} />
               </div>
             </div>
           </div>

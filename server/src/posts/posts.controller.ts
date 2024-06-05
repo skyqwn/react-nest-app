@@ -92,7 +92,7 @@ export class PostsController {
         newImageUrl.push(url);
       }),
     );
-    return this.postsService.updatePost(updatePostInput, id, newImageUrl);
+    return await this.postsService.updatePost(updatePostInput, id, newImageUrl);
   }
 
   @Delete(':id')

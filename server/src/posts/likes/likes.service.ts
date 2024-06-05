@@ -19,14 +19,14 @@ export class LikesService {
     private readonly dataSource: DataSource,
   ) {}
 
-  getRepositoy(qr: QueryRunner) {
+  getRepository(qr: QueryRunner) {
     return qr
       ? qr.manager.getRepository<LikesModel>(LikesModel)
       : this.likesRepository;
   }
 
   async postLikes(postId: number, author: UsersModel, qr?: QueryRunner) {
-    const likesRepository = this.getRepositoy(qr);
+    const likesRepository = this.getRepository(qr);
 
     const newLike = await likesRepository.save({
       author,
@@ -57,7 +57,7 @@ export class LikesService {
 
   async postUnLikes(postId: number, author: UsersModel, qr?: QueryRunner) {
     try {
-      const likesRepository = this.getRepositoy(qr);
+      const likesRepository = this.getRepository(qr);
 
       await likesRepository.delete({
         author,
@@ -94,8 +94,9 @@ export class LikesService {
   }
 
   async commentLikes(commentId: number, author: UsersModel, qr?: QueryRunner) {
+    const likesRepository = this.getRepository(qr);
     try {
-      await this.likesRepository.save({
+      await likesRepository.save({
         author,
         comment: {
           id: commentId,
@@ -115,8 +116,9 @@ export class LikesService {
     author: UsersModel,
     qr?: QueryRunner,
   ) {
+    const likesRepository = this.getRepository(qr);
     try {
-      await this.likesRepository.delete({
+      await likesRepository.delete({
         author,
         comment: {
           id: commentId,

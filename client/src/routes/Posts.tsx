@@ -1,8 +1,8 @@
-import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
 import qs from "query-string";
 import React, { Fragment, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useLocation, useNavigate } from "react-router-dom";
+import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
 
 import { instance } from "../api/apiconfig";
 import PostBlock from "../components/block/PostBlock";
@@ -77,12 +77,11 @@ const Posts = () => {
   return (
     <>
       <Helmet>
-        <title>Post</title>
+        <title>{"Post"}</title>
       </Helmet>
       {posts?.pages?.map((page, i) => (
         <Fragment key={i}>
           {page?.data?.map((p: IPost) => (
-            // <Link to={`/posts/${p.id}`}>
             <div
               key={p.id}
               onClick={() => handlePostClick(p.id)}
@@ -90,7 +89,6 @@ const Posts = () => {
             >
               <PostBlock key={p.id} post={p} refetch={refetch} />
             </div>
-            // </Link>
           ))}
         </Fragment>
       ))}

@@ -30,11 +30,8 @@ export class CommonService {
   async fileUpload(image: Express.Multer.File) {
     const objectName = `${returnCurrentDate() + image.originalname}`;
 
-    console.log(image.size);
     //이미지 사이즈 수정
     const transfromImage = await this.sharpImage(image, 800);
-
-    console.log(transfromImage);
 
     const input = {
       Body: transfromImage,

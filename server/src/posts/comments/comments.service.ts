@@ -16,7 +16,7 @@ export class CommentsService {
     private readonly commonService: CommonService,
   ) {}
 
-  getRepositoy(qr: QueryRunner) {
+  getRepository(qr: QueryRunner) {
     return qr
       ? qr.manager.getRepository<CommentsModel>(CommentsModel)
       : this.commentsRepository;
@@ -99,7 +99,7 @@ export class CommentsService {
     author: UsersModel,
     qr?: QueryRunner,
   ) {
-    const commentsRepository = this.getRepositoy(qr);
+    const commentsRepository = this.getRepository(qr);
 
     return commentsRepository.save({
       ...dto,
@@ -134,7 +134,7 @@ export class CommentsService {
   }
 
   async deleteComment(commentId: number, qr?: QueryRunner) {
-    const commentsRepository = this.getRepositoy(qr);
+    const commentsRepository = this.getRepository(qr);
 
     const comment = commentsRepository.findOne({
       where: {
@@ -166,27 +166,37 @@ export class CommentsService {
     });
   }
 
-  async incrementLikeCount(commentId: number) {
-    await this.commentsRepository.increment(
-      {
-        id: commentId,
-      },
-      'likeCount',
-      1,
-    );
+  async incrementLikeCount(commentId: number, qr?: QueryRunner) {
+    const commentsRepository = this.getRepository(qr);
+    try {
+      await commentsRepository.increment(
+        {
+          id: commentId,
+        },
+        'likeCount',
+        1,
+      );
 
-    return true;
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
   }
-  async decrementLikeCount(commentId: number) {
-    await this.commentsRepository.decrement(
-      {
-        id: commentId,
-      },
-      'likeCount',
-      1,
-    );
+  async decrementLikeCount(commentId: number, qr?: QueryRunner) {
+    const commentsRepository = this.getRepository(qr);
+    try {
+      await commentsRepository.decrement(
+        {
+          id: commentId,
+        },
+        'likeCount',
+        1,
+      );
 
-    return true;
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async includeLikeUsers(userId: number, commentId: number) {

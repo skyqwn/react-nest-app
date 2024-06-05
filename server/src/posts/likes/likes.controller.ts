@@ -50,7 +50,7 @@ export class LikesController {
     @QueryRunnerDecorator() qr: QueryRunner,
   ) {
     await this.likesService.commentLikes(id, user, qr);
-    await this.commentService.incrementLikeCount(id);
+    await this.commentService.incrementLikeCount(id, qr);
     return true;
   }
 
