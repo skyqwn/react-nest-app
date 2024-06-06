@@ -38,6 +38,8 @@ const initialState = {
 
 const StateContext = createContext<State>(initialState);
 
+console.log(getCookie("accessToken"));
+
 const DispatchContext = createContext<any>(null);
 const reducer = (state: State, { type, payload }: Action) => {
   switch (type) {

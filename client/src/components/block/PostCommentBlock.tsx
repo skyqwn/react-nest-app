@@ -22,9 +22,9 @@ const PostCommentBlock = ({ postIds }: { postIds: string[] }) => {
   }
 
   return (
-    <div>
+    <>
       {postComments.map((comments, index) => (
-        <div key={postIds[index]}>
+        <div className="w-full" key={postIds[index]}>
           {comments?.map((comment) => (
             <CommentBlock
               key={comment.id}
@@ -37,7 +37,7 @@ const PostCommentBlock = ({ postIds }: { postIds: string[] }) => {
       {/* {postComments?.map((comment) => (
         <CommentBlock key={comment.id} comment={comment} postId={postId!} />
       ))} */}
-    </div>
+    </>
   );
 };
 

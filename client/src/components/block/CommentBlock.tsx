@@ -69,7 +69,7 @@ const CommentBlock = ({ comment, postId }: CommentProps) => {
   };
 
   return (
-    <div className=" flex flex-col mt-2 border-b-[1px]" key={comment.id}>
+    <div className="w-full flex flex-col mt-2 border-b-[1px]" key={comment.id}>
       <div className="flex gap-3 w-full h-full  ">
         <Link to={`/profile/${comment.author.id}`}>
           <div className="size-10 ">
@@ -80,8 +80,8 @@ const CommentBlock = ({ comment, postId }: CommentProps) => {
           </div>
         </Link>
         <div className="flex flex-1 gap-1 items-start flex-col w-full ">
-          <div className="flex gap-2 items-center w-full justify-between md:w-[380px] md:justify-start">
-            <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center w-full justify-between md:w-full md:justify-start">
+            <div className="w-full flex gap-2 items-center ">
               <div>{comment.author.nickname}</div>
               <div className="text-xs text-neutral-400">{`@ ${comment.author.nickname}`}</div>
               <div className="text-xs text-neutral-400">

@@ -193,7 +193,7 @@ const PostDetail = () => {
                 {dayjs(postDetail?.createdAt).format("HH:mm MMM DD, YYYY")}
               </div>
               {/* 댓글 파트 */}
-              <div className="flex  gap-3 items-center justify-between border-y mt-1 py-2 ">
+              <div className="flex gap-3 items-center justify-between border-y mt-1 py-2 ">
                 <UserAvatar />
                 <div>
                   <TextArea
@@ -295,7 +295,7 @@ const PostDetail = () => {
                 </div>
               </div>
               {/* 포스트 댓글 */}
-              <div className="h-[90px]  md:w-[450px] flex gap-4 flex-col divide-y-[1px]">
+              <div className="h-[90px]  md:w-full flex gap-4 flex-col divide-y-[1px]">
                 {/* <PostCommentBlock /> */}
                 <PostCommentBlock postIds={[postId] as string[]} />
               </div>
