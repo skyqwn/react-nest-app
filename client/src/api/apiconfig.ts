@@ -37,12 +37,13 @@ instance.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (status === 401 && data.message === "토큰이 없습니다!") {
+    if (status === 401 && data.message === "토큰이 없습니다.") {
       // 모든 토큰이 없을경우
-      const refreshToken = getCookie("refreshToken");
-      if (refreshToken) {
-        await instance.post("/auth/token/access");
-      }
+      // const refreshToken = getCookie("refreshToken");
+      // if (refreshToken) {
+      //   await instance.post("/auth/token/access");
+      // }
+      await instance.post("/auth/token/access");
 
       config.send = true;
       const originalRequest = config;
