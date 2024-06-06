@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getCookie } from "../libs/cookie";
+import { getCookie, setCookie } from "../libs/cookie";
 import toast from "react-hot-toast";
 
 export const instance = axios.create({
@@ -43,7 +43,15 @@ instance.interceptors.response.use(
       // if (refreshToken) {
       //   await instance.post("/auth/token/access");
       // }
-      await instance.post("/auth/token/access");
+      const refreshResponse = await instance.post("/auth/token/access");
+      const newAccessToken = refreshResponse.data.accessToken;
+
+      // 새로운 accessToken 쿠키에 저장
+      setCookie("accessToken", newAccessToken, {
+        secure: process.env.NODE_ENV === "prod",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 120, // 2 hours
+      });
 
       config.send = true;
       const originalRequest = config;
