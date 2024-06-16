@@ -13,7 +13,6 @@ export const Input = ({
 }: InputProps) => {
   const ref = useRef<HTMLInputElement>(null);
   const { field } = useController({ name, control });
-  const [value, setValue] = useState("");
   return (
     <div className={cls("relative w-full")}>
       <input

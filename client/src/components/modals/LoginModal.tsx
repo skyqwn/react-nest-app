@@ -9,15 +9,9 @@ import { instance } from "../../api/apiconfig";
 import { authStore } from "../../store/AuthStore";
 
 import Button from "../buttons/Button";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthDispatch } from "../../context/AuthContext";
 import Modal from "./Modal";
-import axios from "axios";
 
 const LoginModal = () => {
   const { handleSubmit, control, reset } = useForm<FieldValues>({
@@ -26,15 +20,15 @@ const LoginModal = () => {
       password: "",
     },
   });
-
   const location = useLocation();
   const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(true);
-  const { isOpen, onClose } = authStore();
+  const [scrollPosition, setScrollPosition] = useState(0);
+
   const dispatch = useAuthDispatch();
   const [searchParams] = useSearchParams();
 
-  const [scrollPosition, setScrollPosition] = useState(0);
+  const { isOpen, onClose } = authStore();
   const fixPage = useMemo(() => {
     if (location.pathname === "/unauthorize") {
       return { ok: true, redirect: searchParams.get("redirect") || "/" };
@@ -222,7 +216,10 @@ const LoginModal = () => {
       body={loggedIn ? loginBody : signupBody}
       label={""}
       onAction={() => {}}
-      onClose={onClose}
+      onClose={() => {
+        onClose();
+        return navigate("/");
+      }}
     />
   );
 };

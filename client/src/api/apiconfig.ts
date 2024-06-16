@@ -43,15 +43,7 @@ instance.interceptors.response.use(
       // if (refreshToken) {
       //   await instance.post("/auth/token/access");
       // }
-      const refreshResponse = await instance.post("/auth/token/access");
-      const newAccessToken = refreshResponse.data.accessToken;
-
-      // 새로운 accessToken 쿠키에 저장
-      setCookie("accessToken", newAccessToken, {
-        secure: process.env.NODE_ENV === "prod",
-        sameSite: "strict",
-        maxAge: 1000 * 60 * 120, // 2 hours
-      });
+      await instance.post("/auth/token/access");
 
       config.send = true;
       const originalRequest = config;
